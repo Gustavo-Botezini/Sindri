@@ -1,5 +1,5 @@
 -- Schema TPC-H (8 tabelas). Tipos alinhados à especificação oficial.
--- FKs incluídas de propósito: o Seletor de Esquema (Fase 2) usa as relações
+-- FKs incluídas de propósito: o Seletor de Esquema (Fase 2) usa as relações 
 -- de chave estrangeira para expandir o contexto relevante da consulta.
 
 CREATE TABLE region (

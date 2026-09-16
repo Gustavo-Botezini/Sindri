@@ -11,3 +11,4 @@ __pycache__/
 google-credentials.json
 *service-account*.json
 tpch-dbgen/
+tpch-data/
