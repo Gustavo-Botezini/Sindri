@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+
+# Segredos. O index_provider aceita a chave em CHAVE_ANTHROPIC, na variável de
+# ambiente ou aqui — e as duas últimas são as que não vão parar num commit.
+.env
+
+# Chave de service account do Google, usada para gravar no Sheets. Vazar esta
+# é pior que vazar a da Anthropic: ela dá acesso ao Drive da conta.
+google-credentials.json
+*service-account*.json
+tpch-dbgen/

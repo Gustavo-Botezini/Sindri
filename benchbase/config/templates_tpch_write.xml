@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Templates de escrita para o schema TPC-H, usados pelo benchmark "templated"
+  do BenchBase (SQL arbitrário com ?, sem escrever Java e sem schema próprio).
+
+  Duas regras guiaram o desenho, por causa das FKs de initdb/02-tpch-load.sql
+  e para não estragar a base carregada pelo dbgen:
+
+  1. INSERT, DELETE e o UPDATE de coluna indexada agem só na "cauda sintética"
+     de orders, acima de o_orderkey 6000000, que o dbgen nunca ocupa. O filtro
+     redundante "AND o_orderkey > 6000000" está no SQL de propósito: mesmo que
+     alguém mexa nos ranges das distribuições, os dados originais ficam fora de
+     alcance. E como pedido sintético não tem lineitem, o DELETE nunca esbarra
+     na FK lineitem.l_orderkey.
+
+  2. Os UPDATEs que tocam a base original mexem apenas em o_comment e
+     l_comment, colunas que nenhuma das 22 queries filtra ou agrega. O custo de
+     escrita (reescrita de tupla, bloat, pressão de autovacuum na tabela de 6
+     milhões de linhas) é real, mas o conjunto-resposta do TPC-H não muda.
+
+  A faixa da cauda tem 200 mil chaves, estreita de propósito: os INSERTs a
+  preenchem rápido e aí UPDATE e DELETE passam a acertar linhas de verdade, em
+  vez de virarem no-ops sobre chave inexistente.
+-->
+<templates>
+
+   <!-- FK única é o_custkey, que aponta para customer (1..150000): dá para
+        gerar por distribuição sem consultar nada antes. O ON CONFLICT absorve
+        a colisão de chave entre terminais concorrentes, que senão viraria erro
+        contabilizado pelo BenchBase. -->
+   <template name="InsertSyntheticOrder">
+      <query><![CDATA[
+        INSERT INTO orders (o_orderkey, o_custkey, o_orderstatus, o_totalprice,
+                            o_orderdate, o_orderpriority, o_clerk,
+                            o_shippriority, o_comment)
+        VALUES (?, ?, 'O', ?, ?, '1-URGENT', 'Clerk#000000001', 0, 'benchbase synthetic')
+        ON CONFLICT (o_orderkey) DO NOTHING
+      ]]></query>
+      <types>
+         <type>INTEGER</type>
+         <type>INTEGER</type>
+         <type>FLOAT</type>
+         <type>DATE</type>
+      </types>
+      <values>
+         <value dist="uniform" min="10000000" max="10199999"/>
+         <value dist="uniform" min="1" max="150000"/>
+         <value dist="uniform" min="900" max="500000"/>
+         <value dist="uniform" min="1992-01-01 00:00:00" max="1998-12-31 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- Reatribui o pedido sintético a outro cliente. Diferente dos UPDATEs de
+        comentário, este mexe em coluna indexada (idx_orders_custkey) e dispara
+        a checagem de FK: exercita manutenção de índice, não só reescrita de
+        tupla. Restrito à cauda. -->
+   <template name="UpdateSyntheticOrderCustomer">
+      <query><![CDATA[
+        UPDATE orders SET o_custkey = ?
+        WHERE o_orderkey = ? AND o_orderkey > 6000000
+      ]]></query>
+      <types>
+         <type>INTEGER</type>
+         <type>INTEGER</type>
+      </types>
+      <values>
+         <value dist="uniform" min="1" max="150000"/>
+         <value dist="uniform" min="10000000" max="10199999"/>
+      </values>
+   </template>
+
+   <!-- DELETE na cauda. Mesma faixa dos INSERTs, então em regime permanente a
+        tabela fica num vaivém de inserção e remoção, que é o que produz bloat
+        e trabalho de autovacuum. -->
+   <template name="DeleteSyntheticOrder">
+      <query><![CDATA[
+        DELETE FROM orders
+        WHERE o_orderkey = ? AND o_orderkey > 6000000
+      ]]></query>
+      <types>
+         <type>INTEGER</type>
+      </types>
+      <values>
+         <value dist="uniform" min="10000000" max="10199999"/>
+      </values>
+   </template>
+
+   <!-- UPDATE na base original, em coluna que nenhuma query TPC-H lê. Busca
+        pela PK (o_orderkey). As chaves do dbgen são esparsas, então parte das
+        execuções não acha linha: é intencional, mistura acerto e no-op. -->
+   <template name="UpdateOrderComment">
+      <query><![CDATA[
+        UPDATE orders SET o_comment = 'benchbase ' || ?::text
+        WHERE o_orderkey = ?
+      ]]></query>
+      <types>
+         <type>INTEGER</type>
+         <type>INTEGER</type>
+      </types>
+      <values>
+         <value dist="uniform" min="1" max="99999999"/>
+         <value dist="uniform" min="1" max="6000000"/>
+      </values>
+   </template>
+
+   <!-- O mesmo na lineitem, que é onde bloat e autovacuum doem: 6 milhões de
+        linhas e três índices. Busca pela PK composta (l_orderkey,
+        l_linenumber); linenumber de 1 a 4 porque quase todo pedido tem pelo
+        menos essas. -->
+   <template name="UpdateLineitemComment">
+      <query><![CDATA[
+        UPDATE lineitem SET l_comment = 'benchbase ' || ?::text
+        WHERE l_orderkey = ? AND l_linenumber = ?
+      ]]></query>
+      <types>
+         <type>INTEGER</type>
+         <type>INTEGER</type>
+         <type>INTEGER</type>
+      </types>
+      <values>
+         <value dist="uniform" min="1" max="99999999"/>
+         <value dist="uniform" min="1" max="6000000"/>
+         <value dist="uniform" min="1" max="4"/>
+      </values>
+   </template>
+
+</templates>

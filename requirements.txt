@@ -1,0 +1,13 @@
+# Dependências do pipeline. O schema_estimator.py roda com a biblioteca padrão
+# e continua sem depender de nada.
+#
+#     python3 -m venv .venv
+#     ./.venv/bin/pip install -r requirements.txt
+
+# query_colector.py e plan_worker.py
+psycopg[binary]>=3.1
+
+# index_provider.py
+anthropic>=1.4
+gspread>=6.0
+google-auth>=2.30

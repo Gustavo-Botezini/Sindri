@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!--
+  TPC-H throughput run (N terminais por T segundos) contra o Postgres do Sindri.
+
+  Aponta para o serviço "postgres" deste docker-compose (mesma rede, por isso
+  o host é "postgres" e não localhost) e para o banco tpch já carregado pelo
+  dbgen via initdb/.
+
+  IMPORTANTE: rode SEMPRE com as flags create=false e load=false. O DDL do
+  TPC-H do BenchBase começa com DROP TABLE ... CASCADE nas 8 tabelas; deixar
+  o BenchBase criar o schema apagaria a base carregada pelo initdb.
+
+  O ApplicationName vai parar no campo "application_name" de cada registro do
+  jsonlog, então dá para separar a carga do BenchBase de qualquer outra coisa
+  que toque no banco.
+-->
+<parameters>
+
+    <!-- Conexão -->
+    <type>POSTGRES</type>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://postgres:5432/tpch?sslmode=disable&amp;ApplicationName=benchbase-tpch-throughput</url>
+    <username>sindri</username>
+    <password>sindri_dev_pwd</password>
+    <reconnectOnConnectionFailure>true</reconnectOnConnectionFailure>
+    <!-- TPC-H é somente leitura; SERIALIZABLE (default do config de exemplo)
+         só acrescentaria predicate locking e distorceria os tempos. -->
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
+    <batchsize>1024</batchsize>
+
+    <!-- Usado apenas pelo loader (que não roda aqui) e por Q11, que deriva a
+         fração do filtro do fator de escala. A base do initdb é SF=1. -->
+    <scalefactor>1</scalefactor>
+
+    <!-- Throughput run: 4 terminais escolhendo query por peso, durante
+         <time> segundos. Gera muito mais plano por minuto que o power run, e
+         com concorrência — os planos saem com buffers disputados, que é o
+         cenário interessante para o coletor. Ajuste <time> e <terminals>
+         conforme o volume de log desejado. -->
+    <terminals>4</terminals>
+    <works>
+        <work>
+            <time>180</time>
+            <rate>unlimited</rate>
+            <weights>1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1</weights>
+        </work>
+    </works>
+
+    <transactiontypes>
+        <transactiontype>
+            <name>Q1</name>
+            <id>1</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q2</name>
+            <id>2</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q3</name>
+            <id>3</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q4</name>
+            <id>4</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q5</name>
+            <id>5</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q6</name>
+            <id>6</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q7</name>
+            <id>7</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q8</name>
+            <id>8</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q9</name>
+            <id>9</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q10</name>
+            <id>10</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q11</name>
+            <id>11</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q12</name>
+            <id>12</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q13</name>
+            <id>13</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q14</name>
+            <id>14</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q15</name>
+            <id>15</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q16</name>
+            <id>16</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q17</name>
+            <id>17</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q18</name>
+            <id>18</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q19</name>
+            <id>19</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q20</name>
+            <id>20</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q21</name>
+            <id>21</id>
+        </transactiontype>
+        <transactiontype>
+            <name>Q22</name>
+            <id>22</id>
+        </transactiontype>
+    </transactiontypes>
+</parameters>

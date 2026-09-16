@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+  Carga analitica complementar: as construcoes que as 22 queries do TPC-H nao
+  exercitam. Roda pelo benchmark "templated", sobre as mesmas tabelas.
+
+  As instrucoes estao em templates_tpch_extra.xml e dependem dos objetos
+  criados por initdb/04-analytics-objects.sql (view, view materializada,
+  procedure, funcao e a tabela bench_report).
+
+  O benchmark "templated" nao tem fase de create nem de load: rode sempre com
+  as flags create=false e load=false.
+
+  Atencao: CallProcedure grava (INSERT e DELETE em bench_report), entao esta
+  carga nao e puramente leitura. O volume e pequeno e limitado a bench_report,
+  que a propria procedure mantem em 500 linhas.
+-->
+<parameters>
+
+    <type>POSTGRES</type>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://postgres:5432/tpch?sslmode=disable&amp;ApplicationName=benchbase-tpch-extra</url>
+    <username>sindri</username>
+    <password>sindri_dev_pwd</password>
+    <reconnectOnConnectionFailure>true</reconnectOnConnectionFailure>
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
+    <batchsize>128</batchsize>
+    <scalefactor>1</scalefactor>
+
+    <query_templates_file>sindri-config/templates_tpch_extra.xml</query_templates_file>
+
+    <terminals>4</terminals>
+    <works>
+        <work>
+            <time>180</time>
+            <rate>unlimited</rate>
+            <weights>10,10,10,8,8,8,10,8,8,12,4,4</weights>
+        </work>
+    </works>
+
+    <!-- A ordem tem que casar com a dos pesos acima, e os nomes com os do
+         arquivo de templates. -->
+    <transactiontypes>
+        <transactiontype><name>CteMaterializada</name></transactiontype>
+        <transactiontype><name>WindowRankFornecedor</name></transactiontype>
+        <transactiontype><name>WindowMediaMovelMatview</name></transactiontype>
+        <transactiontype><name>SubqueryCorrelacionada</name></transactiontype>
+        <transactiontype><name>AntiJoinNotExists</name></transactiontype>
+        <transactiontype><name>DistinctModais</name></transactiontype>
+        <transactiontype><name>UniaoFaixasCliente</name></transactiontype>
+        <transactiontype><name>ExceptPecasSemGiro</name></transactiontype>
+        <transactiontype><name>ConsultaView</name></transactiontype>
+        <transactiontype><name>ConsultaMatview</name></transactiontype>
+        <transactiontype><name>CallProcedure</name></transactiontype>
+        <transactiontype><name>FuncaoPorLinha</name></transactiontype>
+    </transactiontypes>
+</parameters>

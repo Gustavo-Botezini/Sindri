@@ -1,0 +1,28 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "BrokkPG — monitoramento",
+      "Group": "Sindri",
+      "Comment": "O banco que recebe os logs. Schema monitoring: pg_log_event (bruto), plan_execution / plan_node (planos), query_resumo (o tabelao).",
+      "Host": "monitoring",
+      "Port": 5432,
+      "MaintenanceDB": "brokk",
+      "Username": "brokk",
+      "SSLMode": "prefer",
+      "ConnectNow": true,
+      "PassFile": "/pgpass/pgpass"
+    },
+    "2": {
+      "Name": "Postgres observado — TPC-H",
+      "Group": "Sindri",
+      "Comment": "O banco sob carga. NAO escreva aqui: ele sobe com log_min_duration_statement=0, entao toda query vira registro de log e entra no corpus.",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tpch",
+      "Username": "sindri",
+      "SSLMode": "prefer",
+      "ConnectNow": false,
+      "PassFile": "/pgpass/pgpass"
+    }
+  }
+}

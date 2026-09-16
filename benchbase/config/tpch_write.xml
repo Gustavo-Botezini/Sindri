@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+  Carga de ESCRITA sobre o schema TPC-H, via benchmark "templated" do
+  BenchBase. Complementa tpch_power.xml e tpch_throughput.xml, que são só
+  leitura (as 22 queries do TPC-H não contêm nenhum DML).
+
+  As instruções ficam em templates_tpch_write.xml; leia os comentários de lá
+  antes de mexer nos ranges, porque são eles que mantêm os dados do dbgen
+  intactos.
+
+  O benchmark "templated" não tem fase de create nem de load, então rode
+  sempre com as flags create=false e load=false.
+
+  Para carga mista (leitura analítica concorrente com escrita), rode este
+  config num terminal e tpch_throughput.xml em outro ao mesmo tempo.
+-->
+<parameters>
+
+    <type>POSTGRES</type>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://postgres:5432/tpch?sslmode=disable&amp;ApplicationName=benchbase-tpch-write</url>
+    <username>sindri</username>
+    <password>sindri_dev_pwd</password>
+    <reconnectOnConnectionFailure>true</reconnectOnConnectionFailure>
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
+    <batchsize>128</batchsize>
+    <scalefactor>1</scalefactor>
+
+    <query_templates_file>sindri-config/templates_tpch_write.xml</query_templates_file>
+
+    <!-- rate limitado de propósito: sem limite, 4 terminais de UPDATE geram
+         bloat mais rápido do que o autovacuum consegue acompanhar, e o log
+         vira um retrato de banco em colapso em vez de banco sob carga.
+         Aumente aos poucos se quiser justamente estudar esse colapso. -->
+    <terminals>4</terminals>
+    <works>
+        <work>
+            <time>120</time>
+            <rate>200</rate>
+            <weights>40,15,15,15,15</weights>
+        </work>
+    </works>
+
+    <!-- A ordem tem que casar com a dos pesos acima. -->
+    <transactiontypes>
+        <transactiontype>
+            <name>InsertSyntheticOrder</name>
+        </transactiontype>
+        <transactiontype>
+            <name>UpdateSyntheticOrderCustomer</name>
+        </transactiontype>
+        <transactiontype>
+            <name>DeleteSyntheticOrder</name>
+        </transactiontype>
+        <transactiontype>
+            <name>UpdateOrderComment</name>
+        </transactiontype>
+        <transactiontype>
+            <name>UpdateLineitemComment</name>
+        </transactiontype>
+    </transactiontypes>
+</parameters>

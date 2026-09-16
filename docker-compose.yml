@@ -1,0 +1,348 @@
+services:
+  # Prepara ./logs para o uid 999 (o usuário postgres da imagem oficial) antes
+  # do banco subir. O logging collector cria os arquivos com esse uid e aborta
+  # o start se o diretório do host for de outro dono — que é exatamente o caso
+  # aqui: ./logs pertence ao usuário da WSL (uid 1000).
+  # O grupo fica sendo o do usuário do host (HOST_GID, default 1000) com bit de
+  # escrita: assim o Postgres escreve e você ainda consegue apagar log antigo
+  # do lado de fora sem sudo.
+  log-init:
+    image: busybox:1.36
+    container_name: sindri_log_init
+    command:
+      - "sh"
+      - "-c"
+      - "mkdir -p /var/log/postgresql && chown 999:${HOST_GID:-1000} /var/log/postgresql && chmod 0775 /var/log/postgresql"
+    volumes:
+      - ./logs:/var/log/postgresql
+    restart: "no"
+
+  postgres:
+    image: postgres:18
+    container_name: sindri_postgres
+    restart: unless-stopped
+    # O Docker da 64 MB de /dev/shm por padrao, e o Postgres aloca ali os
+    # segmentos de memoria dinamica que os workers paralelos usam para
+    # devolver tuplas ao no Gather. Sob concorrencia isso estoura com
+    # "could not resize shared memory segment: No space left on device",
+    # e a query morre no meio. Nao e ajuste de performance: e o minimo para
+    # plano paralelo funcionar com varias sessoes ao mesmo tempo.
+    shm_size: 1gb
+    depends_on:
+      log-init:
+        condition: service_completed_successfully
+    environment:
+      POSTGRES_USER: sindri
+      POSTGRES_PASSWORD: sindri_dev_pwd
+      POSTGRES_DB: tpch
+    ports:
+      - "5432:5432"
+    volumes:
+      # Postgres 18+ espera o mount em /var/lib/postgresql (e cria a subpasta
+      # da versão internamente). Montar em .../data como nas versões antigas
+      # faz o container recusar a subida.
+      - pgdata:/var/lib/postgresql
+      # Scripts em initdb/ rodam automaticamente na PRIMEIRA subida (banco vazio).
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+      # Pasta para colocar os arquivos .tbl gerados pelo dbgen.
+      - ./tpch-data:/tpch-data
+      # Logs direto na pasta logs/ do projeto, fora do volume pgdata. Sem isto
+      # o log fica em $PGDATA/log dentro do volume nomeado, só alcançável por
+      # docker exec. A permissão da pasta é resolvida pelo serviço log-init.
+      - ./logs:/var/log/postgresql
+    # Ativa a instrumentação que o BrokkPG vai consumir na Fase 1.
+    command:
+      - "postgres"
+
+      # --- carga dos módulos ---
+      # auto_explain e pg_stat_statements são módulos C: têm que ser carregados
+      # no start do servidor. auto_explain NÃO tem CREATE EXTENSION — o preload
+      # abaixo é a única forma de habilitá-lo (pg_stat_statements precisa dos
+      # dois: preload + CREATE EXTENSION, que está em initdb/00-extensions.sql).
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements,auto_explain"
+
+      # --- pg_stat_statements: agregado por query normalizada ---
+      - "-c"
+      - "pg_stat_statements.track=all"
+      # Casa cada plano do auto_explain (que sai no campo query_id de cada
+      # registro do jsonlog) com a linha correspondente de pg_stat_statements.
+      # Sem isso não há chave para juntar plano individual e agregado.
+      - "-c"
+      - "compute_query_id=on"
+
+      # --- auto_explain: um EXPLAIN ANALYZE por execução ---
+      # 0 = registra toda e qualquer query. Em carga real, subir para algo como
+      # 200ms para não afogar o log com as queries triviais.
+      - "-c"
+      - "auto_explain.log_min_duration=0"
+      # Executa de fato e reporta linhas/tempo reais por nó, em vez de só as
+      # estimativas do planner. É o que permite comparar estimado x real.
+      - "-c"
+      - "auto_explain.log_analyze=true"
+      # Tempo por nó. É a parte cara do log_analyze; desligue este flag antes
+      # de medir latência absoluta — o plano continua saindo, só sem os tempos
+      # individuais de cada nó.
+      - "-c"
+      - "auto_explain.log_timing=true"
+      # Hits/reads de shared buffers por nó: separa query lenta por plano ruim
+      # de query lenta por falta de cache.
+      - "-c"
+      - "auto_explain.log_buffers=true"
+      # Faz o BUFFERS acima reportar também o tempo gasto em I/O.
+      - "-c"
+      - "track_io_timing=on"
+      - "-c"
+      - "auto_explain.log_wal=true"
+      # Inclui no plano os GUCs de planejamento que estão fora do default. Sem
+      # isso, ao testar hipóteses (enable_seqscan=off, work_mem maior etc.) o
+      # log não registra sob qual configuração aquele plano foi gerado.
+      - "-c"
+      - "auto_explain.log_settings=true"
+      # Também registra as queries executadas dentro de funções e blocos DO,
+      # que por padrão passam invisíveis.
+      - "-c"
+      - "auto_explain.log_nested_statements=true"
+      # 1.0 = todas as execuções. Knob para reduzir overhead mantendo amostra.
+      - "-c"
+      - "auto_explain.sample_rate=1.0"
+      # JSON em vez de texto: o plano vira uma árvore parseável direto.
+      - "-c"
+      - "auto_explain.log_format=json"
+
+      # --- destino e formato do log ---
+      - "-c"
+      - "log_min_duration_statement=0"
+      # jsonlog: um registro JSON por linha, com o plano do auto_explain no
+      # campo "message". Em stderr o mesmo plano sai identado em dezenas de
+      # linhas intercaladas com as de duration, e o coletor da Fase 1 teria
+      # que remontar registros multilinha para ler qualquer coisa.
+      - "-c"
+      - "log_destination=jsonlog"
+      - "-c"
+      - "logging_collector=on"
+      - "-c"
+      - "log_directory=/var/log/postgresql"
+      # O sufixo .log vira .json no arquivo gerado pelo jsonlog. Sem os
+      # escapes de strftime a rotação reaproveitaria o mesmo nome e o arquivo
+      # cresceria sem fim, que é o comportamento atual.
+      - "-c"
+      - "log_filename=postgresql-%Y-%m-%d_%H%M%S.log"
+      # 0644 para que o usuário do host consiga ler; o padrão 0600 deixa o
+      # arquivo legível apenas pelo uid 999 de dentro do container.
+      - "-c"
+      - "log_file_mode=0644"
+      - "-c"
+      - "log_rotation_age=1d"
+      - "-c"
+      - "log_rotation_size=50MB"
+      - "-c"
+      - "log_truncate_on_rotation=off"
+
+  # Banco de destino do BrokkPG: recebe os eventos do jsonlog que o ingestor lê
+  # de ./logs. É uma instância separada, não um schema dentro do sindri_postgres,
+  # por dois motivos:
+  #
+  #   1. Realimentação. O observado sobe com log_min_duration_statement=0 e
+  #      auto_explain.log_min_duration=0. Se a ingestão gravasse lá, cada COPY
+  #      do ingestor viraria registro de log — com plano e tudo — que na passada
+  #      seguinte seria ingerido, gerando mais log. O corpus deixaria de ser o
+  #      retrato da carga e passaria a ser o do próprio coletor.
+  #   2. Medição. A escrita da ingestão disputaria shared_buffers, WAL e
+  #      autovacuum com o benchmark, contaminando justamente os números que o
+  #      corpus existe para registrar.
+  monitoring:
+    image: postgres:18
+    container_name: sindri_monitoring
+    restart: unless-stopped
+    # Mesma razão do shm_size do serviço postgres, e aqui não é hipotética: as
+    # consultas do worker fazem self-join de plan_node (458 mil linhas) para
+    # subir na árvore do plano, o planner escolhe paralelo, e com os 64 MB
+    # padrão de /dev/shm isso morre com
+    #   could not resize shared memory segment: No space left on device
+    shm_size: 1gb
+    environment:
+      POSTGRES_USER: brokk
+      POSTGRES_PASSWORD: brokk_dev_pwd
+      POSTGRES_DB: brokk
+    ports:
+      # 5432 é do banco observado; 5433 do lado de fora para não colidir.
+      - "5433:5432"
+    volumes:
+      - monitordata:/var/lib/postgresql
+      # Schema, funções de ingestão e índices. Rodam só na primeira subida.
+      - ./initdb-monitoring:/docker-entrypoint-initdb.d:ro
+      # Somente leitura: é daqui que o ingestor lê os arquivos. Montado no
+      # mesmo caminho do container observado para que o file_path gravado em
+      # ingestion_file signifique a mesma coisa nos dois lados.
+      - ./logs:/var/log/postgresql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brokk -d brokk"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command:
+      - "postgres"
+
+      # O jsonlog do Postgres observado sai em UTC. Com o servidor em UTC os
+      # limites das partições diárias e o que aparece num SELECT batem com o
+      # que está escrito no arquivo, sem conversão no meio.
+      - "-c"
+      - "timezone=UTC"
+
+      # --- perfil de ingestão em lote ---
+      # A carga aqui é COPY de dezenas de milhares de linhas por arquivo, não
+      # OLTP. Os padrões da imagem são conservadores demais para isso.
+      - "-c"
+      - "shared_buffers=512MB"
+      # COPY de 50 MB de log por arquivo gera WAL suficiente para disparar
+      # checkpoint atrás de checkpoint com o max_wal_size padrão (1GB).
+      - "-c"
+      - "max_wal_size=4GB"
+      - "-c"
+      - "checkpoint_timeout=15min"
+      # Perder as últimas transações num crash é aceitável AQUI, e só aqui:
+      # o arquivo de log continua no disco e a re-ingestão é idempotente pelo
+      # índice único (session_id, line_num, event_time). O que se ganha é o
+      # fsync fora do caminho crítico do COPY.
+      - "-c"
+      - "synchronous_commit=off"
+      # Para o CREATE INDEX de recarga de corpus inteiro.
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      # As consultas do worker são agregação sobre milhões de linhas; com o
+      # padrão de 4MB elas derramam sort e hash para disco.
+      - "-c"
+      - "work_mem=64MB"
+      - "-c"
+      - "random_page_cost=1.1"
+
+      # --- observabilidade do próprio coletor ---
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "track_io_timing=on"
+      # ATENÇÃO: aqui NÃO é 0. Este banco não é o observado; logar toda query
+      # da ingestão só produziria ruído (e I/O) sem ninguém para consumir.
+      # 1s pega consulta lenta do worker, que é o que interessa.
+      - "-c"
+      - "log_min_duration_statement=1000"
+
+  # pgAdmin 4, para olhar os dois bancos pelo navegador. Fica atrás de profile
+  # como o benchbase: é ferramenta, não parte do pipeline.
+  #
+  #   docker compose --profile ui up -d pgadmin
+  #   http://localhost:5050
+  #
+  # As duas conexões já vêm cadastradas por pgadmin/servers.json. Repare que
+  # ali os hosts são `monitoring` e `postgres`, não `localhost`: o pgAdmin roda
+  # DENTRO da rede do compose, então ele alcança os bancos pelo nome do serviço
+  # na porta interna 5432. O 5433 do host não existe para ele.
+  #
+  # As senhas vêm de um .pgpass preparado pelo pgadmin-pass-init abaixo, então
+  # o pgAdmin conecta sem perguntar nada.
+  pgadmin:
+    profiles: ["ui"]
+    image: dpage/pgadmin4
+    container_name: sindri_pgadmin
+    restart: unless-stopped
+    depends_on:
+      monitoring:
+        condition: service_started
+      pgadmin-pass-init:
+        condition: service_completed_successfully
+    environment:
+      # Não use um domínio .local aqui: o pgAdmin valida o endereço contra a
+      # lista de TLDs de uso reservado e se recusa a subir, num laço de
+      # reinício. example.com é reservado pela RFC 2606 justamente para isto.
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      # Esta é a senha DO PGADMIN, não a do Postgres. Como o modo desktop está
+      # ligado ela quase nunca é pedida — a do banco é brokk_dev_pwd, e vem
+      # pronta no .pgpass.
+      PGADMIN_DEFAULT_PASSWORD: sindri
+      # Modo desktop: sem tela de login a cada vez. É ferramenta local, exposta
+      # só na máquina — se um dia isto sair para a rede, tire estas duas linhas.
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      # 80 e 8080 costumam estar ocupados por outros projetos na mesma máquina.
+      - "5050:80"
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - pgadminpass:/pgpass
+
+  # Prepara o .pgpass que o pgAdmin usa para não pedir senha nenhuma.
+  #
+  # Existe como serviço separado por causa de permissão: a libpq IGNORA um
+  # arquivo de senha que tenha leitura para grupo ou outros, e um bind mount
+  # vindo da WSL chega com o dono do usuário do host (uid 1000), não com o do
+  # pgAdmin (uid 5050). Escrever num volume nomeado, com chown e chmod 600
+  # feitos de dentro, resolve os dois de uma vez.
+  #
+  # É o mesmo padrão do log-init lá em cima, pela mesma razão.
+  pgadmin-pass-init:
+    profiles: ["ui"]
+    image: busybox:1.36
+    container_name: sindri_pgadmin_pass_init
+    command:
+      - "sh"
+      - "-c"
+      - |
+        printf '%s\n' \
+          'monitoring:5432:*:brokk:brokk_dev_pwd' \
+          'postgres:5432:*:sindri:sindri_dev_pwd' > /pgpass/pgpass
+        chown 5050:5050 /pgpass/pgpass
+        chmod 600 /pgpass/pgpass
+    volumes:
+      - pgadminpass:/pgpass
+    restart: "no"
+
+  # Gerador de carga (BenchBase, CMU-DB). Fica fora do `docker compose up`
+  # normal por causa do profile: só sobe quando pedido explicitamente.
+  #
+  #   docker compose --profile bench build benchbase
+  #   docker compose --profile bench run --rm benchbase   #     -b tpch -c sindri-config/tpch_power.xml   #     --create=false --load=false --execute=true
+  #
+  # Toda query que ele dispara passa pelo auto_explain e cai em logs/ — não há
+  # integração a fazer entre os dois, basta apontar para o mesmo banco.
+  benchbase:
+    profiles: ["bench"]
+    build:
+      context: ./benchbase
+    image: sindri/benchbase-postgres:latest
+    # A imagem é local; sem isto o compose tenta dar pull antes de construir e
+    # cospe um "pull access denied" a cada execução.
+    pull_policy: build
+    # Sem container_name de propósito: ele impediria rodar leitura e escrita ao
+    # mesmo tempo, que é justamente como se monta a carga mista.
+    depends_on:
+      - postgres
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    volumes:
+      # Configs deste projeto, separadas das de exemplo que vêm na imagem.
+      - ./benchbase/config:/benchbase/sindri-config:ro
+      # Sumário/CSV de cada execução (latência por query, throughput).
+      - ./benchbase/results:/benchbase/results
+    command:
+      - "-b"
+      - "tpch"
+      - "-c"
+      - "sindri-config/tpch_power.xml"
+      # NUNCA true: o DDL do TPC-H do BenchBase dropa as 8 tabelas antes de
+      # recriar, o que apagaria a base carregada pelo initdb.
+      - "--create=false"
+      - "--load=false"
+      - "--execute=true"
+
+volumes:
+  # Dados do Postgres observado (TPC-H).
+  pgdata:
+  # Dados do banco de monitoramento (corpus ingerido). Separado de propósito:
+  # apagar um corpus não deve exigir recarregar o TPC-H, nem o contrário.
+  monitordata:
+  # Configuração do pgAdmin (senhas salvas, layout, queries do query tool).
+  pgadmindata:
+  # O .pgpass, com dono e permissão que a libpq aceita.
+  pgadminpass:

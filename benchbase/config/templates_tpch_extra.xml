@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Consultas que as 22 queries do TPC-H nao cobrem. Medindo o corpus, os nos
+  ausentes eram WindowAgg, Unique, SetOp e CTE Scan; estes templates fecham
+  essa lacuna e ainda passam por view, view materializada, procedure e funcao.
+
+  Os objetos consultados (v_order_revenue, mv_nation_month_revenue,
+  sp_snapshot_nation, fn_customer_revenue, bench_report) sao criados por
+  initdb/04-analytics-objects.sql.
+
+  Sobre os ranges: cada consulta foi cronometrada no psql com valores literais
+  antes de virar template, e as distribuicoes ficaram em torno desses valores.
+  Faixa larga demais em coluna de data faz o custo saltar de segundos para
+  dezenas de segundos sem acrescentar nada ao corpus.
+
+  Onde a consulta precisa de um intervalo, os dois parametros recebem faixas
+  que nao se sobrepoem (a primeira sempre anterior a segunda). E a forma
+  simples de garantir inicio menor que fim: o gerador sorteia cada parametro
+  de modo independente, entao faixas iguais produziriam intervalos invertidos
+  e resultado vazio em metade das execucoes.
+-->
+<templates>
+
+   <!-- CTE Scan. O MATERIALIZED e obrigatorio: sem ele o planner faz inline da
+        CTE desde o PG12 e o no desaparece do plano. -->
+   <template name="CteMaterializada">
+      <query><![CDATA[
+        WITH pedidos AS MATERIALIZED (
+            SELECT o_orderkey, o_custkey, o_totalprice
+            FROM orders
+            WHERE o_orderdate >= ? AND o_totalprice > ?
+        )
+        SELECT c.c_nationkey, count(*) AS pedidos, avg(p.o_totalprice) AS ticket
+        FROM pedidos p JOIN customer c ON c.c_custkey = p.o_custkey
+        GROUP BY c.c_nationkey ORDER BY 2 DESC
+      ]]></query>
+      <types><type>DATE</type><type>FLOAT</type></types>
+      <values>
+         <value dist="uniform" min="1994-01-01 00:00:00" max="1997-06-01 00:00:00"/>
+         <value dist="uniform" min="100000" max="300000"/>
+      </values>
+   </template>
+
+   <!-- WindowAgg com RANK sobre agregado. O ranking sai na subquery e o filtro
+        por posicao fica fora dela, porque funcao de janela nao pode aparecer
+        em WHERE. -->
+   <template name="WindowRankFornecedor">
+      <query><![CDATA[
+        SELECT n.n_name, s.s_name, r.revenue, r.posicao
+        FROM (
+          SELECT l.l_suppkey,
+                 sum(l.l_extendedprice * (1 - l.l_discount)) AS revenue,
+                 RANK() OVER (ORDER BY sum(l.l_extendedprice * (1 - l.l_discount)) DESC) AS posicao
+          FROM lineitem l
+          WHERE l.l_shipdate >= ? AND l.l_shipdate < ?
+          GROUP BY l.l_suppkey
+        ) r
+        JOIN supplier s ON s.s_suppkey = r.l_suppkey
+        JOIN nation   n ON n.n_nationkey = s.s_nationkey
+        WHERE r.posicao <= ?
+        ORDER BY r.posicao
+      ]]></query>
+      <types><type>DATE</type><type>DATE</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="1995-06-01 00:00:00" max="1996-06-01 00:00:00"/>
+         <value dist="uniform" min="1996-06-02 00:00:00" max="1997-06-01 00:00:00"/>
+         <value dist="uniform" min="5" max="50"/>
+      </values>
+   </template>
+
+   <!-- WindowAgg com moldura movel e LAG, sobre a view materializada. Duas mil
+        linhas: o plano e trivial de proposito, para servir de contraste com o
+        mesmo calculo feito na tabela base. -->
+   <template name="WindowMediaMovelMatview">
+      <query><![CDATA[
+        SELECT n_name, mes, revenue,
+               sum(revenue) OVER (PARTITION BY n_nationkey ORDER BY mes
+                                  ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS movel_3m,
+               lag(revenue) OVER (PARTITION BY n_nationkey ORDER BY mes) AS mes_anterior
+        FROM mv_nation_month_revenue
+        WHERE mes >= ?
+        ORDER BY n_nationkey, mes
+      ]]></query>
+      <types><type>DATE</type></types>
+      <values>
+         <value dist="uniform" min="1992-06-01 00:00:00" max="1997-06-01 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- Duas subqueries escalares correlacionadas na lista de selecao. E o
+        padrao que costuma virar SubPlan repetido por linha, um dos alvos
+        classicos de reescrita. -->
+   <template name="SubqueryCorrelacionada">
+      <query><![CDATA[
+        SELECT c.c_custkey, c.c_name,
+               (SELECT count(*)           FROM orders o WHERE o.o_custkey = c.c_custkey) AS pedidos,
+               (SELECT max(o.o_orderdate) FROM orders o WHERE o.o_custkey = c.c_custkey) AS ultimo
+        FROM customer c
+        WHERE c.c_nationkey = ? AND c.c_acctbal > ?
+        ORDER BY 3 DESC
+        LIMIT 50
+      ]]></query>
+      <types><type>INTEGER</type><type>FLOAT</type></types>
+      <values>
+         <value dist="uniform" min="0" max="24"/>
+         <value dist="uniform" min="0" max="9000"/>
+      </values>
+   </template>
+
+   <!-- Anti-join. O NOT EXISTS costuma virar Hash Anti Join, plano bem
+        diferente do NOT IN equivalente. -->
+   <template name="AntiJoinNotExists">
+      <query><![CDATA[
+        SELECT p.p_brand, count(*) AS pecas
+        FROM part p
+        WHERE p.p_size BETWEEN ? AND ?
+          AND NOT EXISTS (
+              SELECT 1 FROM lineitem l
+              WHERE l.l_partkey = p.p_partkey AND l.l_shipdate >= ?)
+        GROUP BY p.p_brand
+        ORDER BY 2 DESC
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type><type>DATE</type></types>
+      <values>
+         <value dist="uniform" min="1" max="20"/>
+         <value dist="uniform" min="21" max="50"/>
+         <value dist="uniform" min="1995-01-01 00:00:00" max="1998-01-01 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- Unique ou HashAggregate de deduplicacao. Sem join de proposito: o custo
+        fica sendo o do scan da fatia de lineitem, sem dobrar por causa de um
+        join que os outros templates ja exercitam. -->
+   <template name="DistinctModais">
+      <query><![CDATA[
+        SELECT DISTINCT l_shipmode, l_shipinstruct, l_returnflag, l_linestatus
+        FROM lineitem
+        WHERE l_shipdate >= ? AND l_shipdate < ?
+        ORDER BY 1, 2, 3, 4
+      ]]></query>
+      <types><type>DATE</type><type>DATE</type></types>
+      <values>
+         <value dist="uniform" min="1995-06-01 00:00:00" max="1996-06-01 00:00:00"/>
+         <value dist="uniform" min="1996-06-02 00:00:00" max="1997-06-01 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- UNION (nao ALL): forca a deduplicacao, que e o que traz o no Unique.
+        Trocar por UNION ALL faz o no sumir, e a diferenca entre os dois planos
+        e um bom par para o coletor. -->
+   <template name="UniaoFaixasCliente">
+      <query><![CDATA[
+        SELECT 'alto' AS faixa, c_custkey, c_acctbal FROM customer WHERE c_acctbal > ?
+        UNION
+        SELECT 'baixo', c_custkey, c_acctbal FROM customer WHERE c_acctbal < ?
+        ORDER BY 3 DESC
+      ]]></query>
+      <types><type>FLOAT</type><type>FLOAT</type></types>
+      <values>
+         <value dist="uniform" min="7000" max="9500"/>
+         <value dist="uniform" min="-999" max="-500"/>
+      </values>
+   </template>
+
+   <!-- SetOp: pecas pequenas que nao foram embarcadas a partir de certa data. -->
+   <template name="ExceptPecasSemGiro">
+      <query><![CDATA[
+        SELECT p_partkey FROM part WHERE p_size <= ?
+        EXCEPT
+        SELECT DISTINCT l_partkey FROM lineitem WHERE l_shipdate >= ?
+        ORDER BY 1
+      ]]></query>
+      <types><type>INTEGER</type><type>DATE</type></types>
+      <values>
+         <value dist="uniform" min="3" max="15"/>
+         <value dist="uniform" min="1996-01-01 00:00:00" max="1998-06-01 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- View comum. Nao existe no "scan de view": o planner expande a definicao
+        dentro desta query, entao o plano que aparece no log e o da juncao
+        completa de orders, customer e lineitem. -->
+   <template name="ConsultaView">
+      <query><![CDATA[
+        SELECT c_nationkey, count(*) AS pedidos, sum(revenue) AS receita
+        FROM v_order_revenue
+        WHERE o_orderdate >= ? AND o_orderdate < ?
+        GROUP BY c_nationkey
+        ORDER BY 3 DESC
+      ]]></query>
+      <types><type>DATE</type><type>DATE</type></types>
+      <values>
+         <value dist="uniform" min="1996-01-01 00:00:00" max="1996-09-01 00:00:00"/>
+         <value dist="uniform" min="1996-10-01 00:00:00" max="1997-03-01 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- Mesma pergunta do template anterior, respondida pela view materializada.
+        Medido no psql: 1685 ms pela view contra 4,5 ms pela materializada. E o
+        par mais didatico do arquivo. -->
+   <template name="ConsultaMatview">
+      <query><![CDATA[
+        SELECT n_name, sum(revenue) AS receita, sum(itens) AS itens
+        FROM mv_nation_month_revenue
+        WHERE mes >= ? AND mes < ?
+        GROUP BY n_name
+        ORDER BY 2 DESC
+      ]]></query>
+      <types><type>DATE</type><type>DATE</type></types>
+      <values>
+         <value dist="uniform" min="1992-01-01 00:00:00" max="1994-12-01 00:00:00"/>
+         <value dist="uniform" min="1995-01-01 00:00:00" max="1998-12-01 00:00:00"/>
+      </values>
+   </template>
+
+   <!-- Tres statements num CALL: agregado pesado, INSERT e DELETE. Com
+        auto_explain.log_nested_statements os tres saem no log separadamente,
+        que e o ponto cego normal de logica dentro do banco. -->
+   <template name="CallProcedure">
+      <query><![CDATA[ CALL sp_snapshot_nation(?) ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="24"/>
+      </values>
+   </template>
+
+   <!-- Funcao plpgsql chamada por linha. O LIMIT 10 na subquery e proposital:
+        sem ele a funcao rodaria uma vez por cliente da nacao (uns 6 mil), e
+        cada chamada e um statement aninhado proprio no log. -->
+   <template name="FuncaoPorLinha">
+      <query><![CDATA[
+        SELECT c.c_custkey, fn_customer_revenue(c.c_custkey) AS receita
+        FROM (SELECT c_custkey FROM customer
+              WHERE c_nationkey = ? AND c_acctbal > ? LIMIT 10) c
+        ORDER BY 2 DESC
+      ]]></query>
+      <types><type>INTEGER</type><type>FLOAT</type></types>
+      <values>
+         <value dist="uniform" min="0" max="24"/>
+         <value dist="uniform" min="0" max="8000"/>
+      </values>
+   </template>
+
+</templates>
