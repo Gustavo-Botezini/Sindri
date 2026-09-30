@@ -830,19 +830,20 @@ documentação que ela alcança sozinha, com `\d+` ou lendo `pg_description`.
 
 ## O recomendador de índices
 
-`src/index_provider.py` é a Etapa 3: pega o que o tabelão sabe, junta com o
+`src/index_provider/` é a Etapa 3: pega o que o tabelão sabe, junta com o
 catálogo real do banco observado e pede a Claude que proponha mudanças no
-conjunto de índices.
+conjunto de índices. São dois modos — o clássico, que recomenda, e o de
+clusters, que **mede**.
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...          # ou preencha CHAVE_ANTHROPIC no topo
-./.venv/bin/python src/index_provider.py --dossie          # só monta, não chama a API
-./.venv/bin/python src/index_provider.py --csv rec.csv
-./.venv/bin/python src/index_provider.py --planilha --compartilhar voce@gmail.com
+./.venv/bin/python -m src.index_provider dossie       # só monta, não chama a API
+./.venv/bin/python -m src.index_provider recomendar --csv rec.csv
+./.venv/bin/python -m src.index_provider recomendar --planilha --compartilhar voce@gmail.com
 ```
 
-A chave e o prompt ficam no topo do arquivo, como constantes `CHAVE_ANTHROPIC`
-e `PROMPT_SISTEMA`.
+A chave e o prompt ficam no topo de `src/index_provider/modelo.py`, como
+constantes `CHAVE_ANTHROPIC` e `PROMPT_SISTEMA`.
 
 ### Por que ele leva números, e não o SQL
 
@@ -897,6 +898,47 @@ consegue abrir.
 
 Sem credencial, `--csv` faz o mesmo trabalho e não depende de nada.
 
+### O modo de clusters: parar de estimar e medir
+
+O modo acima entrega uma opinião com números de entrada bons e **nenhum número
+de saída**: nada é aplicado, nada é medido. O modo de clusters fecha esse
+ciclo.
+
+```bash
+./.venv/bin/python -m src.index_provider vetorizar   # Qwen3-Embedding-0.6B, local
+./.venv/bin/python -m src.index_provider agrupar     # UMAP + HDBSCAN
+./.venv/bin/python -m src.index_provider candidatar --rodada 1
+./.venv/bin/python -m src.index_provider medir --rodada 1 --cluster 3
+./.venv/bin/python -m src.index_provider relatar --rodada 1 --csv clusters.csv
+```
+
+A pergunta que ele existe para responder é uma só: **um índice derivado de uma
+query serve às outras queries do mesmo cluster semântico?** As queries são
+agrupadas por similaridade do texto SQL, uma heurística sobre `plan_node`
+propõe índices candidatos com os números que os justificam, Claude escolhe um
+por cluster, e então a bancada cria o índice de verdade no `tpch:5432`,
+reexecuta as queries do cluster com `EXPLAIN (ANALYZE)` e derruba o índice.
+
+**O embedding é o particionador, não o critério.** A tese da seção anterior
+continua de pé: quem decide o índice é o número medido em `plan_node`. O vetor
+do texto só diz quais queries merecem ser testadas juntas.
+
+Duas coisas que essa etapa obrigou a resolver, e que valem para quem for mexer:
+
+- **A bancada contaminaria o próprio corpus.** Este servidor sobe com
+  `auto_explain.log_min_duration=0`; cada replay viraria log e, na passada
+  seguinte do coletor, entraria no corpus como se fosse carga. A sessão da
+  bancada desliga os dois GUCs de log e se marca com
+  `application_name = 'brokk_bancada'` já no handshake. Medido depois de um
+  experimento inteiro: 1 statement no log, nenhum plano, nada em
+  `query_resumo`.
+- **As 117 queries do corpus viram 27.** Só leitura, com pelo menos 5
+  execuções, e sem as 30 consultas de catálogo que o pgAdmin e o driver JDBC
+  geram — três famílias de nove que, se ficassem, formariam três clusters
+  densos e inúteis. As 27 que sobram são a carga analítica de verdade.
+
+O detalhe está em [src/README_index_provider.md](src/README_index_provider.md).
+
 ### Sobre a chave no arquivo
 
 `CHAVE_ANTHROPIC` está lá porque foi pedida ali, mas este arquivo é versionado.
@@ -916,4 +958,4 @@ revoga o que aparece. As alternativas, que o código também aceita, são
 | `queries/` | as 22 queries TPC-H em SQL puro, para rodar via `psql` |
 | `logs/` | jsonlog do Postgres com os planos do `auto_explain` |
 | `benchbase/` | Dockerfile, configs (leitura e escrita) e resultados do gerador de carga |
-| `src/` | código do BrokkPG (`query_colector.py`: ingestão; `plan_worker.py`: planos; `index_provider.py`: recomendação por IA; `schema_estimator.py`: esquema reconstruído pelos logs) |
+| `src/` | código do BrokkPG (`query_colector.py`: ingestão; `plan_worker.py`: planos; `index_provider/`: recomendação por IA e bancada de medição; `schema_estimator.py`: esquema reconstruído pelos logs) |
