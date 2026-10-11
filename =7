@@ -1,0 +1,6 @@
+Collecting pglast
+  Downloading pglast-8.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.9 kB)
+Downloading pglast-8.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (7.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 32.2 MB/s  0:00:00
+Installing collected packages: pglast
+Successfully installed pglast-8.5

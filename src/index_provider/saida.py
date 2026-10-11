@@ -51,6 +51,8 @@ COLUNAS_CLUSTER = [
     ("usou_indice",    "Usou o índice"),
     ("amostras_antes", "Amostras antes"),
     ("amostras_depois", "Amostras depois"),
+    ("antes_censurado", "Antes é piso (timeout)"),
+    ("depois_censurado", "Depois é piso (timeout)"),
 ]
 
 
@@ -78,7 +80,7 @@ SELECT c.cluster_id, c.query_ref,
 SQL_RESULTADO = """
 SELECT cluster_id, query_ref, e_a_origem, relacao, ddl,
        antes_ms, depois_ms, ganho_ms, ganho_pct, usou_indice,
-       amostras_antes, amostras_depois
+       amostras_antes, amostras_depois, antes_censurado, depois_censurado
   FROM monitoring.experimento_resultado
  WHERE rodada_id = %s
  ORDER BY cluster_id, ganho_ms DESC NULLS LAST
@@ -87,7 +89,8 @@ SELECT cluster_id, query_ref, e_a_origem, relacao, ddl,
 SQL_VEREDITO = """
 SELECT cluster_id, experimento_id, relacao, ddl, queries, usaram_indice,
        melhoraram, pioraram, sem_efeito, ganho_atribuivel_ms,
-       ganho_fora_da_origem_ms, ganho_bruto_ms, melhor_ms, pior_ms
+       ganho_fora_da_origem_ms, ganho_bruto_ms, melhor_ms, pior_ms,
+       antes_censuradas, depois_censuradas
   FROM monitoring.experimento_veredito
  WHERE rodada_id = %s
  ORDER BY cluster_id
@@ -199,6 +202,12 @@ def mostrar_veredito(conn, rodada_id: int) -> None:
         if v["melhor_ms"] is not None:
             print(f"      melhor {v['melhor_ms']:,} ms, pior {v['pior_ms']:,} ms"
                   f"  (bruto, com ruído: {v['ganho_bruto_ms']:,} ms)")
+        if v["antes_censuradas"]:
+            print(f"      {v['antes_censuradas']} query(s) estouraram o timeout "
+                  f"sem o índice: os ganhos acima são pisos (\"pelo menos\")")
+        if v["depois_censuradas"]:
+            print(f"      {v['depois_censuradas']} query(s) estouraram o timeout "
+                  f"com o índice: ganho indefinido, fora das somas")
 
     faltando = sem_medida(conn, rodada_id)
     for f in faltando:

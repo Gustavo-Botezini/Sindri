@@ -1,0 +1,134 @@
+[1/7] postgresql-2026-10-01_224234.json     2.2 MB        431 registros    0.1s
+[2/7] postgresql-2026-10-02_000000.json     2.6 MB        573 registros    0.0s
+[3/7] postgresql-2026-10-03_000000.json     2.9 MB        601 registros    0.0s
+[4/7] postgresql-2026-10-04_000000.json     0.5 MB        144 registros    0.0s
+[5/7] postgresql-2026-10-05_235432.json     0.0 MB         13 registros    0.0s
+[6/7] postgresql-2026-10-06_000000.json     1.4 MB        165 registros    0.0s
+[7/7] postgresql-2026-10-09_181110.json     0.0 MB         14 registros    0.0s
+Sindri / BrokkPG — esquema estimado a partir dos logs
+========================================================================
+corpus     : 7 arquivos, 9.6 MB
+registros  : 1.941 (planos 338, statements 1.519, ilegíveis 0)
+DDL no log : tabelas 0, pks 0, fks 0, índices 0, views 2 (de 2 comandos)
+bancos     : tpch (1.874)   (usando só tpch)
+tempo      : 0.2 s
+
+Relações físicas
+------------------------------------------------------------------------
+relação                      colunas        linhas  índices  operações
+lineitem                          13     6.001.215        1  
+partsupp                           4       800.000        1  
+part                               6       200.000        0  
+supplier                           5        10.000        1  
+nation                             3            25        1  
+region                             2             5        0  
+orders                             8             -        1  
+customer                           5             -        1  
+
+public.customer  (tabela ou view materializada; 5 colunas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  c_custkey         ?                          0.00 -                 102  
+  c_nationkey       ?                          0.00 -                  30  
+  c_phone           ?                          0.00 -                  24  
+  c_acctbal         numeric                    0.60 numero             12  
+  c_mktsegment      character                  0.90 cast                6  
+  IX  customer_pkey (colunas não observadas)   [primária; plano; 6 usos]
+  fk? (c_nationkey) -> nation(n_nationkey)   [confiança 0.60: lado referenciado é chave única, 24 junções observadas]
+
+public.lineitem  (tabela ou view materializada; 13 colunas; ~6.001.215 linhas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  l_orderkey PK     ?                          0.00 -                 108  
+  l_suppkey         ?                          0.00 -                 105  
+  l_shipdate        date                       0.90 cast              102  
+  l_quantity        numeric                    0.90 cast               90  
+  l_partkey         ?                          0.00 -                  48  
+  l_discount        numeric                    0.60 numero             36  
+  l_receiptdate     date                       0.90 cast               36  
+  l_commitdate      ?                          0.00 -                  30  
+  l_shipmode        character                  0.85 array              30  
+  l_extendedprice   ?                          0.00 -                  24  
+  l_returnflag      character                  0.90 cast               24  
+  l_linestatus      ?                          0.00 -                  18  
+  l_shipinstruct    character                  0.90 cast                6  
+  PK  (l_orderkey)   [índice lineitem_pkey]
+  IX  lineitem_pkey (l_orderkey)   [primária; plano; 54 usos]
+  fk? (l_partkey) -> partsupp(ps_partkey)   [confiança 0.60: lado referenciado é chave única, 12 junções observadas]
+  fk? (l_suppkey) -> supplier(s_suppkey)   [confiança 0.60: lado referenciado é chave única, 36 junções observadas]
+  fk? (l_partkey) -> part(p_partkey)   [confiança 0.35: 36 junções observadas]
+  fk? (l_suppkey) -> partsupp(ps_suppkey)   [confiança 0.35: 9 junções observadas]
+
+public.nation  (tabela ou view materializada; 3 colunas; ~25 linhas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  n_name            character                  0.90 cast              150  
+  n_nationkey PK    ?                          0.00 -                  78  
+  n_regionkey       ?                          0.00 -                  24  
+  PK  (n_nationkey)   [índice nation_pkey]
+  IX  nation_pkey (n_nationkey)   [primária; plano; 6 usos]
+  fk? (n_regionkey) -> region(r_regionkey)   [confiança 0.35: 24 junções observadas]
+
+public.orders  (tabela ou view materializada; 8 colunas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  o_orderdate       date                       0.90 cast              108  
+  o_orderkey PK     ?                          0.00 -                  90  
+  o_custkey         ?                          0.00 -                  54  
+  o_orderpriority   ?                          0.00 -                  18  
+  o_shippriority    ?                          0.00 -                  12  
+  o_comment         character varying          0.35 cast_saida          6  
+  o_orderstatus     character                  0.90 cast                6  
+  o_totalprice      ?                          0.00 -                   6  
+  PK  (o_orderkey)   [índice orders_pkey]
+  IX  orders_pkey (o_orderkey)   [primária; plano; 6 usos]
+
+public.part  (tabela ou view materializada; 6 colunas; ~200.000 linhas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  p_size            integer                    0.85 array              72  
+  p_brand           character                  0.90 cast               66  
+  p_partkey         ?                          0.00 -                  66  
+  p_container       character                  0.90 cast               42  
+  p_type            character varying          0.35 cast_saida         36  
+  p_name            character varying          0.35 cast_saida         12  
+
+public.partsupp  (tabela ou view materializada; 4 colunas; ~800.000 linhas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  ps_suppkey        ?                          0.00 -                  60  
+  ps_partkey PK     ?                          0.00 -                  42  
+  ps_availqty       ?                          0.00 -                  18  
+  ps_supplycost     ?                          0.00 -                  18  
+  PK  (ps_partkey)   [índice partsupp_pkey]
+  IX  partsupp_pkey (ps_partkey)   [primária; plano; 12 usos]
+  fk? (ps_suppkey) -> supplier(s_suppkey)   [confiança 0.60: lado referenciado é chave única, 33 junções observadas]
+  fk? (ps_partkey) -> part(p_partkey)   [confiança 0.35: 24 junções observadas]
+
+public.region  (tabela ou view materializada; 2 colunas; ~5 linhas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  r_name            character                  0.90 cast               24  
+  r_regionkey       ?                          0.00 -                  24  
+
+public.supplier  (tabela ou view materializada; 5 colunas; ~10.000 linhas; evidência: plano)
+------------------------------------------------------------------------
+  coluna            tipo                       conf fonte            usos  exemplos
+  s_suppkey PK      ?                          0.00 -                  69  
+  s_nationkey       ?                          0.00 -                  60  
+  s_name            ?                          0.00 -                  30  
+  s_acctbal         ?                          0.00 -                   6  
+  s_comment         character varying          0.35 cast_saida          6  
+  PK  (s_suppkey)   [índice supplier_pkey]
+  IX  supplier_pkey (s_suppkey)   [primária; plano; 18 usos]
+  fk? (s_nationkey) -> nation(n_nationkey)   [confiança 0.60: lado referenciado é chave única, 54 junções observadas]
+
+Outras relações citadas pela carga
+------------------------------------------------------------------------
+  lateral (view (nunca aparece como relação em plano)): colunas não identificadas
+  revenue0 (view): supplier_no, total_revenue
+
+CTEs observadas: cte
+DDL estimado: figuras/tpch-puro/esquema_estimado/esquema_estimado.sql
+evidência: figuras/tpch-puro/esquema_estimado/evidencias.json
+

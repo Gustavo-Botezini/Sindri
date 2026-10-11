@@ -1,0 +1,21 @@
+Hierárquico aglomerativo, distância cosseno, ligação média, nos vetores originais
+(sem UMAP e sem semente: o mesmo resultado sempre)
+
+=== baseline
+  k=3: família junta  40% | Q17+Q20 não | [Q2 Q7 Q8 Q9 Q11 Q15 Q16 Q20 Q21] [Q3 Q4 Q5 Q10 Q12 Q13 Q18 Q22] [Q1 Q6 Q14 Q17 Q19]
+  k=4: família junta  40% | Q17+Q20 não | [Q2 Q7 Q8 Q9 Q11 Q15 Q16 Q20 Q21] [Q3 Q4 Q5 Q10 Q12 Q13 Q18] [Q1 Q6 Q14 Q17 Q19] [Q22]
+  k=5: família junta  27% | Q17+Q20 não | [Q2 Q9 Q11 Q15 Q16 Q20 Q21] [Q3 Q4 Q5 Q10 Q12 Q13 Q18] [Q1 Q6 Q14 Q17 Q19] [Q7 Q8] [Q22]
+  k=6: família junta  27% | Q17+Q20 não | [Q2 Q9 Q11 Q15 Q16 Q20 Q21] [Q1 Q6 Q14 Q17 Q19] [Q3 Q5 Q10 Q13 Q18] [Q4 Q12] [Q7 Q8] [Q22]
+
+=== A_from-where
+  k=3: família junta  67% | Q17+Q20 sim | [Q1 Q3 Q4 Q5 Q6 Q7 Q10 Q12 Q13 Q14 Q18 Q21 Q22] [Q2 Q8 Q9 Q11 Q16 Q17 Q19 Q20] [Q15]
+  k=4: família junta  67% | Q17+Q20 sim | [Q1 Q3 Q4 Q5 Q6 Q7 Q10 Q12 Q14 Q21] [Q2 Q8 Q9 Q11 Q16 Q17 Q19 Q20] [Q13 Q18 Q22] [Q15]
+  k=5: família junta  27% | Q17+Q20 não | [Q1 Q3 Q4 Q5 Q6 Q7 Q10 Q12 Q14 Q21] [Q2 Q8 Q9 Q11 Q20] [Q13 Q18 Q22] [Q16 Q17 Q19] [Q15]
+  k=6: família junta  27% | Q17+Q20 não | [Q1 Q3 Q4 Q5 Q6 Q7 Q10 Q12 Q14 Q21] [Q2 Q8 Q9 Q11 Q20] [Q16 Q17 Q19] [Q18 Q22] [Q15] [Q13]
+
+=== B_estrutura
+  k=3: família junta 100% | Q17+Q20 sim | [Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 Q12 Q13 Q14 Q16 Q17 Q18 Q19 Q20 Q21 Q22] [Q15] [Q1]
+  k=4: família junta  40% | Q17+Q20 não | [Q2 Q3 Q4 Q5 Q7 Q8 Q9 Q10 Q11 Q12 Q13 Q16 Q18 Q20 Q21 Q22] [Q6 Q14 Q17 Q19] [Q15] [Q1]
+  k=5: família junta  27% | Q17+Q20 não | [Q3 Q4 Q5 Q7 Q8 Q10 Q12 Q13 Q18 Q22] [Q2 Q9 Q11 Q16 Q20 Q21] [Q6 Q14 Q17 Q19] [Q15] [Q1]
+  k=6: família junta  27% | Q17+Q20 não | [Q3 Q5 Q7 Q8 Q10 Q13 Q18 Q22] [Q2 Q9 Q11 Q16 Q20 Q21] [Q6 Q14 Q17 Q19] [Q4 Q12] [Q15] [Q1]
+

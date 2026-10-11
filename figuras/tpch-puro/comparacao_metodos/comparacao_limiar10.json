@@ -1,0 +1,467 @@
+{
+ "sessao": 1,
+ "limiar_pct": 10.0,
+ "rodadas": [
+  {
+   "rodada": 2,
+   "normalizacao": "espaco+caixa",
+   "modelo": "Qwen/Qwen3-Embedding-0.6B",
+   "min_cluster_size": 3,
+   "clusters": [
+    {
+     "cluster": 0,
+     "indice": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "query_origem": 47,
+     "membros": [
+      4,
+      32,
+      37,
+      47,
+      49
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      40,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      47,
+      49
+     ],
+     "beneficiadas_fora_do_cluster": [
+      39,
+      40,
+      50
+     ],
+     "beneficiadas_fora_da_origem": [
+      49
+     ],
+     "cobertura": 0.4,
+     "precisao": 0.4,
+     "media_geral_pct": 38.01,
+     "media_e_piso": true
+    },
+    {
+     "cluster": 1,
+     "indice": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "query_origem": 34,
+     "membros": [
+      34,
+      35,
+      36,
+      41,
+      43,
+      44,
+      48,
+      52
+     ],
+     "beneficiadas_no_corpus": [
+      52
+     ],
+     "beneficiadas_no_cluster": [
+      52
+     ],
+     "beneficiadas_fora_do_cluster": [],
+     "beneficiadas_fora_da_origem": [
+      52
+     ],
+     "cobertura": 1.0,
+     "precisao": 0.125,
+     "media_geral_pct": -1.84,
+     "media_e_piso": false
+    },
+    {
+     "cluster": 2,
+     "indice": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "query_origem": 39,
+     "membros": [
+      38,
+      39,
+      40
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      40,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      39,
+      40
+     ],
+     "beneficiadas_fora_do_cluster": [
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_fora_da_origem": [
+      40
+     ],
+     "cobertura": 0.4,
+     "precisao": 0.667,
+     "media_geral_pct": 18.08,
+     "media_e_piso": false
+    },
+    {
+     "cluster": 3,
+     "indice": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "query_origem": 50,
+     "membros": [
+      26,
+      33,
+      42,
+      45,
+      50,
+      51
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      50
+     ],
+     "beneficiadas_fora_do_cluster": [
+      39,
+      47,
+      49
+     ],
+     "beneficiadas_fora_da_origem": [],
+     "cobertura": 0.25,
+     "precisao": 0.2,
+     "media_geral_pct": 19.99,
+     "media_e_piso": true
+    }
+   ],
+   "resumo": {
+    "clusters": 4,
+    "cobertura_media": 0.512,
+    "precisao_media": 0.348,
+    "media_geral_pct": 18.56,
+    "beneficiadas_fora_da_origem": 3,
+    "beneficiadas_fora_do_cluster": 9
+   }
+  },
+  {
+   "rodada": 11,
+   "normalizacao": "from-where",
+   "modelo": "Qwen/Qwen3-Embedding-0.6B",
+   "min_cluster_size": 3,
+   "clusters": [
+    {
+     "cluster": 0,
+     "indice": "CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "query_origem": 34,
+     "membros": [
+      4,
+      32,
+      34,
+      35,
+      36,
+      37,
+      41,
+      43,
+      44,
+      48,
+      51,
+      52
+     ],
+     "beneficiadas_no_corpus": [],
+     "beneficiadas_no_cluster": [],
+     "beneficiadas_fora_do_cluster": [],
+     "beneficiadas_fora_da_origem": [],
+     "cobertura": null,
+     "precisao": 0.0,
+     "media_geral_pct": 0.02,
+     "media_e_piso": false
+    },
+    {
+     "cluster": 1,
+     "indice": "CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",
+     "query_origem": 47,
+     "membros": [
+      45,
+      47,
+      49
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      47,
+      49
+     ],
+     "beneficiadas_fora_do_cluster": [
+      39,
+      50
+     ],
+     "beneficiadas_fora_da_origem": [
+      49
+     ],
+     "cobertura": 0.5,
+     "precisao": 0.667,
+     "media_geral_pct": 64.17,
+     "media_e_piso": true
+    },
+    {
+     "cluster": 2,
+     "indice": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "query_origem": 50,
+     "membros": [
+      26,
+      33,
+      38,
+      39,
+      40,
+      42,
+      50
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      39,
+      50
+     ],
+     "beneficiadas_fora_do_cluster": [
+      47,
+      49
+     ],
+     "beneficiadas_fora_da_origem": [
+      39
+     ],
+     "cobertura": 0.5,
+     "precisao": 0.333,
+     "media_geral_pct": 23.44,
+     "media_e_piso": true
+    }
+   ],
+   "resumo": {
+    "clusters": 3,
+    "cobertura_media": 0.5,
+    "precisao_media": 0.333,
+    "media_geral_pct": 29.21,
+    "beneficiadas_fora_da_origem": 2,
+    "beneficiadas_fora_do_cluster": 4
+   }
+  },
+  {
+   "rodada": 12,
+   "normalizacao": "estrutura",
+   "modelo": "tfidf",
+   "min_cluster_size": 3,
+   "clusters": [
+    {
+     "cluster": 0,
+     "indice": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "query_origem": 47,
+     "membros": [
+      4,
+      37,
+      47,
+      49
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      40,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      47,
+      49
+     ],
+     "beneficiadas_fora_do_cluster": [
+      39,
+      40,
+      50
+     ],
+     "beneficiadas_fora_da_origem": [
+      49
+     ],
+     "cobertura": 0.4,
+     "precisao": 0.5,
+     "media_geral_pct": 47.51,
+     "media_e_piso": true
+    },
+    {
+     "cluster": 1,
+     "indice": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "query_origem": 52,
+     "membros": [
+      32,
+      34,
+      41,
+      44,
+      48,
+      52
+     ],
+     "beneficiadas_no_corpus": [
+      52
+     ],
+     "beneficiadas_no_cluster": [
+      52
+     ],
+     "beneficiadas_fora_do_cluster": [],
+     "beneficiadas_fora_da_origem": [],
+     "cobertura": 1.0,
+     "precisao": 0.167,
+     "media_geral_pct": 9.89,
+     "media_e_piso": false
+    },
+    {
+     "cluster": 2,
+     "indice": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "query_origem": 50,
+     "membros": [
+      26,
+      40,
+      42,
+      45,
+      50
+     ],
+     "beneficiadas_no_corpus": [
+      39,
+      47,
+      49,
+      50
+     ],
+     "beneficiadas_no_cluster": [
+      50
+     ],
+     "beneficiadas_fora_do_cluster": [
+      39,
+      47,
+      49
+     ],
+     "beneficiadas_fora_da_origem": [],
+     "cobertura": 0.25,
+     "precisao": 0.25,
+     "media_geral_pct": 24.2,
+     "media_e_piso": true
+    },
+    {
+     "cluster": 3,
+     "indice": "CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",
+     "query_origem": 38,
+     "membros": [
+      36,
+      38,
+      51
+     ],
+     "beneficiadas_no_corpus": [
+      36,
+      52
+     ],
+     "beneficiadas_no_cluster": [
+      36
+     ],
+     "beneficiadas_fora_do_cluster": [
+      52
+     ],
+     "beneficiadas_fora_da_origem": [
+      36
+     ],
+     "cobertura": 0.5,
+     "precisao": 0.333,
+     "media_geral_pct": -9.39,
+     "media_e_piso": false
+    }
+   ],
+   "resumo": {
+    "clusters": 4,
+    "cobertura_media": 0.537,
+    "precisao_media": 0.312,
+    "media_geral_pct": 18.05,
+    "beneficiadas_fora_da_origem": 2,
+    "beneficiadas_fora_do_cluster": 7
+   }
+  }
+ ],
+ "rotulos": {
+  "1": "#1",
+  "2": "#2",
+  "3": "#3",
+  "4": "q14",
+  "5": "#5",
+  "6": "#6",
+  "7": "#7",
+  "8": "#8",
+  "9": "#9",
+  "10": "#10",
+  "11": "#11",
+  "12": "#12",
+  "13": "#13",
+  "14": "#14",
+  "15": "#15",
+  "16": "#16",
+  "17": "#17",
+  "18": "#18",
+  "19": "#19",
+  "20": "#20",
+  "21": "#21",
+  "22": "#22",
+  "23": "#23",
+  "24": "#24",
+  "25": "#25",
+  "26": "#26",
+  "27": "#27",
+  "28": "#28",
+  "29": "#29",
+  "30": "#30",
+  "31": "#31",
+  "32": "q01",
+  "33": "q02",
+  "34": "q03",
+  "35": "q04",
+  "36": "q05",
+  "37": "q06",
+  "38": "q07",
+  "39": "q08",
+  "40": "q09",
+  "41": "q10",
+  "42": "q11",
+  "43": "q12",
+  "44": "q13",
+  "45": "q16",
+  "46": "#46",
+  "47": "q17",
+  "48": "q18",
+  "49": "q19",
+  "50": "q20",
+  "51": "q21",
+  "52": "q22",
+  "53": "#53",
+  "54": "#54",
+  "55": "#55",
+  "56": "#56",
+  "57": "#57",
+  "58": "#58",
+  "59": "#59",
+  "60": "#60",
+  "61": "#61",
+  "62": "#62",
+  "63": "#63",
+  "64": "#64",
+  "65": "#65",
+  "66": "#66",
+  "67": "#67",
+  "68": "#68",
+  "69": "#69",
+  "70": "#70",
+  "71": "#71",
+  "72": "#72"
+ }
+}

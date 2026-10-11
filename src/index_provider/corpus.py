@@ -21,6 +21,12 @@ E essa duplicata é o **teste de sanidade do clustering**: se ele presta, as
 duas grafias da mesma query caem no mesmo cluster. ``agrupar`` avisa quando
 não caem. ``--sem-normalizar`` existe para poder rodar o experimento nas duas
 condições e comparar.
+
+Dois modos não normalizam o texto, trocam a representação, e vêm de
+``estrutura``: ``from-where`` é só o FROM, JOIN/ON e WHERE da query (método
+A), e ``estrutura`` é a assinatura de atributos com papel e operador, para o
+TF-IDF (método B). Os dois extraem do SQL original e nunca alcançam a
+bancada, que reexecuta ``Query.texto``, não ``texto_norm``.
 """
 
 from __future__ import annotations
@@ -32,7 +38,7 @@ from typing import Dict, List, Optional, Sequence
 
 from .banco import linhas_como_dicts
 
-NORMALIZACOES = ("bruto", "espaco", "espaco+caixa")
+NORMALIZACOES = ("bruto", "espaco", "espaco+caixa", "from-where", "estrutura")
 NORMALIZACAO_PADRAO = "espaco+caixa"
 
 # Abaixo disto a query é acidente de execução, não carga. O corpus tem dezenas
@@ -144,6 +150,13 @@ def normalizar(texto: str, modo: str = NORMALIZACAO_PADRAO) -> str:
         raise ValueError(f"normalização desconhecida: {modo}")
     if modo == "bruto":
         return texto
+    if modo == "from-where":
+        # Extrai antes de normalizar: o parser precisa do SQL inteiro.
+        from .estrutura import texto_from_where
+        return normalizar(texto_from_where(texto), "espaco+caixa")
+    if modo == "estrutura":
+        from .estrutura import assinatura
+        return " ".join(assinatura(texto))
     limpo = re.sub(r"\s+", " ", texto).strip()
     return limpo.lower() if modo == "espaco+caixa" else limpo
 

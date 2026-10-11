@@ -1,0 +1,679 @@
+{
+ "baseline": {
+  "clusters": 4,
+  "ruido": 0,
+  "cobertura": 0.5375,
+  "precisao": 0.37916666666666665,
+  "media": 20.997416666666666,
+  "perdidas": 8,
+  "pedacos": 3,
+  "familia_em_ruido": false,
+  "idx_lpartkey": 3,
+  "grupos": [
+   {
+    "cluster": 0,
+    "membros": [
+     "Q17",
+     "Q1",
+     "Q19",
+     "Q14",
+     "Q6"
+    ],
+    "indice": "lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",
+    "media": 38.504,
+    "cob": 0.5,
+    "prec": 0.4,
+    "fora": [
+     "Q8",
+     "Q20"
+    ]
+   },
+   {
+    "cluster": 1,
+    "membros": [
+     "Q18",
+     "Q3",
+     "Q13",
+     "Q10",
+     "Q12",
+     "Q5",
+     "Q22",
+     "Q4"
+    ],
+    "indice": "orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",
+    "media": 7.415,
+    "cob": 1.0,
+    "prec": 0.25,
+    "fora": []
+   },
+   {
+    "cluster": 2,
+    "membros": [
+     "Q9",
+     "Q7",
+     "Q8"
+    ],
+    "indice": "lineitem (l_partkey)",
+    "media": 18.076666666666668,
+    "cob": 0.4,
+    "prec": 0.6666666666666666,
+    "fora": [
+     "Q17",
+     "Q19",
+     "Q20"
+    ]
+   },
+   {
+    "cluster": 3,
+    "membros": [
+     "Q20",
+     "Q21",
+     "Q15",
+     "Q2",
+     "Q16",
+     "Q11"
+    ],
+    "indice": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+    "media": 19.994,
+    "cob": 0.25,
+    "prec": 0.2,
+    "fora": [
+     "Q8",
+     "Q17",
+     "Q19"
+    ]
+   }
+  ]
+ },
+ "A": {
+  "clusters": 3,
+  "ruido": 0,
+  "cobertura": 0.7000000000000001,
+  "precisao": 0.4444444444444444,
+  "media": 31.561111111111106,
+  "perdidas": 4,
+  "pedacos": 2,
+  "familia_em_ruido": false,
+  "idx_lpartkey": 2,
+  "grupos": [
+   {
+    "cluster": 0,
+    "membros": [
+     "Q18",
+     "Q1",
+     "Q21",
+     "Q3",
+     "Q13",
+     "Q10",
+     "Q12",
+     "Q5",
+     "Q14",
+     "Q6",
+     "Q22",
+     "Q4"
+    ],
+    "indice": "orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",
+    "media": 4.943333333333333,
+    "cob": 1.0,
+    "prec": 0.16666666666666666,
+    "fora": []
+   },
+   {
+    "cluster": 1,
+    "membros": [
+     "Q17",
+     "Q19",
+     "Q16"
+    ],
+    "indice": "lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",
+    "media": 64.17333333333333,
+    "cob": 0.5,
+    "prec": 0.6666666666666666,
+    "fora": [
+     "Q8",
+     "Q20"
+    ]
+   },
+   {
+    "cluster": 2,
+    "membros": [
+     "Q20",
+     "Q9",
+     "Q15",
+     "Q2",
+     "Q7",
+     "Q8",
+     "Q11"
+    ],
+    "indice": "lineitem (l_partkey)",
+    "media": 25.566666666666666,
+    "cob": 0.6,
+    "prec": 0.5,
+    "fora": [
+     "Q17",
+     "Q19"
+    ]
+   }
+  ]
+ },
+ "B": {
+  "clusters": 4,
+  "ruido": 4,
+  "cobertura": 0.6333333333333333,
+  "precisao": 0.29166666666666663,
+  "media": 21.503124999999997,
+  "perdidas": 5,
+  "pedacos": 3,
+  "familia_em_ruido": true,
+  "idx_lpartkey": 2,
+  "grupos": [
+   {
+    "cluster": 0,
+    "membros": [
+     "Q17",
+     "Q19",
+     "Q14",
+     "Q6"
+    ],
+    "indice": "lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",
+    "media": 48.129999999999995,
+    "cob": 0.5,
+    "prec": 0.5,
+    "fora": [
+     "Q8",
+     "Q20"
+    ]
+   },
+   {
+    "cluster": 1,
+    "membros": [
+     "Q18",
+     "Q1",
+     "Q3",
+     "Q13",
+     "Q10",
+     "Q22"
+    ],
+    "indice": "orders (o_custkey)",
+    "media": 9.895,
+    "cob": 1.0,
+    "prec": 0.16666666666666666,
+    "fora": []
+   },
+   {
+    "cluster": 2,
+    "membros": [
+     "Q20",
+     "Q9",
+     "Q15",
+     "Q16",
+     "Q11"
+    ],
+    "indice": "lineitem (l_partkey)",
+    "media": 27.9875,
+    "cob": 0.4,
+    "prec": 0.5,
+    "fora": [
+     "Q8",
+     "Q17",
+     "Q19"
+    ]
+   },
+   {
+    "cluster": 3,
+    "membros": [
+     "Q21",
+     "Q7",
+     "Q5"
+    ],
+    "indice": "nenhum",
+    "media": 0.0,
+    "cob": null,
+    "prec": 0.0,
+    "fora": []
+   }
+  ]
+ },
+ "C1": {
+  "clusters": 5,
+  "ruido": 0,
+  "cobertura": 0.5375,
+  "precisao": 0.26,
+  "media": 17.341299999999997,
+  "perdidas": 8,
+  "pedacos": 3,
+  "familia_em_ruido": false,
+  "idx_lpartkey": 3,
+  "estabilidade": {
+   "ari_entre": 0.8714165887873414,
+   "q17_q20": 0.0,
+   "familia": 0.20000000000000004,
+   "clusters": "4:2, 5:18, 6:1"
+  },
+  "grupos": [
+   {
+    "cluster": 0,
+    "membros": [
+     "Q21",
+     "Q12",
+     "Q4"
+    ],
+    "indice": "nenhum",
+    "media": 0.0,
+    "cob": null,
+    "prec": 0.0,
+    "fora": []
+   },
+   {
+    "cluster": 1,
+    "membros": [
+     "Q20",
+     "Q9",
+     "Q2",
+     "Q16",
+     "Q11"
+    ],
+    "indice": "lineitem (l_partkey)",
+    "media": 22.39,
+    "cob": 0.4,
+    "prec": 0.4,
+    "fora": [
+     "Q8",
+     "Q17",
+     "Q19"
+    ]
+   },
+   {
+    "cluster": 2,
+    "membros": [
+     "Q17",
+     "Q1",
+     "Q15",
+     "Q19",
+     "Q14",
+     "Q6"
+    ],
+    "indice": "lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",
+    "media": 38.504,
+    "cob": 0.5,
+    "prec": 0.4,
+    "fora": [
+     "Q8",
+     "Q20"
+    ]
+   },
+   {
+    "cluster": 3,
+    "membros": [
+     "Q18",
+     "Q3",
+     "Q13",
+     "Q22"
+    ],
+    "indice": "orders (o_custkey)",
+    "media": 14.8425,
+    "cob": 1.0,
+    "prec": 0.25,
+    "fora": []
+   },
+   {
+    "cluster": 4,
+    "membros": [
+     "Q10",
+     "Q7",
+     "Q8",
+     "Q5"
+    ],
+    "indice": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+    "media": 10.97,
+    "cob": 0.25,
+    "prec": 0.25,
+    "fora": [
+     "Q17",
+     "Q19",
+     "Q20"
+    ]
+   }
+  ]
+ },
+ "C2": {
+  "clusters": 3,
+  "ruido": 0,
+  "cobertura": 0.525,
+  "precisao": 0.17500000000000002,
+  "media": 11.894333333333334,
+  "perdidas": 4,
+  "pedacos": 2,
+  "familia_em_ruido": false,
+  "idx_lpartkey": 2,
+  "estabilidade": {
+   "ari_entre": 0.9739347329037621,
+   "q17_q20": 1.0,
+   "familia": 0.5999999999999999,
+   "clusters": "3:19, 4:2"
+  },
+  "grupos": [
+   {
+    "cluster": 0,
+    "membros": [
+     "Q3",
+     "Q13",
+     "Q10",
+     "Q7",
+     "Q8",
+     "Q5",
+     "Q22",
+     "Q4"
+    ],
+    "indice": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+    "media": 5.485,
+    "cob": 0.25,
+    "prec": 0.125,
+    "fora": [
+     "Q17",
+     "Q19",
+     "Q20"
+    ]
+   },
+   {
+    "cluster": 1,
+    "membros": [
+     "Q20",
+     "Q17",
+     "Q18",
+     "Q1",
+     "Q9",
+     "Q21",
+     "Q15",
+     "Q12",
+     "Q19",
+     "Q14",
+     "Q6"
+    ],
+    "indice": "lineitem (l_partkey)",
+    "media": 30.198,
+    "cob": 0.8,
+    "prec": 0.4,
+    "fora": [
+     "Q8"
+    ]
+   },
+   {
+    "cluster": 2,
+    "membros": [
+     "Q2",
+     "Q16",
+     "Q11"
+    ],
+    "indice": "nenhum",
+    "media": 0.0,
+    "cob": null,
+    "prec": 0.0,
+    "fora": []
+   }
+  ]
+ },
+ "rotas_C1": {
+  "Q20": {
+   "lineitem.l_shipdate": 6.778195618536777,
+   "nation.n_name": 1.414973347970818,
+   "part.p_name": 5.301032167130962,
+   "partsupp.ps_availqty": 5.903090529859707,
+   "lineitem.l_partkey": 6.778195618536777,
+   "lineitem.l_suppkey": 6.778195618536777,
+   "partsupp.ps_suppkey": 5.903090529859707,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q17": {
+   "lineitem.l_quantity": 6.778195618536777,
+   "part.p_brand": 5.301032167130962,
+   "part.p_container": 5.301032167130962,
+   "lineitem.l_partkey": 6.778195618536777
+  },
+  "Q18": {
+   "orders.o_custkey": 6.176091548585239
+  },
+  "Q1": {
+   "lineitem.l_shipdate": 6.778195618536777
+  },
+  "Q9": {
+   "part.p_name": 5.301032167130962,
+   "lineitem.l_partkey": 6.778195618536777,
+   "lineitem.l_suppkey": 6.778195618536777,
+   "partsupp.ps_suppkey": 5.903090529859707,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q21": {
+   "lineitem.l_commitdate": 6.778195618536777,
+   "lineitem.l_receiptdate": 6.778195618536777,
+   "nation.n_name": 1.414973347970818,
+   "orders.o_orderstatus": 6.176091548585239,
+   "lineitem.l_suppkey": 6.778195618536777,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q3": {
+   "customer.c_mktsegment": 5.176094154342576,
+   "lineitem.l_shipdate": 6.778195618536777,
+   "orders.o_orderdate": 6.176091548585239,
+   "orders.o_custkey": 6.176091548585239
+  },
+  "Q15": {
+   "(nenhuma rota sem índice)": 1.0
+  },
+  "Q2": {
+   "part.p_size": 5.301032167130962,
+   "part.p_type": 5.301032167130962,
+   "partsupp.ps_supplycost": 5.903090529859707,
+   "region.r_name": 0.7781512503836436,
+   "nation.n_regionkey": 1.414973347970818,
+   "partsupp.ps_suppkey": 5.903090529859707,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q13": {
+   "orders.o_comment": 6.176091548585239,
+   "orders.o_custkey": 6.176091548585239
+  },
+  "Q10": {
+   "lineitem.l_returnflag": 6.778195618536777,
+   "orders.o_orderdate": 6.176091548585239,
+   "customer.c_nationkey": 5.176094154342576,
+   "orders.o_custkey": 6.176091548585239
+  },
+  "Q12": {
+   "lineitem.l_commitdate": 6.778195618536777,
+   "lineitem.l_receiptdate": 6.778195618536777,
+   "lineitem.l_shipdate": 6.778195618536777,
+   "lineitem.l_shipmode": 6.778195618536777
+  },
+  "Q7": {
+   "lineitem.l_shipdate": 6.778195618536777,
+   "nation.n_name": 1.414973347970818,
+   "customer.c_nationkey": 5.176094154342576,
+   "lineitem.l_suppkey": 6.778195618536777,
+   "orders.o_custkey": 6.176091548585239,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q8": {
+   "orders.o_orderdate": 6.176091548585239,
+   "part.p_type": 5.301032167130962,
+   "region.r_name": 0.7781512503836436,
+   "customer.c_nationkey": 5.176094154342576,
+   "lineitem.l_partkey": 6.778195618536777,
+   "lineitem.l_suppkey": 6.778195618536777,
+   "nation.n_regionkey": 1.414973347970818,
+   "orders.o_custkey": 6.176091548585239,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q19": {
+   "lineitem.l_quantity": 6.778195618536777,
+   "lineitem.l_shipinstruct": 6.778195618536777,
+   "lineitem.l_shipmode": 6.778195618536777,
+   "part.p_brand": 5.301032167130962,
+   "part.p_container": 5.301032167130962,
+   "part.p_size": 5.301032167130962,
+   "lineitem.l_partkey": 6.778195618536777
+  },
+  "Q5": {
+   "orders.o_orderdate": 6.176091548585239,
+   "region.r_name": 0.7781512503836436,
+   "customer.c_nationkey": 5.176094154342576,
+   "lineitem.l_suppkey": 6.778195618536777,
+   "nation.n_regionkey": 1.414973347970818,
+   "orders.o_custkey": 6.176091548585239,
+   "supplier.s_nationkey": 4.000043427276863
+  },
+  "Q14": {
+   "lineitem.l_shipdate": 6.778195618536777,
+   "lineitem.l_partkey": 6.778195618536777
+  },
+  "Q6": {
+   "lineitem.l_discount": 6.778195618536777,
+   "lineitem.l_quantity": 6.778195618536777,
+   "lineitem.l_shipdate": 6.778195618536777
+  },
+  "Q16": {
+   "part.p_brand": 5.301032167130962,
+   "part.p_size": 5.301032167130962,
+   "part.p_type": 5.301032167130962,
+   "supplier.s_comment": 4.000043427276863,
+   "partsupp.ps_suppkey": 5.903090529859707
+  },
+  "Q22": {
+   "customer.c_acctbal": 5.176094154342576,
+   "customer.c_phone": 5.176094154342576,
+   "orders.o_custkey": 6.176091548585239
+  },
+  "Q4": {
+   "lineitem.l_commitdate": 6.778195618536777,
+   "lineitem.l_receiptdate": 6.778195618536777,
+   "orders.o_orderdate": 6.176091548585239
+  },
+  "Q11": {
+   "nation.n_name": 1.414973347970818,
+   "partsupp.ps_suppkey": 5.903090529859707,
+   "supplier.s_nationkey": 4.000043427276863
+  }
+ },
+ "rotas_C2": {
+  "Q20": {
+   "nation.n_name": 327.2153333333333,
+   "part.p_name": 124.91016666666667,
+   "lineitem.l_shipdate": 14930649.091999998,
+   "lineitem.l_partkey": 14930649.091999998,
+   "lineitem.l_suppkey": 14930649.091999998
+  },
+  "Q17": {
+   "lineitem.l_partkey": 14647543.3115,
+   "part.p_container": 1147.662,
+   "part.p_brand": 1147.662
+  },
+  "Q18": {
+   "(nenhuma rota sem índice)": 1.0
+  },
+  "Q1": {
+   "lineitem.l_shipdate": 4875.38
+  },
+  "Q9": {
+   "partsupp.ps_suppkey": 245.07500000000002,
+   "lineitem.l_partkey": 786.57,
+   "part.p_name": 46.792333333333325
+  },
+  "Q21": {
+   "lineitem.l_receiptdate": 1248.682,
+   "lineitem.l_commitdate": 1248.682,
+   "lineitem.l_suppkey": 1248.682,
+   "supplier.s_nationkey": 15.1825,
+   "nation.n_name": 0.5505
+  },
+  "Q3": {
+   "orders.o_orderdate": 394.6665,
+   "orders.o_custkey": 394.6665,
+   "customer.c_mktsegment": 371.69350000000003
+  },
+  "Q15": {
+   "lineitem.l_shipdate": 2421.8704999999995
+  },
+  "Q2": {
+   "part.p_type": 194.645,
+   "part.p_size": 194.645,
+   "partsupp.ps_suppkey": 186.23366666666666,
+   "supplier.s_nationkey": 28.2415,
+   "nation.n_regionkey": 0.012166666666666666,
+   "region.r_name": 3.8615
+  },
+  "Q13": {
+   "orders.o_comment": 664.1719999999999,
+   "orders.o_custkey": 664.1719999999999
+  },
+  "Q10": {
+   "lineitem.l_returnflag": 1311.7235,
+   "orders.o_orderdate": 208.105
+  },
+  "Q12": {
+   "lineitem.l_receiptdate": 1653.3715,
+   "lineitem.l_shipdate": 1653.3715,
+   "lineitem.l_commitdate": 1653.3715,
+   "lineitem.l_shipmode": 1653.3715
+  },
+  "Q7": {
+   "orders.o_custkey": 250.1475,
+   "customer.c_nationkey": 32.197833333333335,
+   "nation.n_name": 105.87916666666668,
+   "supplier.s_nationkey": 5.6065000000000005
+  },
+  "Q8": {
+   "orders.o_orderdate": 300.4485,
+   "orders.o_custkey": 300.4485,
+   "customer.c_nationkey": 36.2485,
+   "nation.n_regionkey": 0.06399999999999999,
+   "region.r_name": 0.26,
+   "part.p_type": 60.77383333333333
+  },
+  "Q19": {
+   "lineitem.l_shipinstruct": 1438.8564999999999,
+   "lineitem.l_partkey": 1438.8564999999999,
+   "lineitem.l_shipmode": 1438.8564999999999,
+   "lineitem.l_quantity": 1438.8564999999999,
+   "part.p_container": 241.227,
+   "part.p_size": 241.227,
+   "part.p_brand": 241.227
+  },
+  "Q5": {
+   "orders.o_orderdate": 295.1125,
+   "orders.o_custkey": 295.1125,
+   "customer.c_nationkey": 32.606500000000004,
+   "nation.n_regionkey": 0.24,
+   "region.r_name": 0.24050000000000002,
+   "supplier.s_nationkey": 125.66849999999998
+  },
+  "Q14": {
+   "lineitem.l_shipdate": 1134.7435000000003,
+   "lineitem.l_partkey": 1134.7435000000003
+  },
+  "Q6": {
+   "lineitem.l_shipdate": 1407.157,
+   "lineitem.l_quantity": 1407.157,
+   "lineitem.l_discount": 1407.157
+  },
+  "Q16": {
+   "partsupp.ps_suppkey": 308.70450000000005,
+   "supplier.s_comment": 11.3165,
+   "part.p_type": 92.87399999999998,
+   "part.p_size": 92.87399999999998,
+   "part.p_brand": 92.87399999999998
+  },
+  "Q22": {
+   "customer.c_acctbal": 302.973,
+   "customer.c_phone": 302.973,
+   "orders.o_custkey": 644.074
+  },
+  "Q4": {
+   "orders.o_orderdate": 279.527
+  },
+  "Q11": {
+   "partsupp.ps_suppkey": 244.06750000000002,
+   "supplier.s_nationkey": 11.894,
+   "nation.n_name": 0.24100000000000002
+  }
+ }
+}

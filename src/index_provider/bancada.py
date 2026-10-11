@@ -42,6 +42,11 @@ a ser de outra coisa.
 **A primeira repetição é descartada.** Ela paga o cache frio. Com 3
 repetições sobram 2, e é por isso que ``experimento_resultado`` usa mediana.
 
+**Timeout é piso, não erro.** Quem estoura o ``statement_timeout`` é gravado
+com ``tempo_ms`` igual ao limite e ``censurado = true``, e a fase para de
+repetir ali. Como erro, a query sumiria do resultado exatamente quando o
+índice faz mais diferença; com o piso, o ganho sai como "pelo menos".
+
 **DROP em try/finally.** Um Ctrl+C no meio não pode deixar um índice de
 300 MB para trás. O prefixo ``brokk_exp_`` e o subcomando ``limpar`` são a
 segunda linha de defesa.
@@ -73,13 +78,15 @@ PREPARADA = "brokk_bancada_q"
 SQL_GRAVAR_MEDIDA = """
 INSERT INTO monitoring.experimento_medida
        (experimento_id, query_ref, fase, repeticao, tempo_ms, custo_estimado,
-        linhas_reais, shared_hit, shared_read, usou_indice, node_type_topo, erro)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        linhas_reais, shared_hit, shared_read, usou_indice, node_type_topo, erro,
+        censurado)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (experimento_id, query_ref, fase, repeticao) DO UPDATE
    SET tempo_ms = EXCLUDED.tempo_ms, custo_estimado = EXCLUDED.custo_estimado,
        linhas_reais = EXCLUDED.linhas_reais, shared_hit = EXCLUDED.shared_hit,
        shared_read = EXCLUDED.shared_read, usou_indice = EXCLUDED.usou_indice,
-       node_type_topo = EXCLUDED.node_type_topo, erro = EXCLUDED.erro
+       node_type_topo = EXCLUDED.node_type_topo, erro = EXCLUDED.erro,
+       censurado = EXCLUDED.censurado
 """
 
 SQL_FECHAR = """
@@ -125,6 +132,13 @@ class Medida:
     usou_indice: Optional[bool] = None
     node_type_topo: Optional[str] = None
     erro: Optional[str] = None
+    censurado: bool = False
+
+
+def estourou_timeout(erro: Exception) -> bool:
+    """O statement_timeout desta sessão, e não um cancelamento qualquer."""
+    return (getattr(erro, "sqlstate", None) == "57014"
+            and "statement timeout" in str(erro))
 
 
 # --------------------------------------------------------------------------
@@ -265,7 +279,8 @@ class Bancada:
 
     # -- uma query --------------------------------------------------------
 
-    def _montar(self, q: Query, analisar: bool = True) -> Tuple[Any, str]:
+    def _montar(self, q: Query, analisar: bool = True,
+                formato_json: bool = False) -> Tuple[Any, str]:
         """Devolve (comando de EXPLAIN, como foi montado).
 
         Três caminhos, nesta ordem:
@@ -284,8 +299,12 @@ class Bancada:
         Para medir índice isso serve; para reproduzir o plano genérico de uma
         prepared statement, não serviria.
         """
-        explain = ("EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) " if analisar
-                   else "EXPLAIN ")
+        if analisar:
+            explain = "EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) "
+        else:
+            # Sem ANALYZE: planeja e não executa. Em JSON quando quem chama
+            # quer ler o plano (a matriz pergunta se ele usa o índice).
+            explain = "EXPLAIN (FORMAT JSON) " if formato_json else "EXPLAIN "
         params = q.parametros or []
         if not params:
             return explain + q.texto, "direto"
@@ -370,6 +389,16 @@ class Bancada:
                                       **ler_explain(saida, indice)))
             except Exception as erro:           # noqa: BLE001
                 self.obs.rollback()
+                if estourou_timeout(erro):
+                    # O tempo real passa do limite, e o limite é o que se
+                    # sabe: vira piso, não erro. Como erro, a query sumiria do
+                    # resultado justamente onde o índice mais pesa (Q17 e Q20
+                    # sem índice em l_partkey levam horas). E repetir só
+                    # confirmaria o mesmo timeout mais quatro vezes.
+                    medidas.append(Medida(q.ref, fase, rep,
+                                          tempo_ms=float(self.timeout_ms),
+                                          censurado=True))
+                    break
                 medidas.append(Medida(q.ref, fase, rep, erro=str(erro)[:400]))
 
         if preparada:
@@ -383,7 +412,7 @@ class Bancada:
                     experimento_id, m.query_ref, m.fase, m.repeticao,
                     m.tempo_ms, m.custo_estimado, m.linhas_reais,
                     m.shared_hit, m.shared_read, m.usou_indice,
-                    m.node_type_topo, m.erro))
+                    m.node_type_topo, m.erro, m.censurado))
         self.brokk.commit()
 
     # -- o experimento inteiro -------------------------------------------
@@ -483,7 +512,10 @@ class Bancada:
     def _linha(self, q: Query, medidas: Sequence[Medida]) -> None:
         uteis = [m.tempo_ms for m in medidas[1:] if m.tempo_ms is not None]
         erros = [m.erro for m in medidas if m.erro]
-        if erros:
+        if any(m.censurado for m in medidas):
+            print(f"      ref={q.ref:<4} ≥ {self.timeout_ms:>8,.0f} ms "
+                  f"(estourou o timeout; vale como piso)")
+        elif erros:
             print(f"      ref={q.ref:<4} erro: {erros[0][:60]}")
         elif uteis:
             media = sum(uteis) / len(uteis)

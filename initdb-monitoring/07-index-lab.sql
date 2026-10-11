@@ -217,11 +217,18 @@ CREATE TABLE IF NOT EXISTS monitoring.experimento_medida (
     usou_indice    boolean,
     node_type_topo text,
 
+    -- Estourou o statement_timeout: tempo_ms é o limite, e o tempo real é
+    -- maior. Vale como piso, não como medida — ver experimento_resultado.
+    censurado      boolean NOT NULL DEFAULT false,
+
     erro           text,
 
     PRIMARY KEY (experimento_id, query_ref, fase, repeticao),
     CONSTRAINT ck_medida_fase CHECK (fase IN ('antes', 'depois'))
 );
+
+ALTER TABLE monitoring.experimento_medida
+    ADD COLUMN IF NOT EXISTS censurado boolean NOT NULL DEFAULT false;
 
 
 -- ---------------------------------------------------------------------------
@@ -237,10 +244,13 @@ DROP VIEW IF EXISTS monitoring.experimento_resultado;
 
 CREATE VIEW monitoring.experimento_resultado AS
 WITH util AS (
-    -- repeticao = 1 é aquecimento de cache e não entra na conta.
-    SELECT experimento_id, query_ref, fase, tempo_ms, usou_indice
+    -- repeticao = 1 é aquecimento de cache e não entra na conta. A exceção é
+    -- a medida censurada: a bancada para de repetir no primeiro timeout, então
+    -- ela pode ser a única amostra da fase, e vale como piso.
+    SELECT experimento_id, query_ref, fase, tempo_ms, usou_indice, censurado
       FROM monitoring.experimento_medida
-     WHERE repeticao > 1 AND erro IS NULL AND tempo_ms IS NOT NULL
+     WHERE tempo_ms IS NOT NULL
+       AND (censurado OR (repeticao > 1 AND erro IS NULL))
 ),
 por_fase AS (
     SELECT experimento_id, query_ref, fase,
@@ -248,7 +258,8 @@ por_fase AS (
            min(tempo_ms)        AS min_ms,
            max(tempo_ms)        AS max_ms,
            count(*)             AS amostras,
-           bool_or(usou_indice) AS usou_indice
+           bool_or(usou_indice) AS usou_indice,
+           bool_or(censurado)   AS censurado
       FROM util
      GROUP BY 1, 2, 3
 )
@@ -261,19 +272,28 @@ SELECT e.rodada_id,
        (e.query_origem = a.query_ref)                   AS e_a_origem,
        round(a.mediana_ms::numeric, 1)                  AS antes_ms,
        round(d.mediana_ms::numeric, 1)                  AS depois_ms,
-       round((a.mediana_ms - d.mediana_ms)::numeric, 1) AS ganho_ms,
-       round((100.0 * (a.mediana_ms - d.mediana_ms)
-              / nullif(a.mediana_ms, 0))::numeric, 1)   AS ganho_pct,
+       -- 'antes' censurado: o ganho é um piso, o real é maior. 'depois'
+       -- censurado: não se sabe quanto sobrou, e o ganho fica nulo em vez de
+       -- virar um número inventado.
+       CASE WHEN NOT d.censurado
+            THEN round((a.mediana_ms - d.mediana_ms)::numeric, 1)
+       END                                              AS ganho_ms,
+       CASE WHEN NOT d.censurado
+            THEN round((100.0 * (a.mediana_ms - d.mediana_ms)
+                        / nullif(a.mediana_ms, 0))::numeric, 1)
+       END                                              AS ganho_pct,
        d.usou_indice,
        a.amostras AS amostras_antes,
-       d.amostras AS amostras_depois
+       d.amostras AS amostras_depois,
+       a.censurado AS antes_censurado,
+       d.censurado AS depois_censurado
   FROM monitoring.experimento e
   JOIN por_fase a ON a.experimento_id = e.id AND a.fase = 'antes'
   JOIN por_fase d ON d.experimento_id = e.id AND d.fase = 'depois'
                  AND d.query_ref = a.query_ref;
 
 COMMENT ON VIEW monitoring.experimento_resultado IS
-    'Ganho por query. Mediana das repeticoes, descartada a primeira (cache frio).';
+    'Ganho por query. Mediana das repeticoes, descartada a primeira (cache frio). Com antes_censurado, o ganho e um piso.';
 
 -- A resposta à pergunta do experimento: o índice tirado de UMA query serve ao
 -- resto do cluster? Uma linha por experimento.
@@ -315,9 +335,121 @@ SELECT rodada_id,
                                                         AS ganho_fora_da_origem_ms,
        round(sum(ganho_ms), 1)                          AS ganho_bruto_ms,
        round(max(ganho_ms) FILTER (WHERE usou), 1)      AS melhor_ms,
-       round(min(ganho_ms) FILTER (WHERE usou), 1)      AS pior_ms
+       round(min(ganho_ms) FILTER (WHERE usou), 1)      AS pior_ms,
+       -- Quantas queries entram nas somas acima com um piso em vez de uma
+       -- medida. Diferente de zero, os ganhos do experimento são "pelo menos".
+       count(*) FILTER (WHERE antes_censurado)          AS antes_censuradas,
+       count(*) FILTER (WHERE depois_censurado)         AS depois_censuradas
   FROM base
  GROUP BY 1, 2, 3, 4, 5;
 
 COMMENT ON VIEW monitoring.experimento_veredito IS
     'Um indice por cluster: quantas queries ele de fato ajudou, e quanto fora da query de origem.';
+
+
+-- ---------------------------------------------------------------------------
+-- 7. A matriz índice × query
+-- ---------------------------------------------------------------------------
+-- `medir` testa cada índice só dentro do cluster de onde ele saiu, e por isso
+-- não vê quem ele ajudaria fora dele — foi assim que lineitem(l_partkey)
+-- ajudou queries de três clusters diferentes sem que nenhum veredito
+-- mostrasse. A matriz mede cada índice distinto contra o corpus inteiro, numa
+-- sessão, contra uma linha de base única. Qualquer agrupamento é avaliado
+-- depois sobre a mesma medição: a diferença entre dois métodos deixa de poder
+-- ser ruído entre duas corridas de bancada.
+CREATE TABLE IF NOT EXISTS monitoring.matriz_sessao (
+    id           bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    rodadas      integer[] NOT NULL,     -- de onde vieram os índices
+    repeticoes   integer NOT NULL,
+    timeout_ms   integer NOT NULL,
+    criado_em    timestamptz NOT NULL DEFAULT now(),
+    concluida_em timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS monitoring.matriz_indice (
+    id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sessao_id     bigint NOT NULL
+                      REFERENCES monitoring.matriz_sessao(id) ON DELETE CASCADE,
+    -- O DDL sem o nome do índice: o mesmo índice proposto por dois métodos,
+    -- com nomes diferentes, é medido uma vez.
+    chave         text   NOT NULL,
+    ddl           text   NOT NULL,
+    relacao       text,
+    build_ms      double precision,
+    tamanho_bytes bigint,
+    erro          text,
+    UNIQUE (sessao_id, chave)
+);
+
+CREATE TABLE IF NOT EXISTS monitoring.matriz_medida (
+    id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sessao_id   bigint  NOT NULL
+                    REFERENCES monitoring.matriz_sessao(id) ON DELETE CASCADE,
+    -- NULL é a linha de base, sem índice nenhum.
+    indice_id   bigint  REFERENCES monitoring.matriz_indice(id) ON DELETE CASCADE,
+    query_ref   bigint  NOT NULL
+                    REFERENCES monitoring.query(id) ON DELETE CASCADE,
+    -- 0 é a pergunta "o plano usa o índice?", feita com EXPLAIN sem ANALYZE;
+    -- de 1 em diante, execuções medidas.
+    repeticao   integer NOT NULL,
+    tempo_ms    double precision,
+    usou_indice boolean,
+    censurado   boolean NOT NULL DEFAULT false,
+    erro        text
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS ux_matriz_medida
+    ON monitoring.matriz_medida (sessao_id, coalesce(indice_id, 0), query_ref, repeticao);
+
+DROP VIEW IF EXISTS monitoring.matriz_resultado;
+
+-- Uma linha por (índice, query). Quem não usa o índice tem ganho 0, e não a
+-- diferença entre duas medidas: o índice não pode ter ajudado uma query cujo
+-- plano não o cita, e o que a rodada 2 mostrou nessas queries (de -58% a +20%)
+-- era cache, não efeito.
+CREATE VIEW monitoring.matriz_resultado AS
+WITH util AS (
+    SELECT sessao_id, indice_id, query_ref, tempo_ms, censurado
+      FROM monitoring.matriz_medida
+     WHERE tempo_ms IS NOT NULL
+       AND (censurado OR (repeticao > 1 AND erro IS NULL))
+),
+fase AS (
+    SELECT sessao_id, indice_id, query_ref,
+           percentile_cont(0.5) WITHIN GROUP (ORDER BY tempo_ms) AS mediana_ms,
+           bool_or(censurado) AS censurado,
+           count(*)           AS amostras
+      FROM util
+     GROUP BY 1, 2, 3
+),
+uso AS (
+    SELECT sessao_id, indice_id, query_ref, bool_or(usou_indice) AS usou_indice
+      FROM monitoring.matriz_medida
+     WHERE indice_id IS NOT NULL AND repeticao = 0
+     GROUP BY 1, 2, 3
+)
+SELECT i.sessao_id,
+       i.id                                   AS indice_id,
+       i.chave,
+       i.relacao,
+       u.query_ref,
+       coalesce(u.usou_indice, false)         AS usou_indice,
+       round(b.mediana_ms::numeric, 1)        AS antes_ms,
+       round(d.mediana_ms::numeric, 1)        AS depois_ms,
+       coalesce(b.censurado, false)           AS antes_censurado,
+       coalesce(d.censurado, false)           AS depois_censurado,
+       CASE WHEN NOT coalesce(u.usou_indice, false) THEN 0
+            WHEN d.censurado OR d.mediana_ms IS NULL OR b.mediana_ms IS NULL
+                 THEN NULL
+            ELSE round((100.0 * (b.mediana_ms - d.mediana_ms)
+                        / nullif(b.mediana_ms, 0))::numeric, 2)
+       END                                    AS ganho_pct
+  FROM monitoring.matriz_indice i
+  JOIN uso u   ON u.sessao_id = i.sessao_id AND u.indice_id = i.id
+  LEFT JOIN fase b ON b.sessao_id = i.sessao_id AND b.indice_id IS NULL
+                  AND b.query_ref = u.query_ref
+  LEFT JOIN fase d ON d.sessao_id = i.sessao_id AND d.indice_id = i.id
+                  AND d.query_ref = u.query_ref;
+
+COMMENT ON VIEW monitoring.matriz_resultado IS
+    'Cada indice contra cada query, com linha de base unica. Sem usar o indice, ganho 0.';

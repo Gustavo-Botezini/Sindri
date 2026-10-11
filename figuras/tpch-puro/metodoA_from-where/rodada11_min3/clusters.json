@@ -1,0 +1,478 @@
+{
+ "rodada": {
+  "id": 11,
+  "database_name": "tpch",
+  "modelo": "Qwen/Qwen3-Embedding-0.6B",
+  "normalizacao": "from-where",
+  "queries": 22,
+  "clusters": 3,
+  "ruido": 0,
+  "parametros": {
+   "metric": "cosine",
+   "semente": 42,
+   "min_dist": 0.0,
+   "min_samples": 2,
+   "n_neighbors": 5,
+   "n_components": 5,
+   "min_cluster_size": 3,
+   "cluster_selection_method": "eom"
+  },
+  "criado_em": "2026-10-06 17:12:23.711734+00:00"
+ },
+ "clusters": {
+  "0": [
+   4,
+   32,
+   34,
+   35,
+   36,
+   37,
+   41,
+   43,
+   44,
+   48,
+   51,
+   52
+  ],
+  "1": [
+   45,
+   47,
+   49
+  ],
+  "2": [
+   26,
+   33,
+   38,
+   39,
+   40,
+   42,
+   50
+  ]
+ },
+ "pontos": [
+  {
+   "cluster_id": 0,
+   "query_ref": 48,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.5945",
+   "y": "-2.9543",
+   "execucoes": 6,
+   "duracao_total_ms": "33913",
+   "duracao_media_ms": "5652.2",
+   "relacoes": [
+    "customer",
+    "lineitem",
+    "orders"
+   ],
+   "seq_scans": 12,
+   "seq_scan_descartadas": "0",
+   "texto_embedado": "from customer, orders, lineitem where o_orderkey in (select l_orderkey from lineitem group by l_orderkey having sum(l_quantity) > $1) and c_custkey = o_custkey and o_orderkey = l_orderkey"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 32,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.3217",
+   "y": "-1.5997",
+   "execucoes": 6,
+   "duracao_total_ms": "23341",
+   "duracao_media_ms": "3890.1",
+   "relacoes": [
+    "lineitem"
+   ],
+   "seq_scans": 6,
+   "seq_scan_descartadas": "86118",
+   "texto_embedado": "from lineitem where l_shipdate <= (cast('1998-12-01' as date) - cast(concat($1, ' day') as interval))"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 51,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "14.7866",
+   "y": "-3.4201",
+   "execucoes": 6,
+   "duracao_total_ms": "11191",
+   "duracao_media_ms": "1865.1",
+   "relacoes": [
+    "lineitem",
+    "nation",
+    "orders",
+    "supplier"
+   ],
+   "seq_scans": 18,
+   "seq_scan_descartadas": "4415982",
+   "texto_embedado": "from supplier, lineitem as l1, orders, nation where s_suppkey = l1.l_suppkey and o_orderkey = l1.l_orderkey and o_orderstatus = 'f' and l1.l_receiptdate > l1.l_commitdate and exists (select * from lineitem as l2 where l2.l_orderkey = l1.l_orderkey and l2.l_suppkey <> l1.l_suppkey) and not exists (select * from lineitem as l3 where l3.l_orderkey = l1.l_orderkey and l3.l_suppkey <> l1.l_suppkey and l3.l_receiptdate > l3.l_commitdate) and s_nationkey = n_nationkey and n_name = $1"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 34,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "14.2655",
+   "y": "-2.7545",
+   "execucoes": 6,
+   "duracao_total_ms": "9320",
+   "duracao_media_ms": "1553.3",
+   "relacoes": [
+    "customer",
+    "lineitem",
+    "orders"
+   ],
+   "seq_scans": 12,
+   "seq_scan_descartadas": "1937838",
+   "texto_embedado": "from customer, orders, lineitem where c_mktsegment = $1 and c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate < cast($2 as date) and l_shipdate > cast($3 as date)"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 44,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.9830",
+   "y": "-2.8489",
+   "execucoes": 6,
+   "duracao_total_ms": "6057",
+   "duracao_media_ms": "1009.5",
+   "relacoes": [
+    "customer",
+    "orders"
+   ],
+   "seq_scans": 6,
+   "seq_scan_descartadas": "32358",
+   "texto_embedado": "from (from customer left join orders on c_custkey = o_custkey and o_comment not like $1) as c_orders"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 41,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "14.2179",
+   "y": "-3.3855",
+   "execucoes": 6,
+   "duracao_total_ms": "5730",
+   "duracao_media_ms": "955.0",
+   "relacoes": [
+    "customer",
+    "lineitem",
+    "nation",
+    "orders"
+   ],
+   "seq_scans": 24,
+   "seq_scan_descartadas": "11930952",
+   "texto_embedado": "from customer, orders, lineitem, nation where c_custkey = o_custkey and l_orderkey = o_orderkey and o_orderdate >= cast($1 as date) and o_orderdate < (cast($2 as date) + cast('3' as interval month)) and l_returnflag = 'r' and c_nationkey = n_nationkey"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 43,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.4676",
+   "y": "-1.9593",
+   "execucoes": 6,
+   "duracao_total_ms": "4618",
+   "duracao_media_ms": "769.7",
+   "relacoes": [
+    "lineitem",
+    "orders"
+   ],
+   "seq_scans": 12,
+   "seq_scan_descartadas": "11940357",
+   "texto_embedado": "from orders, lineitem where o_orderkey = l_orderkey and l_shipmode in ($1, $2) and l_commitdate < l_receiptdate and l_shipdate < l_commitdate and l_receiptdate >= cast($3 as date) and l_receiptdate < (cast($4 as date) + cast('1' as interval year))"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 36,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "14.5668",
+   "y": "-3.6482",
+   "execucoes": 6,
+   "duracao_total_ms": "3151",
+   "duracao_media_ms": "525.2",
+   "relacoes": [
+    "customer",
+    "lineitem",
+    "nation",
+    "orders",
+    "region",
+    "supplier"
+   ],
+   "seq_scans": 30,
+   "seq_scan_descartadas": "2545782",
+   "texto_embedado": "from customer, orders, lineitem, supplier, nation, region where c_custkey = o_custkey and l_orderkey = o_orderkey and l_suppkey = s_suppkey and c_nationkey = s_nationkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = $1 and o_orderdate >= cast($2 as date) and o_orderdate < (cast($3 as date) + cast('1' as interval year))"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 4,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.1269",
+   "y": "-1.2537",
+   "execucoes": 6,
+   "duracao_total_ms": "3130",
+   "duracao_media_ms": "521.7",
+   "relacoes": [
+    "lineitem",
+    "part"
+   ],
+   "seq_scans": 12,
+   "seq_scan_descartadas": "11849487",
+   "texto_embedado": "from lineitem, part where l_partkey = p_partkey and l_shipdate >= cast($1 as date) and l_shipdate < (cast($2 as date) + cast('1' as interval month))"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 37,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.5617",
+   "y": "-1.3672",
+   "execucoes": 6,
+   "duracao_total_ms": "3095",
+   "duracao_media_ms": "515.8",
+   "relacoes": [
+    "lineitem"
+   ],
+   "seq_scans": 6,
+   "seq_scan_descartadas": "11774454",
+   "texto_embedado": "from lineitem where l_shipdate >= cast($1 as date) and l_shipdate < (cast($2 as date) + cast('1' as interval year)) and l_discount between cast($3 as numeric) - 0.01 and cast($4 as numeric) + 0.01 and l_quantity < $5"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 52,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.7805",
+   "y": "-3.4273",
+   "execucoes": 6,
+   "duracao_total_ms": "2823",
+   "duracao_media_ms": "470.5",
+   "relacoes": [
+    "customer",
+    "orders"
+   ],
+   "seq_scans": 18,
+   "seq_scan_descartadas": "485508",
+   "texto_embedado": "from (from customer where pg_catalog.substring(c_phone, 1, 2) in ($1, $2, $3, $4, $5, $6, $7) and c_acctbal > (select avg(c_acctbal) from customer where c_acctbal > 0.00 and pg_catalog.substring(c_phone, 1, 2) in ($8, $9, $10, $11, $12, $13, $14)) and not exists (select * from orders where o_custkey = c_custkey)) as custsale"
+  },
+  {
+   "cluster_id": 0,
+   "query_ref": 35,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "13.5099",
+   "y": "-2.5031",
+   "execucoes": 6,
+   "duracao_total_ms": "2335",
+   "duracao_media_ms": "389.1",
+   "relacoes": [
+    "lineitem",
+    "orders"
+   ],
+   "seq_scans": 6,
+   "seq_scan_descartadas": "2886213",
+   "texto_embedado": "from orders where o_orderdate >= cast($1 as date) and o_orderdate < (cast($2 as date) + cast('3' as interval month)) and exists (select * from lineitem where l_orderkey = o_orderkey and l_commitdate < l_receiptdate)"
+  },
+  {
+   "cluster_id": 1,
+   "query_ref": 47,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "10.8069",
+   "y": "0.0673",
+   "execucoes": 6,
+   "duracao_total_ms": "87896899",
+   "duracao_media_ms": "14649483.1",
+   "relacoes": [
+    "lineitem",
+    "part"
+   ],
+   "seq_scans": 18,
+   "seq_scan_descartadas": "36406689",
+   "texto_embedado": "from lineitem, part where p_partkey = l_partkey and p_brand = $1 and p_container = $2 and l_quantity < (select 0.2 * avg(l_quantity) from lineitem where l_partkey = p_partkey)"
+  },
+  {
+   "cluster_id": 1,
+   "query_ref": 49,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "11.0499",
+   "y": "-0.1404",
+   "execucoes": 6,
+   "duracao_total_ms": "3586",
+   "duracao_media_ms": "597.7",
+   "relacoes": [
+    "lineitem",
+    "part"
+   ],
+   "seq_scans": 12,
+   "seq_scan_descartadas": "12136143",
+   "texto_embedado": "from lineitem, part where (p_partkey = l_partkey and p_brand = $1 and p_container in ('sm case', 'sm box', 'sm pack', 'sm pkg') and l_quantity >= $2 and l_quantity <= ($3 + 10) and p_size between 1 and 5 and l_shipmode in ('air', 'air reg') and l_shipinstruct = 'deliver in person') or (p_partkey = l_partkey and p_brand = $4 and p_container in ('med bag', 'med box', 'med pkg', 'med pack') and l_quantity >= $5 and l_quantity <= ($6 + 10) and p_size between 1 and 10 and l_shipmode in ('air', 'air reg') and l_shipinstruct = 'deliver in person') or (p_partkey = l_partkey and p_brand = $7 and p_container in ('lg case', 'lg box', 'lg pack', 'lg pkg') and l_quantity >= $8 and l_quantity <= ($9 + 10) and p_size between 1 and 15 and l_shipmode in ('air', 'air reg') and l_shipinstruct = 'deliver in person')"
+  },
+  {
+   "cluster_id": 1,
+   "query_ref": 45,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "10.5902",
+   "y": "0.3733",
+   "execucoes": 6,
+   "duracao_total_ms": "3064",
+   "duracao_media_ms": "510.6",
+   "relacoes": [
+    "part",
+    "partsupp",
+    "supplier"
+   ],
+   "seq_scans": 18,
+   "seq_scan_descartadas": "400995",
+   "texto_embedado": "from partsupp, part where p_partkey = ps_partkey and p_brand <> $1 and p_type not like $2 and p_size in ($3, $4, $5, $6, $7, $8, $9, $10) and not ps_suppkey in (select s_suppkey from supplier where s_comment like '%customer%complaints%')"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 50,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "9.7044",
+   "y": "1.3990",
+   "execucoes": 6,
+   "duracao_total_ms": "89632166",
+   "duracao_media_ms": "14938694.3",
+   "relacoes": [
+    "lineitem",
+    "nation",
+    "part",
+    "partsupp",
+    "supplier"
+   ],
+   "seq_scans": 24,
+   "seq_scan_descartadas": "37194252",
+   "texto_embedado": "from supplier, nation where s_suppkey in (select ps_suppkey from partsupp where ps_partkey in (select p_partkey from part where p_name like $1) and ps_availqty > (select 0.5 * sum(l_quantity) from lineitem where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= cast($2 as date) and l_shipdate < (cast($3 as date) + cast('1' as interval year)))) and s_nationkey = n_nationkey and n_name = $4"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 40,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "9.4464",
+   "y": "1.8372",
+   "execucoes": 6,
+   "duracao_total_ms": "11711",
+   "duracao_media_ms": "1951.9",
+   "relacoes": [
+    "lineitem",
+    "nation",
+    "orders",
+    "part",
+    "partsupp",
+    "supplier"
+   ],
+   "seq_scans": 36,
+   "seq_scan_descartadas": "441479",
+   "texto_embedado": "from (from part, supplier, lineitem, partsupp, orders, nation where s_suppkey = l_suppkey and ps_suppkey = l_suppkey and ps_partkey = l_partkey and p_partkey = l_partkey and o_orderkey = l_orderkey and s_nationkey = n_nationkey and p_name like $1) as profit"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 26,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "9.3423",
+   "y": "2.2878",
+   "execucoes": 6,
+   "duracao_total_ms": "6923",
+   "duracao_media_ms": "1153.8",
+   "relacoes": [
+    "lineitem",
+    "supplier"
+   ],
+   "seq_scans": 12,
+   "seq_scan_descartadas": "23085330",
+   "texto_embedado": "from supplier, revenue0 where s_suppkey = supplier_no and total_revenue = (select max(total_revenue) from revenue0)"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 33,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "9.9502",
+   "y": "2.0583",
+   "execucoes": 6,
+   "duracao_total_ms": "6773",
+   "duracao_media_ms": "1128.9",
+   "relacoes": [
+    "nation",
+    "part",
+    "partsupp",
+    "region",
+    "supplier"
+   ],
+   "seq_scans": 36,
+   "seq_scan_descartadas": "796818",
+   "texto_embedado": "from part, supplier, partsupp, nation, region where p_partkey = ps_partkey and s_suppkey = ps_suppkey and p_size = $1 and p_type like $2 and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = $3 and ps_supplycost = (select min(ps_supplycost) from partsupp, supplier, nation, region where p_partkey = ps_partkey and s_suppkey = ps_suppkey and s_nationkey = n_nationkey and n_regionkey = r_regionkey and r_name = $4)"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 38,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "8.8834",
+   "y": "1.3046",
+   "execucoes": 6,
+   "duracao_total_ms": "4435",
+   "duracao_media_ms": "739.2",
+   "relacoes": [
+    "customer",
+    "lineitem",
+    "nation",
+    "orders",
+    "supplier"
+   ],
+   "seq_scans": 30,
+   "seq_scan_descartadas": "276",
+   "texto_embedado": "from (from supplier, lineitem, orders, customer, nation as n1, nation as n2 where s_suppkey = l_suppkey and o_orderkey = l_orderkey and c_custkey = o_custkey and s_nationkey = n1.n_nationkey and c_nationkey = n2.n_nationkey and ((n1.n_name = $1 and n2.n_name = $2) or (n1.n_name = $3 and n2.n_name = $4)) and l_shipdate between cast('1995-01-01' as date) and cast('1996-12-31' as date)) as shipping"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 39,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "9.0354",
+   "y": "1.4551",
+   "execucoes": 6,
+   "duracao_total_ms": "3815",
+   "duracao_media_ms": "635.9",
+   "relacoes": [
+    "customer",
+    "lineitem",
+    "nation",
+    "orders",
+    "part",
+    "region",
+    "supplier"
+   ],
+   "seq_scans": 36,
+   "seq_scan_descartadas": "2913232",
+   "texto_embedado": "from (from part, supplier, lineitem, orders, customer, nation as n1, nation as n2, region where p_partkey = l_partkey and s_suppkey = l_suppkey and l_orderkey = o_orderkey and o_custkey = c_custkey and c_nationkey = n1.n_nationkey and n1.n_regionkey = r_regionkey and r_name = $2 and s_nationkey = n2.n_nationkey and o_orderdate between cast('1995-01-01' as date) and cast('1996-12-31' as date) and p_type = $3) as all_nations"
+  },
+  {
+   "cluster_id": 2,
+   "query_ref": 42,
+   "probabilidade": "1.0000",
+   "outlier": "0.0000",
+   "x": "9.7246",
+   "y": "2.3839",
+   "execucoes": 6,
+   "duracao_total_ms": "1308",
+   "duracao_media_ms": "218.0",
+   "relacoes": [
+    "nation",
+    "partsupp",
+    "supplier"
+   ],
+   "seq_scans": 36,
+   "seq_scan_descartadas": "288",
+   "texto_embedado": "from partsupp, supplier, nation where ps_suppkey = s_suppkey and s_nationkey = n_nationkey and n_name = $1"
+  }
+ ]
+}

@@ -1,0 +1,1366 @@
+{
+  "esquema": "public",
+  "estatisticas": {
+    "registros": 1941,
+    "planos": 338,
+    "statements": 1519,
+    "ddl_comandos": 2,
+    "ddl_views": 2,
+    "arquivos": 7,
+    "pendentes_descartados": 21,
+    "relacoes_so_no_sql": 2
+  },
+  "ctes": [
+    "cte"
+  ],
+  "rotinas": [],
+  "tabelas": [
+    {
+      "nome": "customer",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": null,
+      "linhas_planner": null,
+      "linhas_lidas": null,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 48,
+        "Index Only Scan": 6
+      },
+      "chave_primaria": {
+        "colunas": [],
+        "fonte": "-"
+      },
+      "colunas": [
+        {
+          "nome": "c_custkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 102,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "c_nationkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 30,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "c_phone",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 24,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "c_acctbal",
+          "tipo": "numeric",
+          "confianca": 0.6,
+          "fonte": "numero",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "numeric",
+          "confianca_carga": 0.6,
+          "not_null": false,
+          "usos": 12,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "numeric",
+              "fonte": "numero",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "c_mktsegment",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 6
+            }
+          ]
+        }
+      ],
+      "indices": [
+        {
+          "nome": "customer_pkey",
+          "colunas": [],
+          "unico": true,
+          "primaria": true,
+          "usos": 6,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": [
+        {
+          "colunas": [
+            "c_nationkey"
+          ],
+          "alvo": "nation",
+          "alvo_colunas": [
+            "n_nationkey"
+          ],
+          "confianca": 0.6,
+          "evidencias": [
+            "lado referenciado é chave única",
+            "24 junções observadas"
+          ]
+        }
+      ]
+    },
+    {
+      "nome": "lateral",
+      "especie": "view (nunca aparece como relação em plano)",
+      "origens": [
+        "sql"
+      ],
+      "linhas_estimadas": null,
+      "linhas_planner": null,
+      "linhas_lidas": null,
+      "operacoes": {},
+      "nos_de_plano": {},
+      "chave_primaria": {
+        "colunas": [],
+        "fonte": "-"
+      },
+      "colunas": [],
+      "indices": [],
+      "chaves_estrangeiras": []
+    },
+    {
+      "nome": "lineitem",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": 6001215,
+      "linhas_planner": 6000904,
+      "linhas_lidas": 6001215,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 78,
+        "Index Scan": 54
+      },
+      "chave_primaria": {
+        "colunas": [
+          "l_orderkey"
+        ],
+        "fonte": "índice lineitem_pkey"
+      },
+      "colunas": [
+        {
+          "nome": "l_orderkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": true,
+          "usos": 108,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "l_suppkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 105,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "l_shipdate",
+          "tipo": "date",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "date",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 102,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "date",
+              "fonte": "cast",
+              "ocorrencias": 48
+            },
+            {
+              "tipo": "timestamp",
+              "fonte": "cast",
+              "ocorrencias": 30
+            }
+          ]
+        },
+        {
+          "nome": "l_quantity",
+          "tipo": "numeric",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "numeric",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 90,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "numeric",
+              "fonte": "cast",
+              "ocorrencias": 78
+            }
+          ]
+        },
+        {
+          "nome": "l_partkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 48,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "l_discount",
+          "tipo": "numeric",
+          "confianca": 0.6,
+          "fonte": "numero",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "numeric",
+          "confianca_carga": 0.6,
+          "not_null": false,
+          "usos": 36,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "numeric",
+              "fonte": "numero",
+              "ocorrencias": 12
+            }
+          ]
+        },
+        {
+          "nome": "l_receiptdate",
+          "tipo": "date",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "date",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 36,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "date",
+              "fonte": "cast",
+              "ocorrencias": 6
+            },
+            {
+              "tipo": "timestamp",
+              "fonte": "cast",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "l_commitdate",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 30,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "l_shipmode",
+          "tipo": "character",
+          "confianca": 0.85,
+          "fonte": "array",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.85,
+          "not_null": false,
+          "usos": 30,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "array",
+              "ocorrencias": 12
+            }
+          ]
+        },
+        {
+          "nome": "l_extendedprice",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 24,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "l_returnflag",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 24,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "l_linestatus",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 18,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "l_shipinstruct",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 6
+            }
+          ]
+        }
+      ],
+      "indices": [
+        {
+          "nome": "lineitem_pkey",
+          "colunas": [
+            "l_orderkey"
+          ],
+          "unico": true,
+          "primaria": true,
+          "usos": 54,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": [
+        {
+          "colunas": [
+            "l_partkey"
+          ],
+          "alvo": "partsupp",
+          "alvo_colunas": [
+            "ps_partkey"
+          ],
+          "confianca": 0.6,
+          "evidencias": [
+            "lado referenciado é chave única",
+            "12 junções observadas"
+          ]
+        },
+        {
+          "colunas": [
+            "l_suppkey"
+          ],
+          "alvo": "supplier",
+          "alvo_colunas": [
+            "s_suppkey"
+          ],
+          "confianca": 0.6,
+          "evidencias": [
+            "lado referenciado é chave única",
+            "36 junções observadas"
+          ]
+        },
+        {
+          "colunas": [
+            "l_partkey"
+          ],
+          "alvo": "part",
+          "alvo_colunas": [
+            "p_partkey"
+          ],
+          "confianca": 0.35,
+          "evidencias": [
+            "36 junções observadas"
+          ]
+        },
+        {
+          "colunas": [
+            "l_suppkey"
+          ],
+          "alvo": "partsupp",
+          "alvo_colunas": [
+            "ps_suppkey"
+          ],
+          "confianca": 0.35,
+          "evidencias": [
+            "9 junções observadas"
+          ]
+        }
+      ]
+    },
+    {
+      "nome": "nation",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": 25,
+      "linhas_planner": 25,
+      "linhas_lidas": 25,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 72,
+        "Index Scan": 6
+      },
+      "chave_primaria": {
+        "colunas": [
+          "n_nationkey"
+        ],
+        "fonte": "índice nation_pkey"
+      },
+      "colunas": [
+        {
+          "nome": "n_name",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 150,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 72
+            }
+          ]
+        },
+        {
+          "nome": "n_nationkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": true,
+          "usos": 78,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "n_regionkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 24,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        }
+      ],
+      "indices": [
+        {
+          "nome": "nation_pkey",
+          "colunas": [
+            "n_nationkey"
+          ],
+          "unico": true,
+          "primaria": true,
+          "usos": 6,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": [
+        {
+          "colunas": [
+            "n_regionkey"
+          ],
+          "alvo": "region",
+          "alvo_colunas": [
+            "r_regionkey"
+          ],
+          "confianca": 0.35,
+          "evidencias": [
+            "24 junções observadas"
+          ]
+        }
+      ]
+    },
+    {
+      "nome": "orders",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": null,
+      "linhas_planner": null,
+      "linhas_lidas": null,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 66,
+        "Index Scan": 6
+      },
+      "chave_primaria": {
+        "colunas": [
+          "o_orderkey"
+        ],
+        "fonte": "índice orders_pkey"
+      },
+      "colunas": [
+        {
+          "nome": "o_orderdate",
+          "tipo": "date",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "date",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 108,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "date",
+              "fonte": "cast",
+              "ocorrencias": 36
+            },
+            {
+              "tipo": "timestamp",
+              "fonte": "cast",
+              "ocorrencias": 18
+            }
+          ]
+        },
+        {
+          "nome": "o_orderkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": true,
+          "usos": 90,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "o_custkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 54,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "o_orderpriority",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 18,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "o_shippriority",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 12,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "o_comment",
+          "tipo": "character varying",
+          "confianca": 0.35,
+          "fonte": "cast_saida",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.35,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "cast_saida",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "o_orderstatus",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "o_totalprice",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        }
+      ],
+      "indices": [
+        {
+          "nome": "orders_pkey",
+          "colunas": [
+            "o_orderkey"
+          ],
+          "unico": true,
+          "primaria": true,
+          "usos": 6,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": []
+    },
+    {
+      "nome": "part",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": 200000,
+      "linhas_planner": null,
+      "linhas_lidas": 200000,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 48
+      },
+      "chave_primaria": {
+        "colunas": [],
+        "fonte": "-"
+      },
+      "colunas": [
+        {
+          "nome": "p_size",
+          "tipo": "integer",
+          "confianca": 0.85,
+          "fonte": "array",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "integer",
+          "confianca_carga": 0.85,
+          "not_null": false,
+          "usos": 72,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "integer",
+              "fonte": "numero",
+              "ocorrencias": 48
+            },
+            {
+              "tipo": "integer",
+              "fonte": "array",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "p_brand",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 66,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 48
+            }
+          ]
+        },
+        {
+          "nome": "p_partkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 66,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "p_container",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 42,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "array",
+              "ocorrencias": 36
+            },
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 6
+            }
+          ]
+        },
+        {
+          "nome": "p_type",
+          "tipo": "character varying",
+          "confianca": 0.35,
+          "fonte": "cast_saida",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.35,
+          "not_null": false,
+          "usos": 36,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "cast_saida",
+              "ocorrencias": 18
+            }
+          ]
+        },
+        {
+          "nome": "p_name",
+          "tipo": "character varying",
+          "confianca": 0.35,
+          "fonte": "cast_saida",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.35,
+          "not_null": false,
+          "usos": 12,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "cast_saida",
+              "ocorrencias": 12
+            }
+          ]
+        }
+      ],
+      "indices": [],
+      "chaves_estrangeiras": []
+    },
+    {
+      "nome": "partsupp",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": 800000,
+      "linhas_planner": 800000,
+      "linhas_lidas": 800000,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 30,
+        "Index Scan": 12
+      },
+      "chave_primaria": {
+        "colunas": [
+          "ps_partkey"
+        ],
+        "fonte": "índice partsupp_pkey"
+      },
+      "colunas": [
+        {
+          "nome": "ps_suppkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 60,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "ps_partkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": true,
+          "usos": 42,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "ps_availqty",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 18,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "ps_supplycost",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 18,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        }
+      ],
+      "indices": [
+        {
+          "nome": "partsupp_pkey",
+          "colunas": [
+            "ps_partkey"
+          ],
+          "unico": true,
+          "primaria": true,
+          "usos": 12,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": [
+        {
+          "colunas": [
+            "ps_suppkey"
+          ],
+          "alvo": "supplier",
+          "alvo_colunas": [
+            "s_suppkey"
+          ],
+          "confianca": 0.6,
+          "evidencias": [
+            "lado referenciado é chave única",
+            "33 junções observadas"
+          ]
+        },
+        {
+          "colunas": [
+            "ps_partkey"
+          ],
+          "alvo": "part",
+          "alvo_colunas": [
+            "p_partkey"
+          ],
+          "confianca": 0.35,
+          "evidencias": [
+            "24 junções observadas"
+          ]
+        }
+      ]
+    },
+    {
+      "nome": "region",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": 5,
+      "linhas_planner": null,
+      "linhas_lidas": 5,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 24
+      },
+      "chave_primaria": {
+        "colunas": [],
+        "fonte": "-"
+      },
+      "colunas": [
+        {
+          "nome": "r_name",
+          "tipo": "character",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 24,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character",
+              "fonte": "cast",
+              "ocorrencias": 24
+            }
+          ]
+        },
+        {
+          "nome": "r_regionkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 24,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        }
+      ],
+      "indices": [],
+      "chaves_estrangeiras": []
+    },
+    {
+      "nome": "revenue0",
+      "especie": "view",
+      "origens": [
+        "ddl"
+      ],
+      "linhas_estimadas": null,
+      "linhas_planner": null,
+      "linhas_lidas": null,
+      "operacoes": {},
+      "nos_de_plano": {},
+      "chave_primaria": {
+        "colunas": [],
+        "fonte": "-"
+      },
+      "colunas": [
+        {
+          "nome": "supplier_no",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 0,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "total_revenue",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 0,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        }
+      ],
+      "indices": [],
+      "chaves_estrangeiras": []
+    },
+    {
+      "nome": "supplier",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano"
+      ],
+      "linhas_estimadas": 10000,
+      "linhas_planner": 10000,
+      "linhas_lidas": 10000,
+      "operacoes": {},
+      "nos_de_plano": {
+        "Seq Scan": 54,
+        "Index Scan": 18
+      },
+      "chave_primaria": {
+        "colunas": [
+          "s_suppkey"
+        ],
+        "fonte": "índice supplier_pkey"
+      },
+      "colunas": [
+        {
+          "nome": "s_suppkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": true,
+          "usos": 69,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "s_nationkey",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 60,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "s_name",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 30,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "s_acctbal",
+          "tipo": null,
+          "confianca": 0.0,
+          "fonte": "-",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": null,
+          "confianca_carga": 0.0,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": []
+        },
+        {
+          "nome": "s_comment",
+          "tipo": "character varying",
+          "confianca": 0.35,
+          "fonte": "cast_saida",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.35,
+          "not_null": false,
+          "usos": 6,
+          "exemplos": [],
+          "tamanho_min": null,
+          "tamanho_max": null,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "cast_saida",
+              "ocorrencias": 6
+            }
+          ]
+        }
+      ],
+      "indices": [
+        {
+          "nome": "supplier_pkey",
+          "colunas": [
+            "s_suppkey"
+          ],
+          "unico": true,
+          "primaria": true,
+          "usos": 18,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": [
+        {
+          "colunas": [
+            "s_nationkey"
+          ],
+          "alvo": "nation",
+          "alvo_colunas": [
+            "n_nationkey"
+          ],
+          "confianca": 0.6,
+          "evidencias": [
+            "lado referenciado é chave única",
+            "54 junções observadas"
+          ]
+        }
+      ]
+    }
+  ]
+}

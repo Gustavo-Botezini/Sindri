@@ -17,14 +17,18 @@ import time
 from pathlib import Path
 from typing import List, Optional, Sequence
 
-from . import banco, bancada, candidatos, corpus, dossie, grupos, saida, vetores
+from . import (banco, bancada, candidatos, corpus, dossie, graficos, grupos,
+               matriz, saida, vetores)
 from .banco import como_json
 
 SQL_LISTAR_RODADAS = """
 SELECT r.id, r.criado_em, r.database_name, r.normalizacao,
        r.queries, r.clusters, r.ruido,
        r.parametros ->> 'n_neighbors'      AS vizinhos,
+       r.parametros ->> 'n_components'     AS dimensoes,
+       r.parametros ->> 'min_dist'         AS min_dist,
        r.parametros ->> 'min_cluster_size' AS tam_min,
+       coalesce(r.parametros ->> 'cluster_selection_method', 'eom') AS selecao,
        (SELECT count(*) FROM monitoring.experimento e
          WHERE e.rodada_id = r.id)                        AS experimentos,
        (SELECT count(*) FROM monitoring.experimento e
@@ -178,14 +182,18 @@ def cmd_agrupar(args) -> int:
 
         par = grupos.Parametros(
             n_neighbors=args.vizinhos,
+            min_dist=args.min_dist,
             n_components=args.dimensoes,
             min_cluster_size=args.tamanho_minimo,
             min_samples=args.amostras_minimas,
+            cluster_selection_method=args.selecao,
             semente=args.semente,
         )
         print(f"agrupando {len(refs)} queries "
-              f"(n_neighbors={par.n_neighbors}, "
+              f"(n_neighbors={par.n_neighbors}, min_dist={par.min_dist}, "
+              f"n_components={par.n_components}, "
               f"min_cluster_size={par.min_cluster_size}, "
+              f"seleção={par.cluster_selection_method}, "
               f"semente={par.semente})...")
         res = grupos.agrupar(refs, matriz, par, verboso=not args.silencioso)
 
@@ -370,6 +378,35 @@ def cmd_exportar(args) -> int:
     return 0
 
 
+def cmd_grafico(args) -> int:
+    """As figuras dos clusters, em PNG."""
+    from . import graficos
+
+    conn = banco.conectar(args.dsn)
+    with conn:
+        meta, _ = grupos.carregar_rodada(conn, args.rodada)
+        pontos = graficos.carregar_pontos(conn, args.rodada)
+        rotulo = graficos.rotulos_tpch(pontos)
+        casados = sum(1 for v in rotulo.values() if not v.startswith("#"))
+        print(f"rodada {args.rodada}: {len(pontos)} queries, "
+              f"{meta['clusters']} clusters, {meta['ruido']} em ruído")
+        print(f"  {casados} de {len(pontos)} casadas com queries/q*.sql")
+
+        alvo = args.saida or Path(f"clusters-rodada{args.rodada}.png")
+        graficos.desenhar_clusters(
+            pontos, rotulo, alvo,
+            f"Clusters da rodada {args.rodada} — {meta['database_name']}")
+        print(f"  figura em {alvo}")
+
+        if args.projecoes:
+            alvo2 = alvo.with_name(alvo.stem + "-projecoes" + alvo.suffix)
+            graficos.desenhar_projecoes(
+                conn, args.rodada, pontos, rotulo, alvo2,
+                meta["modelo"], meta["normalizacao"])
+            print(f"  figura em {alvo2}")
+    return 0
+
+
 def cmd_relatar(args) -> int:
     conn = banco.conectar(args.dsn)
     with conn:
@@ -410,6 +447,75 @@ def cmd_relatar(args) -> int:
     return 0
 
 
+def cmd_matriz(args) -> int:
+    conn = banco.conectar(args.dsn)
+    obs = banco.conectar(banco.DSN_OBSERVADO, "banco observado",
+                         app=bancada.NOME_APP)
+    with conn, obs:
+        banco.aplicar_esquema(conn)
+        qs = _corpus(conn, args)
+        faltando = corpus.anexar_parametros(conn, qs)
+        if faltando:
+            print(f"  AVISO: {faltando} queries parametrizadas sem valores "
+                  f"gravados; elas vão falhar no replay")
+        b = bancada.Bancada(obs, conn, repeticoes=args.repeticoes,
+                            timeout_ms=args.timeout * 1000,
+                            verboso=not args.silencioso)
+        inicio = time.perf_counter()
+        sessao = matriz.rodar(conn, b, args.rodadas, qs, forcar=args.forcar)
+        print(f"\nsessão {sessao} concluída em "
+              f"{(time.perf_counter() - inicio) / 60:.1f} min. Para avaliar:\n"
+              f"  python -m src.index_provider comparar --sessao {sessao} "
+              f"--rodadas {','.join(map(str, args.rodadas))}")
+    return 0
+
+
+def cmd_comparar(args) -> int:
+    conn = banco.conectar(args.dsn)
+    with conn:
+        banco.aplicar_esquema(conn)
+        sessao = args.sessao
+        if sessao is None:
+            with conn.cursor() as cur:
+                cur.execute("SELECT max(id) FROM monitoring.matriz_sessao "
+                            " WHERE concluida_em IS NOT NULL")
+                sessao = cur.fetchone()[0]
+            if sessao is None:
+                print("nenhuma matriz concluída. Rode antes: matriz --rodadas ...")
+                return 2
+        res = matriz.comparar(conn, sessao, args.rodadas, args.limiar)
+
+        with conn.cursor() as cur:
+            cur.execute("SELECT query_ref, query_text FROM monitoring.query_resumo")
+            textos = [{"query_ref": r, "query_text": t} for r, t in cur.fetchall()]
+        rotulo = graficos.rotulos_tpch(textos)
+        res["rotulos"] = {str(r): rotulo[r] for r in sorted(rotulo)}
+
+        def nomes(refs):
+            return " ".join(rotulo.get(r, f"#{r}") for r in refs) or "-"
+
+        print(f"sessão {sessao}, beneficiada = usou o índice e caiu "
+              f">= {args.limiar:g}%")
+        for rr in res["rodadas"]:
+            s = rr["resumo"]
+            print(f"\n=== rodada {rr['rodada']}  ({rr['normalizacao']}, "
+                  f"{rr['modelo']}, min {rr['min_cluster_size']})")
+            print(f"    cobertura média {s['cobertura_media']}  precisão média "
+                  f"{s['precisao_media']}  média geral {s['media_geral_pct']}%  "
+                  f"fora da origem {s['beneficiadas_fora_da_origem']}  "
+                  f"perdidas fora do cluster {s['beneficiadas_fora_do_cluster']}")
+            for c in rr["clusters"]:
+                print(f"  cluster {c['cluster']}: {c['indice']}")
+                print(f"      beneficia no corpus: {nomes(c['beneficiadas_no_corpus'])}"
+                      f"  | no cluster: {nomes(c['beneficiadas_no_cluster'])}"
+                      f"  | cobertura {c['cobertura']} precisão {c['precisao']}")
+
+        if args.json:
+            args.json.write_text(banco.como_json(res), encoding="utf-8")
+            print(f"\n  JSON em {args.json}")
+    return 0
+
+
 def cmd_limpar(args) -> int:
     obs = banco.conectar(banco.DSN_OBSERVADO, "banco observado")
     with obs:
@@ -437,11 +543,13 @@ def _listar_rodadas(conn) -> int:
         print("nenhuma rodada ainda. Rode: agrupar")
         return 0
     print(f"{'id':>4}  {'quando':<20} {'banco':<10} {'qs':>4} {'cl':>3} "
-          f"{'ruído':>5} {'viz':>4} {'min':>4} {'exps':>5} {'medidos':>7}")
+          f"{'ruído':>5} {'viz':>4} {'dim':>4} {'dist':>5} {'min':>4} "
+          f"{'sel':>5} {'exps':>5} {'medidos':>7}")
     for l in linhas:
         print(f"{l['id']:>4}  {str(l['criado_em'])[:19]:<20} "
               f"{l['database_name']:<10} {l['queries']:>4} {l['clusters']:>3} "
-              f"{l['ruido']:>5} {l['vizinhos']:>4} {l['tam_min']:>4} "
+              f"{l['ruido']:>5} {l['vizinhos']:>4} {l['dimensoes']:>4} "
+              f"{l['min_dist']:>5} {l['tam_min']:>4} {l['selecao']:>5} "
               f"{l['experimentos']:>5} {l['medidos']:>7}")
     return 0
 
@@ -522,10 +630,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--listar", action="store_true", help="lista as rodadas")
     p.add_argument("--vizinhos", type=int, default=5, help="UMAP n_neighbors")
     p.add_argument("--dimensoes", type=int, default=5, help="UMAP n_components")
+    p.add_argument("--min-dist", type=float, default=0.0, help="UMAP min_dist")
     p.add_argument("--tamanho-minimo", type=int, default=3,
                    help="HDBSCAN min_cluster_size")
     p.add_argument("--amostras-minimas", type=int, default=2,
                    help="HDBSCAN min_samples")
+    p.add_argument("--selecao", choices=("eom", "leaf"), default="eom",
+                   help="HDBSCAN cluster_selection_method")
     p.add_argument("--semente", type=int, default=42)
     p.set_defaults(func=cmd_agrupar)
 
@@ -554,6 +665,32 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                    help="remede experimentos já medidos")
     p.set_defaults(func=cmd_medir)
 
+    def lista_de_rodadas(texto: str) -> List[int]:
+        return [int(x) for x in texto.split(",") if x.strip()]
+
+    p = com_corpus(sub.add_parser(
+        "matriz", help="cada índice proposto contra o corpus inteiro"))
+    p.add_argument("--rodadas", type=lista_de_rodadas, required=True,
+                   metavar="N,N,...", help="de quais rodadas vêm os índices")
+    p.add_argument("--repeticoes", type=int, default=bancada.REPETICOES,
+                   help="a primeira é descartada (cache frio)")
+    p.add_argument("--timeout", type=int, default=bancada.TIMEOUT_MS // 1000,
+                   metavar="SEG", help="statement_timeout por query")
+    p.add_argument("--forcar", action="store_true",
+                   help="medir mesmo com carga rodando no banco observado")
+    p.set_defaults(func=cmd_matriz)
+
+    p = sub.add_parser("comparar",
+                       help="avalia rodadas sobre a matriz: cobertura e precisão")
+    p.add_argument("--rodadas", type=lista_de_rodadas, required=True,
+                   metavar="N,N,...")
+    p.add_argument("--sessao", type=int,
+                   help="sessão da matriz (padrão: a última concluída)")
+    p.add_argument("--limiar", type=float, default=matriz.LIMIAR_PADRAO,
+                   metavar="PCT", help="redução mínima para contar como beneficiada")
+    p.add_argument("--json", type=Path, metavar="ARQ")
+    p.set_defaults(func=cmd_comparar)
+
     p = sub.add_parser("exportar",
                        help="o agrupamento em CSV/JSON, para conferir fora do banco")
     p.add_argument("--rodada", type=int, required=True)
@@ -561,6 +698,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--json", type=Path, metavar="ARQ", dest="json_saida",
                    help="pontos + os parâmetros que os produziram")
     p.set_defaults(func=cmd_exportar)
+
+    p = sub.add_parser("grafico", help="as figuras dos clusters, em PNG")
+    p.add_argument("--rodada", type=int, required=True)
+    p.add_argument("--saida", type=Path, metavar="ARQ",
+                   help="padrão: clusters-rodadaN.png")
+    p.add_argument("--projecoes", action="store_true",
+                   help="também gera UMAP x PCA x t-SNE lado a lado")
+    p.set_defaults(func=cmd_grafico)
 
     p = sub.add_parser("relatar", help="o veredito da rodada")
     p.add_argument("--rodada", type=int, required=True)

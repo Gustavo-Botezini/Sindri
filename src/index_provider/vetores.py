@@ -35,6 +35,11 @@ from .corpus import Query
 MODELO_EMBEDDING = "Qwen/Qwen3-Embedding-0.6B"
 LOTE = 8
 
+# Não é modelo: é o TF-IDF sobre a assinatura do modo de normalização
+# "estrutura" (método B). Entra pelo mesmo --modelo-embedding para que
+# agrupar, exportar e grafico funcionem sem saber a diferença.
+MODELO_TFIDF = "tfidf"
+
 
 SQL_CACHE = """
 SELECT query_ref, texto_hash, dimensoes
@@ -92,6 +97,8 @@ def gerar(conn, queries: Sequence[Query],
           refazer: bool = False,
           verboso: bool = True) -> Tuple[int, int]:
     """Embeda o que falta e grava. Devolve (geradas, reaproveitadas)."""
+    if modelo == MODELO_TFIDF:
+        return _gerar_tfidf(conn, queries, normalizacao, verboso)
     refs = [q.ref for q in queries]
     cache: Dict[int, str] = {}
     if not refazer:
@@ -136,6 +143,40 @@ def gerar(conn, queries: Sequence[Query],
         if reaproveitadas:
             print(f"  = {reaproveitadas} reaproveitados do cache")
     return len(pendentes), reaproveitadas
+
+
+def _gerar_tfidf(conn, queries: Sequence[Query], normalizacao: str,
+                 verboso: bool) -> Tuple[int, int]:
+    """TF-IDF binário sobre os tokens de texto_norm (um atributo por token).
+
+    Sem cache: o IDF depende do corpus inteiro, então uma query nova muda o
+    vetor de todas. Refazer custa milissegundos.
+
+    Binário porque a assinatura é um conjunto, sem repetição. O IDF é o que
+    impede junção onipresente de puxar tudo para o mesmo lugar: FROM:lineitem
+    e JOIN:lineitem.l_orderkey estão em boa parte do TPC-H e pesam pouco;
+    JOIN:lineitem.l_partkey está em seis queries e pesa mais.
+    """
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    if normalizacao != "estrutura":
+        print(f"  AVISO: tfidf com normalização {normalizacao!r}; o esperado "
+              f"é 'estrutura'. Cada palavra do texto vira um atributo.",
+              file=sys.stderr)
+    vz = TfidfVectorizer(tokenizer=str.split, token_pattern=None,
+                         lowercase=False, binary=True, norm="l2")
+    matriz = vz.fit_transform([q.texto_norm for q in queries]).toarray()
+
+    with conn.cursor() as cur:
+        for q, v in zip(queries, matriz):
+            cur.execute(SQL_GRAVAR, (q.ref, MODELO_TFIDF, normalizacao,
+                                     int(len(v)), q.texto_hash,
+                                     [float(x) for x in v]))
+    conn.commit()
+    if verboso:
+        print(f"  + {len(queries)} vetores TF-IDF de {matriz.shape[1]} "
+              f"atributos (sempre todos: o IDF depende do corpus inteiro)")
+    return len(queries), 0
 
 
 # --------------------------------------------------------------------------

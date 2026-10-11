@@ -1,0 +1,438 @@
+{
+  "rodada": 2,
+  "gerado_em": "2026-10-06T10:12:37+00:00",
+  "agrupamento": {
+    "criado_em": "2026-10-06T00:03:43+00:00",
+    "parametros": {
+      "metric": "cosine",
+      "semente": 42,
+      "min_dist": 0.0,
+      "min_samples": 2,
+      "n_neighbors": 5,
+      "n_components": 5,
+      "min_cluster_size": 3,
+      "cluster_selection_method": "eom"
+    }
+  },
+  "legenda": {
+    "otimizacao_pct": "redução do tempo; positivo = mais rápido. Calculada sobre as medianas das repetições, descartada a primeira (cache frio)",
+    "media_geral_pct": "média de otimizacao_pct de todas as consultas medidas do cluster, como a Tabela 3 do Expeditus",
+    "media_quem_usou_indice_pct": "média só das consultas cujo plano usou o índice: o efeito atribuível a ele",
+    "antes_e_piso": "a consulta estourou o statement_timeout sem o índice; antes_ms é o limite, e o ganho real é maior",
+    "depois_e_piso": "estourou o timeout com o índice; otimizacao_pct fica nula",
+    "media_e_piso": "a média inclui pelo menos um ganho que é piso, então ela também é um piso"
+  },
+  "clusters": [
+    {
+      "cluster": 0,
+      "indice_proposto": {
+        "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+        "tabela": "lineitem",
+        "consulta_de_origem": "Q17",
+        "tamanho_mb": 43.0,
+        "criacao_s": 2.4
+      },
+      "media_geral_pct": 15.22,
+      "media_quem_usou_indice_pct": 89.75,
+      "media_e_piso": true,
+      "consultas_medidas": 5,
+      "consultas_que_usaram_indice": 2,
+      "consultas": [
+        {
+          "consulta": "Q17",
+          "query_ref": 47,
+          "e_a_origem": true,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 300000.0,
+          "depois_ms": 1246.8,
+          "otimizacao_pct": 99.58,
+          "antes_e_piso": true,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 1,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q19",
+          "query_ref": 49,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 483.2,
+          "depois_ms": 97.0,
+          "otimizacao_pct": 79.93,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q6",
+          "query_ref": 37,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 395.8,
+          "depois_ms": 436.0,
+          "otimizacao_pct": -10.16,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q1",
+          "query_ref": 32,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 3066.4,
+          "depois_ms": 4133.4,
+          "otimizacao_pct": -34.8,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q14",
+          "query_ref": 4,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 381.5,
+          "depois_ms": 604.4,
+          "otimizacao_pct": -58.43,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        }
+      ]
+    },
+    {
+      "cluster": 1,
+      "indice_proposto": {
+        "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+        "tabela": "orders",
+        "consulta_de_origem": "Q3",
+        "tamanho_mb": 12.0,
+        "criacao_s": 0.5
+      },
+      "media_geral_pct": 7.26,
+      "media_quem_usou_indice_pct": 15.53,
+      "media_e_piso": false,
+      "consultas_medidas": 8,
+      "consultas_que_usaram_indice": 2,
+      "consultas": [
+        {
+          "consulta": "Q3",
+          "query_ref": 34,
+          "e_a_origem": true,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 653.2,
+          "depois_ms": 593.1,
+          "otimizacao_pct": 9.2,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q22",
+          "query_ref": 52,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 214.1,
+          "depois_ms": 98.9,
+          "otimizacao_pct": 53.81,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q10",
+          "query_ref": 41,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 1225.1,
+          "depois_ms": 980.5,
+          "otimizacao_pct": 19.97,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q12",
+          "query_ref": 43,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 870.6,
+          "depois_ms": 807.0,
+          "otimizacao_pct": 7.31,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q18",
+          "query_ref": 48,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 3242.2,
+          "depois_ms": 3217.2,
+          "otimizacao_pct": 0.77,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q13",
+          "query_ref": 44,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 890.3,
+          "depois_ms": 901.8,
+          "otimizacao_pct": -1.29,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q4",
+          "query_ref": 35,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 310.8,
+          "depois_ms": 338.6,
+          "otimizacao_pct": -8.94,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q5",
+          "query_ref": 36,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 682.4,
+          "depois_ms": 837.7,
+          "otimizacao_pct": -22.76,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        }
+      ]
+    },
+    {
+      "cluster": 2,
+      "indice_proposto": {
+        "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+        "tabela": "lineitem",
+        "consulta_de_origem": "Q8",
+        "tamanho_mb": 43.0,
+        "criacao_s": 2.1
+      },
+      "media_geral_pct": 17.71,
+      "media_quem_usou_indice_pct": 25.94,
+      "media_e_piso": false,
+      "consultas_medidas": 3,
+      "consultas_que_usaram_indice": 2,
+      "consultas": [
+        {
+          "consulta": "Q8",
+          "query_ref": 39,
+          "e_a_origem": true,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 548.1,
+          "depois_ms": 329.5,
+          "otimizacao_pct": 39.88,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q9",
+          "query_ref": 40,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 2001.2,
+          "depois_ms": 1761.3,
+          "otimizacao_pct": 11.99,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q7",
+          "query_ref": 38,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 590.4,
+          "depois_ms": 583.0,
+          "otimizacao_pct": 1.25,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        }
+      ]
+    },
+    {
+      "cluster": 3,
+      "indice_proposto": {
+        "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+        "tabela": "lineitem",
+        "consulta_de_origem": "Q20",
+        "tamanho_mb": 232.1,
+        "criacao_s": 6.0
+      },
+      "media_geral_pct": 19.66,
+      "media_quem_usou_indice_pct": 99.98,
+      "media_e_piso": true,
+      "consultas_medidas": 5,
+      "consultas_que_usaram_indice": 1,
+      "consultas": [
+        {
+          "consulta": "Q20",
+          "query_ref": 50,
+          "e_a_origem": true,
+          "medida": true,
+          "usou_indice": true,
+          "antes_ms": 300000.0,
+          "depois_ms": 64.1,
+          "otimizacao_pct": 99.98,
+          "antes_e_piso": true,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 1,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q2",
+          "query_ref": 33,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 337.8,
+          "depois_ms": 315.3,
+          "otimizacao_pct": 6.66,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q21",
+          "query_ref": 51,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 750.6,
+          "depois_ms": 739.7,
+          "otimizacao_pct": 1.45,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q16",
+          "query_ref": 45,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 322.8,
+          "depois_ms": 332.2,
+          "otimizacao_pct": -2.91,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q11",
+          "query_ref": 42,
+          "e_a_origem": false,
+          "medida": true,
+          "usou_indice": false,
+          "antes_ms": 180.0,
+          "depois_ms": 192.4,
+          "otimizacao_pct": -6.89,
+          "antes_e_piso": false,
+          "depois_e_piso": false,
+          "amostras": {
+            "antes": 4,
+            "depois": 4
+          }
+        },
+        {
+          "consulta": "Q15",
+          "query_ref": 26,
+          "e_a_origem": false,
+          "medida": false,
+          "motivo": "relation \"revenue0\" does not exist"
+        }
+      ]
+    }
+  ]
+}

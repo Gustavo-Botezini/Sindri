@@ -1,0 +1,127 @@
+indice_id,indice,consulta,query_ref,usou_indice,antes_ms,depois_ms,ganho_pct,antes_e_piso,depois_e_piso
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q14,4,False,478.1,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q1,32,False,3460.2,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q2,33,False,303.6,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q3,34,False,714.3,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q4,35,False,330.0,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q5,36,False,489.9,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q6,37,False,435.4,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q7,38,False,746.4,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q8,39,True,620.5,363.3,41.45,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q9,40,True,2088.3,1821.3,12.78,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q10,41,False,842.7,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q11,42,False,213.6,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q12,43,False,764.7,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q13,44,False,937.2,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q16,45,False,408.9,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q17,47,True,300000.0,1251.1,99.58,True,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q18,48,False,4960.7,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q19,49,True,788.1,75.3,90.45,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q20,50,True,300000.0,2486.9,99.17,True,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q21,51,False,1091.5,,0,False,False
+1,CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey),Q22,52,False,249.6,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q14,4,False,478.1,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q1,32,False,3460.2,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q2,33,False,303.6,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q3,34,False,714.3,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q4,35,False,330.0,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q5,36,True,489.9,853.1,-74.13,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q6,37,False,435.4,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q7,38,True,746.4,988.2,-32.41,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q8,39,True,620.5,1181.1,-90.34,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q9,40,False,2088.3,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q10,41,False,842.7,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q11,42,False,213.6,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q12,43,False,764.7,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q13,44,False,937.2,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q16,45,False,408.9,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q17,47,False,300000.0,,0,True,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q18,48,False,4960.7,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q19,49,False,788.1,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q20,50,False,300000.0,,0,True,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q21,51,False,1091.5,,0,False,False
+2,CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey),Q22,52,True,249.6,101.4,59.37,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q14,4,False,478.1,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q1,32,False,3460.2,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q2,33,False,303.6,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q3,34,False,714.3,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q4,35,False,330.0,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q5,36,False,489.9,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q6,37,False,435.4,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q7,38,False,746.4,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q8,39,True,620.5,348.2,43.88,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q9,40,True,2088.3,2154.7,-3.18,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q10,41,False,842.7,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q11,42,False,213.6,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q12,43,False,764.7,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q13,44,False,937.2,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q16,45,False,408.9,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q17,47,True,300000.0,1220.0,99.59,True,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q18,48,False,4960.7,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q19,49,True,788.1,60.9,92.28,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q20,50,True,300000.0,97.9,99.97,True,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q21,51,False,1091.5,,0,False,False
+3,"CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",Q22,52,False,249.6,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q14,4,False,478.1,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q1,32,False,3460.2,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q2,33,False,303.6,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q3,34,False,714.3,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q4,35,True,330.0,348.7,-5.66,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q5,36,True,489.9,496.7,-1.38,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q6,37,False,435.4,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q7,38,False,746.4,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q8,39,False,620.5,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q9,40,False,2088.3,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q10,41,True,842.7,781.4,7.28,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q11,42,False,213.6,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q12,43,False,764.7,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q13,44,False,937.2,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q16,45,False,408.9,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q17,47,False,300000.0,,0,True,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q18,48,False,4960.7,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q19,49,False,788.1,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q20,50,False,300000.0,,0,True,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q21,51,False,1091.5,,0,False,False
+4,"CREATE INDEX brokk_exp_orders_o_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",Q22,52,False,249.6,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q14,4,False,478.1,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q1,32,False,3460.2,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q2,33,False,303.6,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q3,34,False,714.3,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q4,35,False,330.0,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q5,36,False,489.9,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q6,37,False,435.4,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q7,38,False,746.4,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q8,39,True,620.5,373.9,39.74,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q9,40,True,2088.3,1931.1,7.53,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q10,41,False,842.7,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q11,42,False,213.6,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q12,43,False,764.7,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q13,44,False,937.2,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q16,45,False,408.9,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q17,47,True,300000.0,1256.4,99.58,True,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q18,48,False,4960.7,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q19,49,True,788.1,55.6,92.94,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q20,50,True,300000.0,2009.5,99.33,True,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q21,51,False,1091.5,,0,False,False
+5,"CREATE INDEX brokk_exp_lineitem_l_partkey_incl_qty_price ON lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)",Q22,52,False,249.6,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q14,4,False,478.1,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q1,32,False,3460.2,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q2,33,False,303.6,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q3,34,False,714.3,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q4,35,False,330.0,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q5,36,True,489.9,434.2,11.38,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q6,37,False,435.4,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q7,38,True,746.4,1041.5,-39.54,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q8,39,True,620.5,826.6,-33.22,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q9,40,False,2088.3,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q10,41,False,842.7,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q11,42,False,213.6,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q12,43,False,764.7,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q13,44,False,937.2,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q16,45,False,408.9,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q17,47,False,300000.0,,0,True,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q18,48,False,4960.7,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q19,49,False,788.1,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q20,50,False,300000.0,,0,True,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q21,51,False,1091.5,,0,False,False
+6,"CREATE INDEX brokk_exp_orders_o_custkey_o_orderdate ON orders (o_custkey, o_orderdate) INCLUDE (o_orderkey)",Q22,52,True,249.6,129.9,47.94,False,False

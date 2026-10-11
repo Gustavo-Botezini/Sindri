@@ -82,17 +82,59 @@ nas três condições e comparar. O cache de vetores é chaveado por
 `(query_ref, modelo, normalizacao)` justamente para que trocar de normalização
 não reaproveite o vetor errado.
 
+## Outras representações: só FROM e WHERE
+
+O texto completo agrupa queries que *falam* parecido, e o SELECT é a maior
+parte da fala: Q1, Q6, Q14 e Q17 caem juntas por causa de
+`sum(l_extendedprice * (1 - l_discount))`, que nenhum índice toca. Dois modos
+de `--normalizacao` trocam a representação, e não só a grafia. Os dois vêm de
+`estrutura.py`, que usa o pglast (o parser do próprio Postgres) sobre o SQL
+original:
+
+| método | `--normalizacao` | `--modelo-embedding` | o que vira vetor |
+| --- | --- | --- | --- |
+| baseline | `espaco+caixa` | Qwen (padrão) | o SQL inteiro |
+| A | `from-where` | Qwen (padrão) | só FROM, JOIN/ON e WHERE, recursivo nas tabelas derivadas |
+| B | `estrutura` | `tfidf` | a assinatura de atributos, em TF-IDF binário |
+
+A assinatura da B guarda o papel e, nos filtros, o operador:
+
+```
+FROM:lineitem  JOIN:lineitem.l_partkey  JOIN:part.p_partkey
+FILTER:lineitem.l_quantity:<  FILTER:part.p_brand:=
+```
+
+`IN (subquery)` e `EXISTS` correlacionado entram como junção (são
+semijunções); a autojunção `l1.l_orderkey = l2.l_orderkey` da Q21 também,
+porque a decisão é por instância, não por nome de tabela. Colunas sem
+qualificador são resolvidas pelo catálogo do banco observado, subindo pelos
+escopos.
+
+```bash
+./.venv/bin/python -m src.index_provider vetorizar --normalizacao from-where
+./.venv/bin/python -m src.index_provider vetorizar --normalizacao estrutura --modelo-embedding tfidf
+./.venv/bin/python -m src.index_provider agrupar --normalizacao estrutura --modelo-embedding tfidf
+```
+
+A bancada não muda: ela reexecuta `Query.texto`, o SQL original, e nunca a
+representação.
+
 ## Os parâmetros do UMAP e do HDBSCAN
 
 Com 27 pontos, os defaults das bibliotecas não servem:
 
-| parâmetro | valor | por quê |
-| --- | --- | --- |
-| `min_dist` | `0.0` | o padrão 0.1 existe para desenho, para os pontos não se empilharem. A projeção aqui alimenta um algoritmo de densidade — espalhar destrói o que ele vai procurar |
-| `n_neighbors` | `5` | o padrão 15 faria cada vizinhança cobrir mais da metade do corpus |
-| `n_components` | `5` | clusteriza em 5D; a projeção 2D é separada, mesma semente, e serve só ao gráfico |
-| `min_cluster_size` | `3` | |
-| `semente` | `42` | fixa, e gravada em `rodada_cluster.parametros` |
+| parâmetro | flag | valor | por quê |
+| --- | --- | --- | --- |
+| `min_dist` | `--min-dist` | `0.0` | o padrão 0.1 existe para desenho, para os pontos não se empilharem. A projeção aqui alimenta um algoritmo de densidade — espalhar destrói o que ele vai procurar |
+| `n_neighbors` | `--vizinhos` | `5` | o padrão 15 faria cada vizinhança cobrir mais da metade do corpus |
+| `n_components` | `--dimensoes` | `5` | clusteriza em 5D; a projeção 2D é separada, mesma semente, e serve só ao gráfico |
+| `min_cluster_size` | `--tamanho-minimo` | `3` | |
+| `cluster_selection_method` | `--selecao` | `eom` | `eom` fica com o grupo mais estável da árvore; `leaf`, com as folhas. Com `eom`, `min_cluster_size` só muda o resultado quando passa do tamanho de um grupo já escolhido |
+| `semente` | `--semente` | `42` | fixa, e gravada em `rodada_cluster.parametros` |
+
+Para chegar perto da configuração do Expeditus, que não publica a sua mas
+desenha a Figura 3 com a projeção 2D padrão: `--vizinhos 15 --dimensoes 2
+--min-dist 0.1 --tamanho-minimo 2`.
 
 HDBSCAN vem do `sklearn.cluster` (>= 1.3), não do pacote `hdbscan` avulso —
 que exigiria compilar Cython no venv.
@@ -117,6 +159,36 @@ string que virou vetor, já normalizada. É ela que responde "por que esta query
 caiu neste cluster" — o SQL original, com as quebras de linha, não caberia numa
 célula de planilha. O JSON leva junto os parâmetros da rodada, que é o que
 torna o resultado reproduzível por outra pessoa.
+
+### As figuras
+
+```bash
+./.venv/bin/python -m src.index_provider grafico --rodada 1 --projecoes
+```
+
+Duas saídas em PNG: um painel por cluster (mais um da visão geral) e, com
+`--projecoes`, a mesma carga sob UMAP, PCA e t-SNE lado a lado — as Figuras 3
+a 5 do artigo de referência.
+
+Três decisões que a figura carrega:
+
+**Painéis, não um gráfico só com as cores todas.** Num diagrama de dispersão
+quaisquer dois pontos podem encostar, então *todos* os pares de cores precisam
+ser distinguíveis, não só os vizinhos numa legenda. Rodado o validador de
+paleta em modo `--pairs all`, nenhum conjunto de cinco cores passa: o pior par
+cai em ΔE 12,9 de visão normal, abaixo do piso de 15. Com quatro ou mais
+séries nessa forma, a saída é facetar. Cada painel usa então uma cor só, o que
+passa nas seis checagens.
+
+**Zoom por cluster.** Na escala do corpus inteiro um cluster é um borrão de
+poucos pixels onde nenhum rótulo cabe. Cada painel enquadra o seu grupo; o
+painel de visão geral responde onde ele fica.
+
+**Rótulo em cada ponto.** As Figuras 3 a 5 do artigo não rotulam ponto nenhum
+— dá para ver que há grupos, não quais queries estão em cada um. Aqui o rótulo
+sai do casamento do texto da query com `queries/q*.sql`, por similaridade de
+Jaccard sobre os identificadores (igualdade exata não casaria: no corpus os
+literais viraram `$n`). Quem não casa fica com `#<query_ref>`.
 
 Direto no banco, se preferir:
 
@@ -214,6 +286,20 @@ execução o plano genérico entra e a medição muda de assunto.
 repetições sobram 2, e é por isso que `experimento_resultado` usa mediana e não
 média.
 
+**Timeout é piso, não erro.** Sem índice em `lineitem(l_partkey)`, a Q17 e a
+Q20 levam horas e estouram qualquer `--timeout` razoável. Gravadas como erro,
+elas sumiriam do resultado justamente no cluster em que o índice mais pesa.
+Quem estoura é gravado com `tempo_ms` igual ao limite e `censurado = true`, e a
+fase para de repetir ali. Em `experimento_resultado`:
+
+| caso | `ganho_ms` |
+| --- | --- |
+| `antes_censurado` | piso: o ganho real é maior |
+| `depois_censurado` | nulo: não se sabe quanto o índice ajudou |
+
+`experimento_veredito` conta as duas situações em `antes_censuradas` e
+`depois_censuradas`, e o `relatar` avisa quando os ganhos são "pelo menos".
+
 **`DROP` em `try/finally`.** Um Ctrl+C no meio não pode deixar um índice de
 300 MB para trás. O prefixo `brokk_exp_` e o subcomando `limpar` são a segunda
 linha de defesa.
@@ -224,6 +310,43 @@ linha de defesa.
 índice novo. Sem ela, qualquer variação de cache entre as duas fases viraria
 "ganho". Uma query que ficou mais rápida e cujo plano não menciona o índice não
 melhorou por causa dele.
+
+## A matriz índice × query
+
+`medir` só olha para dentro do cluster, e por isso não vê quem o índice
+ajudaria fora dele. Na rodada 2, `lineitem(l_partkey)` ajudou Q17, Q19, Q8 e
+Q9, e a Q20 depende da mesma coluna, mas as cinco estavam em três clusters, e
+nenhum veredito mostrou isso.
+
+`matriz` mede cada índice distinto proposto pelas rodadas pedidas contra o
+corpus inteiro, numa sessão só:
+
+1. **Linha de base única.** Cada query sem índice, uma vez. Todos os índices
+   são comparados com ela, e a Q17 e a Q20 estouram o timeout uma vez, não uma
+   vez por índice.
+2. **EXPLAIN antes de medir.** Com o índice criado, um EXPLAIN sem ANALYZE
+   diz se o plano o usa. Só quem usa é medido. Quem não usa tem ganho 0 em
+   `matriz_resultado`: medir essa query só mediria cache.
+3. **Um índice, uma medição.** O mesmo DDL proposto por dois métodos com nomes
+   diferentes é medido uma vez.
+
+`comparar` avalia qualquer rodada sobre a mesma matriz, sem voltar à bancada.
+Para cada cluster e o índice que ele propôs:
+
+| métrica | pergunta |
+| --- | --- |
+| cobertura | das queries que o índice beneficia no corpus, quantas estão no cluster? |
+| precisão | das queries do cluster, quantas o índice beneficia? |
+| média geral | ganho médio do cluster (0 para quem não usa o índice) |
+
+"Beneficia" é usar o índice e cair pelo menos `--limiar` (padrão 10%). Como
+todos os métodos são avaliados sobre as mesmas medidas, a diferença entre eles
+é do agrupamento, não de duas corridas de bancada.
+
+```bash
+./.venv/bin/python -m src.index_provider matriz --rodadas 2,11,12
+./.venv/bin/python -m src.index_provider comparar --rodadas 2,11,12 --json comparacao.json
+```
 
 ## As tabelas
 
@@ -242,6 +365,10 @@ os planos já coletados. Uma cópia vive em
 | `experimento_medida` | uma linha por (query, fase, repetição) |
 | `experimento_resultado` | view: ganho por query, mediana das repetições |
 | `experimento_veredito` | view: um índice por cluster, quantas queries ele ajudou |
+| `matriz_sessao` | uma execução de `matriz`, com as rodadas de onde vieram os índices |
+| `matriz_indice` | cada índice distinto da sessão, chaveado pelo DDL sem o nome |
+| `matriz_medida` | linha de base (`indice_id` nulo), uso do índice (`repeticao = 0`) e medidas |
+| `matriz_resultado` | view: cada índice contra cada query, com o ganho |
 
 ## Uso
 
