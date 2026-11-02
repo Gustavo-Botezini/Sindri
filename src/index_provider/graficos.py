@@ -60,6 +60,9 @@ SELECT c.cluster_id, c.query_ref, c.x, c.y, r.query_text
 # --------------------------------------------------------------------------
 
 def _tokens(texto: str) -> set:
+    # Sem os comentários: o cabeçalho de queries/ycsb/y*.sql (nome do template,
+    # caminho do XML) derrubava as queries curtas para baixo do limiar.
+    texto = re.sub(r"--[^\n]*", "", texto)
     return set(re.findall(r"[a-z_][a-z0-9_]{2,}", texto.lower()))
 
 
@@ -74,28 +77,40 @@ def rotulos_tpch(pontos: Sequence[dict],
     de identificadores, sim.
 
     Quem não casar fica com ``#<query_ref>``, que é o que o banco conhece.
+
+    ``pasta`` troca a referência: ``queries/ycsb`` dá os rótulos y01..y22 do
+    benchmark YCSB. O glob não é recursivo, então ``queries/`` continua vendo
+    só as 22 do TPC-H.
     """
     pasta = pasta or (RAIZ / "queries")
     rotulo: Dict[int, str] = {}
-    arquivos = sorted(pasta.glob("q*.sql")) if pasta.is_dir() else []
+    arquivos = sorted(pasta.glob("*.sql")) if pasta.is_dir() else []
     referencia = {a.stem: _tokens(a.read_text(encoding="utf-8"))
                   for a in arquivos}
 
-    usados = set()
+    # Atribuição pelos pares mais parecidos primeiro, e não na ordem dos
+    # pontos. No YCSB as queries dividem quase todo o vocabulário (usertable,
+    # ycsb_key, fieldN): na ordem dos pontos, o SELECT * do YCSB original
+    # pegava o y03 antes da própria Y03 chegar, e a Y03 ficava sem rótulo.
+    pares = []
     for p in pontos:
         alvo = _tokens(p["query_text"])
-        melhor, score = None, 0.0
         for nome, toks in referencia.items():
-            if nome in usados or not (alvo | toks):
-                continue
-            j = len(alvo & toks) / len(alvo | toks)
-            if j > score:
-                melhor, score = nome, j
-        if melhor and score >= 0.6:
-            usados.add(melhor)
-            rotulo[p["query_ref"]] = melhor
-        else:
-            rotulo[p["query_ref"]] = f"#{p['query_ref']}"
+            if alvo | toks:
+                pares.append((len(alvo & toks) / len(alvo | toks),
+                              p["query_ref"], nome))
+    pares.sort(key=lambda t: (-t[0], t[1], t[2]))
+
+    usados = set()
+    for score, ref, nome in pares:
+        if score < 0.6:
+            break
+        if ref in rotulo or nome in usados:
+            continue
+        rotulo[ref] = nome
+        usados.add(nome)
+    for p in pontos:
+        rotulo.setdefault(p["query_ref"], f"#{p['query_ref']}")
     return rotulo
 
 
@@ -301,12 +316,17 @@ def desenhar_clusters(pontos: Sequence[dict], rotulo: Dict[int, str],
         ], loc="lower center", ncol=2, frameon=False, fontsize=9,
             labelcolor=TINTA_2, bbox_to_anchor=(0.5, -0.005))
 
-    fig.suptitle(titulo, fontsize=12, color=TINTA, x=0.011, ha="left")
-    fig.text(0.011, 0.945,
+    # Título e subtítulo em polegadas a partir do topo, não em fração da
+    # altura: com uma linha só de painéis a figura tem metade da altura, e as
+    # frações fixas punham o subtítulo por baixo do título.
+    alto = fig.get_figheight()
+    fig.suptitle(titulo, fontsize=12, color=TINTA, x=0.011, ha="left",
+                 y=1 - 0.10 / alto, va="top")
+    fig.text(0.011, 1 - 0.40 / alto,
              "projeção UMAP em 2D · eixos sem unidade, só vizinhança · "
              "cada painel de cluster dá zoom; escala igual nos dois eixos",
-             fontsize=8.5, color=MUDO, ha="left")
-    fig.tight_layout(rect=(0, 0.045 if cinzas else 0.015, 1, 0.925))
+             fontsize=8.5, color=MUDO, ha="left", va="top")
+    fig.tight_layout(rect=(0, 0.045 if cinzas else 0.015, 1, 1 - 0.62 / alto))
     for textos in todos_textos:
         _separar_rotulos(fig, textos)
     fig.savefig(caminho, dpi=200, facecolor=SUPERFICIE)

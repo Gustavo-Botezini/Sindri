@@ -79,8 +79,10 @@ SELECT query_ref, query_text, query_id, execucoes,
   FROM monitoring.query_resumo
  WHERE database_name = %s
    AND execucoes >= %s
+   -- `^\s*` e não btrim(): o templated grava o SQL com a quebra de linha e a
+   -- indentação do CDATA na frente, e btrim() sem argumento só tira espaço.
    AND (%s OR (
-            upper(btrim(query_text)) ~ '^(SELECT|WITH)\\M'
+            upper(query_text) ~ '^\\s*(SELECT|WITH)\\M'
         AND query_text !~* '\\m(insert|update|delete|truncate|drop|alter|create)\\M'
        ))
    AND (%s OR (

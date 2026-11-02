@@ -23,6 +23,11 @@ Com a matriz pronta, ``comparar`` avalia qualquer rodada sem voltar à
 bancada: para cada cluster e o índice que ele propôs, quantas das queries que
 o índice beneficia estão no cluster (cobertura) e quantas do cluster ele
 beneficia (precisão).
+
+Os índices não precisam vir de rodada nenhuma. ``--globais`` acrescenta o que
+a heurística de ``candidatos.py`` propõe para o corpus inteiro, sem cluster e
+sem modelo — é o conjunto de candidatos de ``otimizar``, que escolhe índices
+para a carga inteira em vez de um por cluster.
 """
 
 from __future__ import annotations
@@ -31,7 +36,10 @@ import re
 import time
 from typing import Dict, List, Optional, Sequence, Tuple
 
+from psycopg.types.json import Jsonb
+
 from . import bancada as bc
+from . import candidatos
 from .corpus import Query
 
 LIMIAR_PADRAO = 10.0     # % de redução a partir da qual a query "foi beneficiada"
@@ -54,13 +62,15 @@ SELECT ddl, relacao
 """
 
 SQL_SESSAO = """
-INSERT INTO monitoring.matriz_sessao (rodadas, repeticoes, timeout_ms)
-VALUES (%s, %s, %s) RETURNING id
+INSERT INTO monitoring.matriz_sessao
+       (rodadas, globais, trigramas, repeticoes, timeout_ms, ambiente,
+        ambiente_hash)
+VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id
 """
 
 SQL_INDICE = """
-INSERT INTO monitoring.matriz_indice (sessao_id, chave, ddl, relacao)
-VALUES (%s, %s, %s, %s) RETURNING id
+INSERT INTO monitoring.matriz_indice (sessao_id, chave, ddl, relacao, origem)
+VALUES (%s, %s, %s, %s, %s) RETURNING id
 """
 
 SQL_FECHAR_INDICE = """
@@ -86,6 +96,35 @@ def indices_das_rodadas(conn, rodadas: Sequence[int]) -> List[Tuple[str, str, Op
     for ddl, relacao in linhas:
         vistos.setdefault(chave_ddl(ddl), (chave_ddl(ddl), ddl, relacao))
     return list(vistos.values())
+
+
+def indices_da_heuristica(conn, obs, refs: Sequence[int], limite: int,
+                          trigramas: bool = False
+                          ) -> List[Tuple[str, str, Optional[str]]]:
+    """(chave, ddl, relacao) do que a heurística propõe para o corpus inteiro.
+
+    É o ``candidatar`` sem cluster e sem modelo: a mesma evidência de
+    plan_node, sobre todas as queries de uma vez, já sem o que o banco tem.
+    Quem escolhe entre eles é ``otimizar``, depois de medidos. ``trigramas``
+    acrescenta os GIN com gin_trgm_ops (ver ``candidatos.propor``).
+    """
+    props, _redundantes = candidatos.propor(conn, obs, refs, limite=limite,
+                                            trigramas=trigramas)
+    return [(chave_ddl(c.ddl), candidatos.validar_ddl(c.ddl), c.relacao)
+            for c in props]
+
+
+def juntar(fontes: Sequence[Tuple[str, Sequence[Tuple[str, str, Optional[str]]]]]
+           ) -> List[Tuple[str, str, Optional[str], str]]:
+    """Une as fontes por chave. Quem vier das duas fica com as duas na origem."""
+    vistos: Dict[str, list] = {}
+    for origem, indices in fontes:
+        for chave, ddl, relacao in indices:
+            if chave not in vistos:
+                vistos[chave] = [chave, ddl, relacao, origem]
+            elif origem not in vistos[chave][3].split("+"):
+                vistos[chave][3] += "+" + origem
+    return [tuple(v) for v in vistos.values()]
 
 
 def _usa_indice(b: bc.Bancada, q: Query, nome: str) -> Tuple[Optional[bool], Optional[str]]:
@@ -114,13 +153,18 @@ def _gravar(conn, sessao_id: int, indice_id: Optional[int],
     conn.commit()
 
 
-def rodar(conn, b: bc.Bancada, rodadas: Sequence[int], queries: Sequence[Query],
+def rodar(conn, b: bc.Bancada,
+          indices: Sequence[Tuple[str, str, Optional[str], str]],
+          queries: Sequence[Query], rodadas: Sequence[int] = (),
+          globais: Optional[int] = None, trigramas: bool = False,
           forcar: bool = False) -> int:
-    """Mede a matriz inteira. Devolve o id da sessão."""
-    indices = indices_das_rodadas(conn, rodadas)
+    """Mede a matriz inteira. Devolve o id da sessão.
+
+    ``indices`` vem de ``juntar``: (chave, ddl, relacao, origem).
+    """
     if not indices:
-        raise SystemExit(f"nenhum índice proposto nas rodadas {list(rodadas)}. "
-                         f"Rode candidatar antes.")
+        raise SystemExit("nenhum índice para medir. Rode candidatar antes, "
+                         "ou peça candidatos à heurística com --globais.")
 
     b.preparar_sessao()
     b.checar_ociosidade(forcar)
@@ -133,14 +177,17 @@ def rodar(conn, b: bc.Bancada, rodadas: Sequence[int], queries: Sequence[Query],
         else:
             print(f"  ref={q.ref:<4} fora (não replicável): {erro.splitlines()[0][:60]}")
 
+    amb = b.ambiente(ordem="linha de base, depois um índice por vez")
     with conn.cursor() as cur:
-        cur.execute(SQL_SESSAO, (list(rodadas), b.repeticoes, b.timeout_ms))
+        cur.execute(SQL_SESSAO, (list(rodadas), globais, trigramas,
+                                 b.repeticoes, b.timeout_ms,
+                                 Jsonb(amb), amb["hash"]))
         sessao_id = cur.fetchone()[0]
     conn.commit()
     print(f"sessão {sessao_id}: {len(indices)} índices distintos × "
           f"{len(replicaveis)} queries")
 
-    for rel in sorted({r for _, _, r in indices if r}):
+    for rel in sorted({r for _, _, r, _ in indices if r}):
         b.analisar_relacao(rel)
 
     print(f"\nlinha de base: {len(replicaveis)} queries × {b.repeticoes} repetições")
@@ -151,9 +198,9 @@ def rodar(conn, b: bc.Bancada, rodadas: Sequence[int], queries: Sequence[Query],
         b._linha(q, medidas)
     print(f"  = {time.perf_counter() - inicio:.1f}s")
 
-    for n, (chave, ddl, relacao) in enumerate(indices, 1):
+    for n, (chave, ddl, relacao, origem) in enumerate(indices, 1):
         with conn.cursor() as cur:
-            cur.execute(SQL_INDICE, (sessao_id, chave, ddl, relacao))
+            cur.execute(SQL_INDICE, (sessao_id, chave, ddl, relacao, origem))
             indice_id = cur.fetchone()[0]
         conn.commit()
         print(f"\níndice {n}/{len(indices)}: {ddl}")

@@ -19,6 +19,11 @@ Quatro famílias, na ordem em que costumam valer a pena:
     index_filtro      Index Scan que ainda descarta linha por filtro: o
                       índice existente não cobre o predicado inteiro,
                       candidato a coluna extra ou INCLUDE.
+    trigrama          (só com trigramas=True) LIKE/ILIKE com curinga no
+                      começo, ou regex, sobre coluna de texto: nenhum B-tree
+                      atende, um GIN com gin_trgm_ops pode. A evidência é
+                      somada por (tabela, coluna), porque cada padrão
+                      sorteado aparece no plano como um filtro diferente.
 
 **As colunas vêm do catálogo, não do texto.** Extrair identificador de
 ``((l_shipdate >= '1994-01-01'::date) AND (l_shipdate < ...))`` com regex
@@ -31,7 +36,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Set
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from .banco import linhas_como_dicts
 
@@ -151,6 +156,23 @@ SELECT c.relname AS tabela,
  GROUP BY 1, 2
 """
 
+# Os índices de trigrama que já existem, pela primeira coluna. O
+# SQL_INDICES_EXISTENTES não serve para isso: ele só vê nomes de coluna, e um
+# B-tree em field9 não atende LIKE '%x%' nenhum.
+SQL_TRIGRAMAS_EXISTENTES = """
+SELECT c.relname AS tabela, a.attname AS coluna, i.relname AS indice
+  FROM pg_index x
+  JOIN pg_class c     ON c.oid = x.indrelid
+  JOIN pg_class i     ON i.oid = x.indexrelid
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  JOIN pg_opclass o   ON o.oid = x.indclass[0]
+  JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = x.indkey[0]
+ WHERE n.nspname = 'public'
+   AND o.opcname IN ('gin_trgm_ops', 'gist_trgm_ops')
+"""
+
+TIPOS_TEXTO = {"text", "varchar", "bpchar"}
+
 
 @dataclass
 class Candidato:
@@ -164,19 +186,28 @@ class Candidato:
     descartadas_media: Optional[float] = None
     linhas_media: Optional[float] = None
     indice_atual: Optional[str] = None
+    # 'btree' ou 'trigrama' (GIN com gin_trgm_ops, uma coluna).
+    metodo: str = "btree"
 
     @property
     def ddl(self) -> str:
+        if self.metodo == "trigrama":
+            return (f"CREATE INDEX {self.nome} ON {self.relacao} "
+                    f"USING gin ({self.colunas[0]} gin_trgm_ops)")
         cols = ", ".join(self.colunas)
         return f"CREATE INDEX {self.nome} ON {self.relacao} ({cols})"
 
     @property
     def nome(self) -> str:
-        return nome_indice(self.relacao, self.colunas)
+        # O sufixo separa o GIN do B-tree na mesma coluna, que a heurística
+        # pode propor juntos a partir do mesmo filtro.
+        sufixo = ["trgm"] if self.metodo == "trigrama" else []
+        return nome_indice(self.relacao, self.colunas + sufixo)
 
     def como_dict(self) -> dict:
         return {
             "familia": self.familia,
+            "metodo": self.metodo,
             "relacao": self.relacao,
             "colunas": self.colunas,
             "ddl_sugerido": self.ddl,
@@ -248,19 +279,111 @@ def nome_do_ddl(ddl: str) -> str:
     return m.group("nome").strip('"')
 
 
+def renomear(ddl: str, nome: str) -> str:
+    """O mesmo DDL com outro nome, passado de novo pelo portão.
+
+    A matriz cria um índice por vez, e dois candidatos com o mesmo nome nunca
+    se encontram. A validação de uma otimização cria o conjunto inteiro de
+    uma vez, e aí o nome tem que ser único.
+    """
+    m = _RE_CREATE_INDEX.match(validar_ddl(ddl))
+    unico = m.group("unico") or ""
+    return validar_ddl(f"CREATE {unico}INDEX {nome} ON {m.group('resto').strip()}")
+
+
 # --------------------------------------------------------------------------
 # Catálogo e extração de colunas
 # --------------------------------------------------------------------------
 
 def catalogo(conn_observado) -> Dict[str, List[str]]:
     """{tabela: [colunas na ordem do atributo]} do banco observado."""
+    return catalogo_com_tipos(conn_observado)[0]
+
+
+def catalogo_com_tipos(conn_observado) -> Tuple[Dict[str, List[str]],
+                                                 Dict[Tuple[str, str], str]]:
+    """O catálogo e, ao lado, {(tabela, coluna): nome do tipo}."""
     with conn_observado.cursor() as cur:
         cur.execute(SQL_CATALOGO)
         linhas = cur.fetchall()
     cat: Dict[str, List[str]] = {}
-    for tabela, coluna, _tipo in linhas:
+    tipos: Dict[Tuple[str, str], str] = {}
+    for tabela, coluna, tipo in linhas:
         cat.setdefault(tabela, []).append(coluna)
-    return cat
+        tipos[(tabela, coluna)] = tipo
+    return cat, tipos
+
+
+# Um predicado que só um índice de trigrama atende, como o plano o escreve:
+#
+#     (field9 ~~ '%4Ss%'::text)              LIKE
+#     ((p_name)::text ~~* '%green%'::text)   ILIKE sobre varchar
+#     (s_comment ~ 'Customer.*Complaints')   regex
+#
+# Espaço antes do operador, e não lookbehind: assim `!~~` (NOT LIKE) e `!~`
+# ficam de fora, e trigrama não ajuda nenhum dos dois.
+_RE_TRIGRAMA = re.compile(
+    r"""([a-z_][a-z0-9_]*)\)?            # a coluna, talvez entre parênteses
+        (?:::[a-z][a-z ]*?)?             # cast opcional: ::text, ::character varying
+        \s(~~\*?|~\*?)\s+                # LIKE, ILIKE, ~, ~*
+        ('(?:[^']|'')*')?                # o padrão, quando é literal
+    """, re.IGNORECASE | re.VERBOSE)
+
+
+def _padrao_serve_trigrama(operador: str, literal: Optional[str]) -> bool:
+    """O padrão é do tipo que só trigrama atende?
+
+    LIKE ancorado ('forest%') um B-tree com text_pattern_ops resolve, e fica
+    de fora. Sem nenhum trecho de três caracteres sem curinga o pg_trgm não
+    extrai trigrama completo e o índice não filtra nada. Padrão que não é
+    literal (parâmetro, expressão) passa: quem decide é o EXPLAIN da matriz.
+    """
+    if literal is None:
+        return True
+    padrao = literal[1:-1].replace("''", "'")
+    if operador.startswith("~~"):
+        if not padrao or padrao[0] not in "%_":
+            return False
+        trechos = re.split(r"[%_]", padrao)
+    else:
+        trechos = re.split(r"[.*+?()\[\]{}|^$\\]", padrao)
+    return max((len(t) for t in trechos), default=0) >= 3
+
+
+def colunas_trigrama(expressao: str, relacao: Optional[str],
+                     cat: Dict[str, List[str]],
+                     tipos: Dict[Tuple[str, str], str]) -> List[Tuple[str, str]]:
+    """[(tabela, coluna)] de texto que o filtro busca por substring ou regex."""
+    achadas: List[Tuple[str, str]] = []
+    for m in _RE_TRIGRAMA.finditer(expressao or ""):
+        coluna = m.group(1).lower()
+        # lower(field9) ~~ '%x%': a coluna está dentro de uma função, e um
+        # GIN sobre a coluna crua não atende a expressão.
+        if re.search(r"[a-z_][a-z0-9_]*\($", (expressao or "")[:m.start()],
+                     re.IGNORECASE):
+            continue
+        if not _padrao_serve_trigrama(m.group(2), m.group(3)):
+            continue
+        tabela = relacao if relacao in cat else relacao_da_coluna(coluna, cat)
+        if (tabela is None or coluna not in cat.get(tabela, [])
+                or tipos.get((tabela, coluna)) not in TIPOS_TEXTO):
+            continue
+        if (tabela, coluna) not in achadas:
+            achadas.append((tabela, coluna))
+    return achadas
+
+
+def tem_pg_trgm(conn_observado) -> bool:
+    with conn_observado.cursor() as cur:
+        cur.execute("SELECT 1 FROM pg_extension WHERE extname = 'pg_trgm'")
+        return cur.fetchone() is not None
+
+
+def trigramas_existentes(conn_observado) -> Dict[Tuple[str, str], str]:
+    """{(tabela, coluna): nome do índice de trigrama que já existe}."""
+    with conn_observado.cursor() as cur:
+        cur.execute(SQL_TRIGRAMAS_EXISTENTES)
+        return {(t, c): i for t, c, i in cur.fetchall()}
 
 
 def extrair_colunas(expressao: str, relacao: Optional[str],
@@ -331,13 +454,23 @@ def ja_coberto(relacao: str, colunas: Sequence[str],
 def propor(conn_brokk, conn_observado, refs: Sequence[int],
            limite: int = 12,
            minimo_descartadas: int = MINIMO_DESCARTADAS,
-           manter_redundantes: bool = False) -> Tuple[List[Candidato], int]:
+           manter_redundantes: bool = False,
+           trigramas: bool = False) -> Tuple[List[Candidato], int]:
     """Os candidatos de um cluster, do mais caro para o mais barato.
 
     Devolve (candidatos, quantos foram descartados por já existirem).
+
+    Com ``trigramas``, entra também a família trigrama, e o banco observado
+    precisa ter a extensão pg_trgm: o portão do DDL só deixa passar CREATE
+    INDEX, então a bancada não a cria sozinha. Sem ``trigramas`` o resultado
+    é o de antes, na mesma ordem.
     """
-    cat = catalogo(conn_observado)
+    if trigramas and not tem_pg_trgm(conn_observado):
+        raise SystemExit("os candidatos de trigrama pedem a extensão pg_trgm "
+                         "no banco observado:\n    CREATE EXTENSION pg_trgm;")
+    cat, tipos = catalogo_com_tipos(conn_observado)
     existentes = indices_existentes(conn_observado)
+    trgm_existentes = trigramas_existentes(conn_observado) if trigramas else {}
 
     with conn_brokk.cursor() as cur:
         cur.execute(SQL_EVIDENCIA,
@@ -347,7 +480,20 @@ def propor(conn_brokk, conn_observado, refs: Sequence[int],
     propostos: List[Candidato] = []
     vistos: Set[str] = set()
     redundantes = 0
+    # (tabela, coluna) -> a evidência de trigrama somada entre os filtros.
+    por_coluna: Dict[Tuple[str, str], dict] = {}
     for e in evidencias:
+        if trigramas and e["familia"] in ("seq_scan_filtro", "index_filtro"):
+            n = int(e["ocorrencias"] or 0)
+            for chave in colunas_trigrama(e["expressao"], e["relacao"], cat, tipos):
+                acc = por_coluna.setdefault(chave, {
+                    "expressao": e["expressao"] or "", "refs": set(),
+                    "ocorrencias": 0, "ms_total": 0.0, "descartadas": 0.0})
+                acc["refs"].update(e["refs"] or [])
+                acc["ocorrencias"] += n
+                acc["ms_total"] += float(e["ms_total"] or 0)
+                acc["descartadas"] += float(e["descartadas_media"] or 0) * n
+
         relacao = e["relacao"]
         colunas = extrair_colunas(e["expressao"], relacao, cat)
         if not colunas:
@@ -395,6 +541,31 @@ def propor(conn_brokk, conn_observado, refs: Sequence[int],
             continue
         vistos.add(cand.nome)
         propostos.append(cand)
-        if len(propostos) >= limite:
+        # Com trigramas a lista só fecha depois de juntar as duas famílias.
+        if not trigramas and len(propostos) >= limite:
             break
+
+    if trigramas:
+        for (tabela, coluna), acc in por_coluna.items():
+            ja_existe = trgm_existentes.get((tabela, coluna))
+            if ja_existe and not manter_redundantes:
+                redundantes += 1
+                continue
+            n = acc["ocorrencias"]
+            cand = Candidato(
+                familia="trigrama", metodo="trigrama",
+                relacao=tabela, colunas=[coluna],
+                expressao=acc["expressao"][:400],
+                queries=sorted(acc["refs"]),
+                ocorrencias=n,
+                ms_total=acc["ms_total"],
+                descartadas_media=(acc["descartadas"] / n) if n else None,
+                indice_atual=ja_existe,
+            )
+            if cand.nome not in vistos:
+                vistos.add(cand.nome)
+                propostos.append(cand)
+        # sort é estável: entre os B-tree, a ordem de antes não muda.
+        propostos.sort(key=lambda c: -c.ms_total)
+        propostos = propostos[:limite]
     return propostos, redundantes

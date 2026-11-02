@@ -18,6 +18,76 @@ reaproveitam o volume `pgdata` e são imediatas.
 Rode de dentro da WSL, não pelo caminho UNC do Windows: os bind mounts
 relativos (`./logs`, `./tpch-data`) precisam resolver como caminho Linux.
 
+## Ajuste de recursos (PGTune)
+
+Desde 2026-10-25 o servidor observado sobe com a configuração do
+[PGTune](https://pgtune.leopard.in.ua), aplicada como `-c` no `command` do
+serviço `postgres` do `docker-compose.yml` (bloco "ajuste de recursos"). Vale
+para o servidor inteiro, então para `tpch` e `ycsb` igualmente.
+
+Entradas, com o que o container enxerga:
+
+| campo do PGTune | valor | de onde veio |
+| --- | --- | --- |
+| DB version | 18 | `SELECT version()` |
+| OS Type | Linux | container Debian sobre o kernel da WSL2 |
+| DB Type | Mixed type of application | TPC-H/OLAP junto com YCSB/OLTP e escrita |
+| Total Memory | 7785 MB | `MemTotal` do container: sem limite de cgroup, é a VM da WSL |
+| CPUs | 12 | `nproc` no container, sem cota de CPU |
+| Connections | 100 | `max_connections` que já estava em vigor |
+| Data Storage | NVMe | o disco físico do host (o da WSL se diz rotacional, é virtual) |
+| Total Data Size | menor que a RAM | `tpch` + `ycsb` ~2,7 GB |
+
+Os valores saíram das fórmulas do código do PGTune
+(`src/features/configuration/configurationSelectors.js`), lidas e aplicadas
+à mão a estas entradas:
+
+| parâmetro | padrão anterior | PGTune |
+| --- | --- | --- |
+| `shared_buffers` | 128MB | 1946MB |
+| `effective_cache_size` | 4GB | 5838MB |
+| `maintenance_work_mem` | 64MB | 486MB |
+| `work_mem` | 4MB | 11MB |
+| `wal_buffers` | 4MB | 16MB |
+| `random_page_cost` | 4 | 1.1 |
+| `effective_io_concurrency` | 16 | 1000 |
+| `maintenance_io_concurrency` | 16 | 1000 |
+| `jit` | on | off |
+| `wal_compression` | off | lz4 |
+| `min_wal_size` / `max_wal_size` | 80MB / 1GB | 1GB / 4GB |
+| `max_worker_processes` / `max_parallel_workers` | 8 / 8 | 12 / 12 |
+| `max_parallel_workers_per_gather` | 2 | 4 |
+| `max_parallel_maintenance_workers` | 2 | 4 |
+
+**`io_method = io_uring` ficou de fora**, embora o PGTune o proponha para PG 18
+em Linux: o seccomp padrão do Docker bloqueia io_uring e o servidor não sobe
+(`FATAL: could not setup io_uring queue: Operation not permitted`, testado num
+container descartável; o kernel da WSL permite, `io_uring_disabled=0`). Fica o
+`worker`, e `io_workers` = CPUs/4 = 3, que é o padrão e o que o PGTune propõe
+sem io_uring. Liberar exigiria `security_opt: [seccomp:unconfined]` no
+serviço, que tira isolamento do container.
+
+Três consequências:
+
+- **Resultado de antes e de depois não se comparam.** Os experimentos do
+  TPC-H (`arquivo/2026-10-24_tpch-puro/`) e do YCSB
+  (`arquivo/2026-10-25_ycsb/`) rodaram com os padrões. `random_page_cost` de
+  4 para 1.1 muda a escolha entre índice e seq scan, que é justamente o que a
+  bancada mede; `work_mem` e os workers paralelos mudam os planos das OLAP.
+- **O campo `Settings` dos planos deixa de vir vazio.** Os GUCs de
+  planejamento acima estão fora do default e passam a aparecer em todo plano
+  do log. É o que separa no corpus os planos de uma configuração e da outra.
+- **O PGTune supõe máquina dedicada.** Na mesma VM rodam o banco de
+  monitoramento e, durante os benchmarks, os JVMs do BenchBase. Se faltar
+  memória sob carga, `shared_buffers` e `work_mem` são os primeiros a baixar.
+
+Para conferir o que está em vigor (`source` tem que ser `command line`):
+
+```bash
+docker exec sindri_postgres psql -U sindri -d tpch -c \
+  "select name, setting, unit, source from pg_settings where source = 'command line' order by 1"
+```
+
 ## Instrumentação
 
 O servidor sobe com `pg_stat_statements` e `auto_explain` pré-carregados. Com
@@ -34,7 +104,7 @@ O registro de plano é o que tem `message` começando com `duration:` e contendo
 | `Query Text` | SQL, com `$1`, `$2`... quando o cliente usa prepared statement |
 | `Query Parameters` | valores realmente vinculados (`auto_explain.log_parameter_max_length=-1`) |
 | `Plan` | árvore com `Actual Rows` x `Plan Rows`, buffers, tempo de I/O e WAL por nó |
-| `Settings` | GUCs de planejamento fora do default (`{}` quando nenhum foi mexido) |
+| `Settings` | GUCs de planejamento fora do default; com o PGTune, nunca vem vazio (ver "Ajuste de recursos") |
 
 Cada linha do jsonlog carrega ainda `application_name`, que separa a carga do
 BenchBase de qualquer outra coisa conectada no banco, e `query_id`
@@ -102,6 +172,17 @@ docker compose --profile bench build benchbase
 ```bash
 HOST_UID=$(id -u) HOST_GID=$(id -g) \
   docker compose --profile bench run --rm benchbase
+```
+
+Uma passada dá uma execução por query, e o `index_provider` só aceita no
+corpus query com pelo menos 5. Para montar o corpus "tpch-puro" (só as 22, sem
+escrita nem carga complementar), use o script, que roda N passadas em
+sequência (padrão 6) e recusa começar com o log desligado, com cauda sintética
+em `orders` ou com outro BenchBase rodando:
+
+```bash
+./tpch-power.sh        # 6 passadas; sumários em benchbase/results/power/
+./tpch-power.sh 3
 ```
 
 **Throughput run** — 4 terminais escolhendo query por peso durante 180s
@@ -225,6 +306,109 @@ consulta nova que você adicionar:
 Um nó continua faltando: `Group`, o `GROUP BY` sobre entrada já ordenada. O
 planner só o escolhe em situação bem específica e não consegui provocá-lo de
 forma natural sobre este schema.
+
+### YCSB (chave-valor, OLTP)
+
+O YCSB vem no mesmo BenchBase, então a imagem é a mesma. Ele roda no banco
+`ycsb` do mesmo servidor observado: os planos caem em `logs/` como os do
+TPC-H, e o `tpch` fica intocado. O schema é uma tabela só,
+`usertable(ycsb_key int PK, field1..field10 text)`, e a carga são transações
+curtas por chave — o oposto das 22 queries analíticas.
+
+Aqui `--create` e `--load` são seguros: o DDL do YCSB só derruba `usertable`.
+Carregue com o script, que desliga o log **só no banco `ycsb`** durante o load
+(senão cada INSERT em lote iria para `logs/` com os parâmetros, perto de 1 GB
+de preparo) e religa no fim, mesmo se falhar:
+
+```bash
+./ycsb-load.sh
+```
+
+Depois, a carga:
+
+```bash
+HOST_UID=$(id -u) HOST_GID=$(id -g) \
+  docker compose --profile bench run --rm benchbase \
+  -b ycsb -c sindri-config/ycsb.xml \
+  --create=false --load=false --execute=true
+```
+
+`benchbase/config/ycsb.xml` está com `scalefactor` 1000 (1M linhas, 1,15 GB),
+4 terminais a 200 req/s por 120 s e a mistura do exemplo do BenchBase
+(50% leitura, 5% insert, 15% scan, 10% update, 10% delete, 10%
+read-modify-write). Os pesos dos workloads clássicos A, B, C, E e F estão
+comentados no XML. O banco nasce do `initdb/04-ycsb-database.sql` num volume
+novo; num volume antigo, o próprio `ycsb-load.sh` cria o banco.
+
+Medido num teste de 10 s: 2002 requests, 200 req/s de throughput e de goodput
+(nenhum aborto), latência mediana de 1,9 ms, p99 de 60 ms. O load de 1M linhas
+leva cerca de 25 s.
+
+Rodar `ycsb-load.sh` de novo apaga e recarrega a `usertable`. É o jeito de
+desfazer o que `InsertRecord`/`DeleteRecord`/`UpdateRecord` mudaram.
+
+#### Consultas mistas e escrita sobre o YCSB
+
+As 6 transações do YCSB são todas acesso pela PK, o que não dá ao recomendador
+de índices nada para fazer. Duas cargas `templated` ampliam o corpus sobre a
+mesma `usertable`:
+
+| config | templates | o quê |
+| --- | --- | --- |
+| `ycsb_mixed.xml` | `templates_ycsb_mixed.xml` | 22 consultas: Y01–Y11 OLTP, Y12–Y22 OLAP. Só leitura |
+| `ycsb_write.xml` | `templates_ycsb_write.xml` | 10 comandos: INSERT (linha, lote, upsert), UPDATE (PK, faixa, filtro em campo, `UPDATE ... FROM`), DELETE (PK, faixa com `RETURNING`, filtro em campo) |
+
+```bash
+HOST_UID=$(id -u) HOST_GID=$(id -g) \
+  docker compose --profile bench run --rm benchbase \
+  -b templated -c sindri-config/ycsb_mixed.xml \
+  --create=false --load=false --execute=true
+```
+
+(troque por `ycsb_write.xml` para a escrita.) As 22 consultas com valores
+fixos estão em `queries/ycsb/y01.sql`..`y22.sql`, para rodar no `psql`.
+
+Para a carga completa — lê, insere, atualiza e apaga ao mesmo tempo — use o
+script, que dispara as duas em paralelo com a mesma duração e imprime o resumo
+no fim:
+
+```bash
+./ycsb-bench.sh                 # 30 min (padrão); ./ycsb-bench.sh 300 = 5 min
+RECARREGAR=1 ./ycsb-bench.sh    # recria a usertable antes
+CORE=1 ./ycsb-bench.sh          # inclui as 6 transações do YCSB original
+WRITE_RATE=50 ./ycsb-bench.sh   # rate da escrita (padrão 100 req/s)
+DRY_RUN=1 ./ycsb-bench.sh       # só mostra os comandos
+```
+
+Ele se recusa a rodar se a `usertable` estiver vazia ou se o log estiver
+desligado no banco `ycsb` (um `ALTER DATABASE ... SET` que ficou para trás
+deixaria a carga inteira sem plano, sem erro nenhum). Os sumários vão para
+`benchbase/results/ycsb/{leitura,escrita,core}`.
+
+Os campos são 100 caracteres ASCII aleatórios e a tabela só tem a PK. Por
+isso as consultas filtram e agrupam por prefixo de campo (`left(fieldN, k)`):
+Y06, Y08, Y17 e Y19 fazem seq scan hoje e têm índice candidato claro (de
+expressão, composto, trigram). Prefixos saem de `chr(?)`, porque o gerador do
+templated sorteia número e data mas não texto; faixas usam um parâmetro só,
+`(SELECT ?::int AS k) p` com fim em `p.k + N`, para o intervalo nunca sair
+invertido.
+
+A escrita segue a regra do `tpch_write`: INSERT, DELETE e UPDATE em lote só
+na cauda sintética (chaves 5000000–5099999, com o filtro repetido no SQL).
+Só W05 e W06 tocam a base, e só em `field10`, que o próprio `UpdateRecord` já
+reescreve.
+
+Medido em testes de 8 a 20 s com o log desligado, nenhum erro SQL nas duas:
+
+| | resultado |
+| --- | --- |
+| `ycsb_mixed` | 4 a 7 req/s com 4 terminais sem limite; OLTP de 1 a 230 ms, OLAP de 0,2 a 1,6 s, Y06 2,5 s |
+| `ycsb_write` | 100 req/s (o rate configurado), todos os 10 comandos executados |
+
+Nós de plano que a mistura cobre e o YCSB puro não: InitPlan, Function Scan,
+Nested Loop, Hash Join, Merge Anti Join, WindowAgg, Incremental Sort, CTE
+Scan, SetOp, Gather/Gather Merge, Bitmap Heap Scan, e ModifyTable com
+`ON CONFLICT`.
 
 ### Corrida longa nos 4 painéis
 
@@ -939,6 +1123,40 @@ Duas coisas que essa etapa obrigou a resolver, e que valem para quem for mexer:
 
 O detalhe está em [src/README_index_provider.md](src/README_index_provider.md).
 
+### A seleção adaptativa: até onde vale continuar
+
+A seleção global (`matriz` → `otimizar` → `validar`) escolhe o melhor
+conjunto **para um orçamento dado**, e o orçamento é escolhido antes, sem
+critério. `adaptar` troca o orçamento por uma regra de parada: compara
+configurações **completas e medidas**, com a incerteza que as sessões de
+medida de fato têm, e para quando o benefício adicional, mesmo no melhor caso
+do intervalo, não passa da margem de relevância.
+
+```bash
+./.venv/bin/python -m src.index_provider adaptar --sessao 1 --ruido     # o modelo de ruído
+./.venv/bin/python -m src.index_provider adaptar --sessao 1             # decide com o que já foi medido
+./.venv/bin/python -m src.index_provider adaptar --sessao 1 --executar  # mede o que a decisão pede
+./.venv/bin/python -m src.index_provider adaptar --sessao 1 --confirmar N --executar
+```
+
+O ponto de partida foi um número: nos dados do TPC-H com PGTune, a mesma
+query varia entre sessões ~2× mais do que entre repetições da mesma sessão.
+Repetir dentro da sessão não separa ganho de ruído; só sessões independentes
+separam. Antes de parar, as alternativas já medidas que ficaram inconclusivas
+e ainda podem passar da margem (UCB(ΔB) − custo ≥ δ) são remedidas; as que
+nem no melhor caso passam são descartadas sem gastar validação. Um
+crescimento que esgota as sessões sem provar o ganho (não ordenável) conta
+para a paciência como uma rejeição. No TPC-H com PGTune, a seleção parou em
+248,4 MB. A confirmação, em 4 sessões novas, sustentou o passo decisivo
+(+9,4 s [+6,0; +13,1] contra uma margem de 5,5 s), mas mediu só 38% do ganho
+que a seleção estimava. O resto do
+desenho (variância por query moderada, censura no timeout, superioridade para
+crescer e não inferioridade para encolher, contagem de comparações com
+sensibilidade a Bonferroni, confirmação à parte) está em
+[src/README_index_provider.md](src/README_index_provider.md#modo-adaptativo-até-onde-vale-continuar).
+HDBSCAN, Método A e `otimizar` continuam disponíveis e entram na mesma
+comparação.
+
 ### Sobre a chave no arquivo
 
 `CHAVE_ANTHROPIC` está lá porque foi pedida ali, mas este arquivo é versionado.
@@ -955,7 +1173,10 @@ revoga o que aparece. As alternativas, que o código também aceita, são
 | `pgadmin/` | conexões pré-cadastradas do pgAdmin (`--profile ui`) |
 | `tpch-data/` | arquivos `.tbl` gerados pelo dbgen (SF=1) |
 | `tpch-dbgen/` | fonte do gerador de dados oficial do TPC-H |
-| `queries/` | as 22 queries TPC-H em SQL puro, para rodar via `psql` |
+| `queries/` | as 22 queries TPC-H em SQL puro, para rodar via `psql`; em `queries/ycsb/`, as 22 mistas do YCSB |
 | `logs/` | jsonlog do Postgres com os planos do `auto_explain` |
-| `benchbase/` | Dockerfile, configs (leitura e escrita) e resultados do gerador de carga |
+| `benchbase/` | Dockerfile, configs (TPC-H leitura e escrita, YCSB) e resultados do gerador de carga |
+| `ycsb-load.sh` | cria e carrega a `usertable` do YCSB com o log desligado |
+| `ycsb-bench.sh` | carga mista no YCSB: leitura, INSERT, UPDATE e DELETE em paralelo |
+| `tpch-power.sh` | N passadas do power run do TPC-H, o corpus "tpch-puro" |
 | `src/` | código do BrokkPG (`query_colector.py`: ingestão; `plan_worker.py`: planos; `index_provider/`: recomendação por IA e bancada de medição; `schema_estimator.py`: esquema reconstruído pelos logs) |

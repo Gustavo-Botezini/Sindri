@@ -224,6 +224,17 @@ class Bancada:
             cur.execute(f"SET statement_timeout = {int(self.timeout_ms)}")
         self.obs.commit()
 
+    def ambiente(self, **aquecimento) -> Dict[str, Any]:
+        """A impressão digital da sessão (ver ambiente.py).
+
+        Chamada depois de preparar_sessao(), para as GUCs lidas serem as
+        desta sessão (statement_timeout, plan_cache_mode) e não as padrão.
+        """
+        from . import ambiente
+        return ambiente.coletar(self.obs, aquecimento={
+            "repeticoes": self.repeticoes, "descartada": 1,
+            "timeout_ms": self.timeout_ms, **aquecimento})
+
     def checar_ociosidade(self, forcar: bool = False) -> None:
         """Recusa medir com carga rodando. Medir sob carga mede a carga."""
         with self.obs.cursor() as cur:

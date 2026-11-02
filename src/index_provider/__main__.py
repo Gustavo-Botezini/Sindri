@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import List, Optional, Sequence
 
 from . import (banco, bancada, candidatos, corpus, dossie, graficos, grupos,
-               matriz, saida, vetores)
+               matriz, otimizacao, saida, vetores)
 from .banco import como_json
 
 SQL_LISTAR_RODADAS = """
@@ -386,11 +386,12 @@ def cmd_grafico(args) -> int:
     with conn:
         meta, _ = grupos.carregar_rodada(conn, args.rodada)
         pontos = graficos.carregar_pontos(conn, args.rodada)
-        rotulo = graficos.rotulos_tpch(pontos)
+        rotulo = graficos.rotulos_tpch(pontos, args.consultas)
         casados = sum(1 for v in rotulo.values() if not v.startswith("#"))
         print(f"rodada {args.rodada}: {len(pontos)} queries, "
               f"{meta['clusters']} clusters, {meta['ruido']} em ruído")
-        print(f"  {casados} de {len(pontos)} casadas com queries/q*.sql")
+        print(f"  {casados} de {len(pontos)} casadas com "
+              f"{args.consultas or 'queries'}/*.sql")
 
         alvo = args.saida or Path(f"clusters-rodada{args.rodada}.png")
         graficos.desenhar_clusters(
@@ -448,6 +449,10 @@ def cmd_relatar(args) -> int:
 
 
 def cmd_matriz(args) -> int:
+    if not (args.rodadas or args.globais):
+        print("de onde vêm os índices? --rodadas N,N,... e/ou --globais N",
+              file=sys.stderr)
+        return 2
     conn = banco.conectar(args.dsn)
     obs = banco.conectar(banco.DSN_OBSERVADO, "banco observado",
                          app=bancada.NOME_APP)
@@ -461,12 +466,31 @@ def cmd_matriz(args) -> int:
         b = bancada.Bancada(obs, conn, repeticoes=args.repeticoes,
                             timeout_ms=args.timeout * 1000,
                             verboso=not args.silencioso)
+        fontes = []
+        if args.rodadas:
+            fontes.append(("rodada", matriz.indices_das_rodadas(conn, args.rodadas)))
+        if args.globais:
+            # A heurística lê o catálogo do banco observado; com a sessão
+            # preparada antes, nem essas consultas vão para o log dele.
+            b.preparar_sessao()
+            globais = matriz.indices_da_heuristica(
+                conn, obs, [q.ref for q in qs], args.globais,
+                trigramas=args.trigramas)
+            trgm = sum(1 for _, ddl, _ in globais if "gin_trgm_ops" in ddl)
+            print(f"  heurística: {len(globais)} candidatos para o corpus inteiro"
+                  + (f", {trgm} de trigrama" if args.trigramas else ""))
+            fontes.append(("heuristica", globais))
+        indices = matriz.juntar(fontes)
         inicio = time.perf_counter()
-        sessao = matriz.rodar(conn, b, args.rodadas, qs, forcar=args.forcar)
+        sessao = matriz.rodar(conn, b, indices, qs, rodadas=args.rodadas or [],
+                              globais=args.globais, trigramas=args.trigramas,
+                              forcar=args.forcar)
         print(f"\nsessão {sessao} concluída em "
-              f"{(time.perf_counter() - inicio) / 60:.1f} min. Para avaliar:\n"
-              f"  python -m src.index_provider comparar --sessao {sessao} "
-              f"--rodadas {','.join(map(str, args.rodadas))}")
+              f"{(time.perf_counter() - inicio) / 60:.1f} min. Para avaliar:")
+        if args.rodadas:
+            print(f"  python -m src.index_provider comparar --sessao {sessao} "
+                  f"--rodadas {','.join(map(str, args.rodadas))}")
+        print(f"  python -m src.index_provider otimizar --sessao {sessao}")
     return 0
 
 
@@ -474,15 +498,10 @@ def cmd_comparar(args) -> int:
     conn = banco.conectar(args.dsn)
     with conn:
         banco.aplicar_esquema(conn)
-        sessao = args.sessao
+        sessao = args.sessao or _ultima_sessao(conn)
         if sessao is None:
-            with conn.cursor() as cur:
-                cur.execute("SELECT max(id) FROM monitoring.matriz_sessao "
-                            " WHERE concluida_em IS NOT NULL")
-                sessao = cur.fetchone()[0]
-            if sessao is None:
-                print("nenhuma matriz concluída. Rode antes: matriz --rodadas ...")
-                return 2
+            print("nenhuma matriz concluída. Rode antes: matriz --rodadas ...")
+            return 2
         res = matriz.comparar(conn, sessao, args.rodadas, args.limiar)
 
         with conn.cursor() as cur:
@@ -516,6 +535,305 @@ def cmd_comparar(args) -> int:
     return 0
 
 
+def cmd_otimizar(args) -> int:
+    """O conjunto de índices da carga inteira, pelo programa inteiro."""
+    conn = banco.conectar(args.dsn)
+    with conn:
+        banco.aplicar_esquema(conn)
+        if args.listar:
+            return otimizacao.listar(conn)
+        sessao = args.sessao or _ultima_sessao(conn)
+        if sessao is None:
+            print("nenhuma matriz concluída. Rode antes: matriz --globais N")
+            return 2
+
+        inst = otimizacao.carregar(conn, sessao, args.peso, args.limiar)
+        otimizacao.mostrar_instancia(inst)
+        rotulo = graficos.rotulos_tpch(
+            [{"query_ref": r, "query_text": t} for r, t in inst.textos.items()],
+            args.consultas)
+
+        def parametros(orcamento):
+            return otimizacao.Parametros(
+                modelo=args.modelo, peso=args.peso, limiar=args.limiar,
+                orcamento_mb=orcamento, lambda_mb=args.lambda_mb,
+                custo_escrita=args.custo_escrita)
+
+        resultados = []
+        for orcamento in (args.orcamento_mb or [None]):
+            par = parametros(orcamento)
+            av, status = otimizacao.resolver(inst, par)
+            oid = otimizacao.gravar(conn, inst, par, av, status)
+            otimizacao.mostrar_solucao(inst, par, av, status, oid, rotulo)
+            resultados.append(otimizacao.como_dict(inst, par, av, status, oid))
+
+        if len(resultados) > 1:
+            print(f"\n  {'orçamento':>10} {'índices':>8} {'MB':>9} "
+                  f"{'benefício ms':>14} {'objetivo':>14} {'otimização':>11}")
+            for r in resultados:
+                orc = r["parametros"]["orcamento_mb"]
+                print(f"  {'-' if orc is None else f'{orc:,.0f}':>10} "
+                      f"{len(r['indices']):>8} {r['armazenamento_mb']:>9,.1f} "
+                      f"{r['beneficio_previsto_ms']:>14,.0f} "
+                      f"{r['objetivo']:>14,.0f} {r['otimizacao']:>11}")
+
+        # O conjunto que cada rodada de clusters propôs, na mesma régua. Vai
+        # gravado como otimização para que `validar` o meça do mesmo jeito:
+        # criado inteiro, contra a mesma carga.
+        rodadas = []
+        if args.rodadas:
+            print("\n  mesmo modelo, o conjunto que cada rodada propôs "
+                  "(sem orçamento):")
+        for rodada in args.rodadas or []:
+            ids, fora = otimizacao.conjunto_da_rodada(conn, inst, rodada)
+            par = parametros(None)
+            par.rodada = rodada
+            av = otimizacao.avaliar(inst, par, ids)
+            status = f"conjunto da rodada {rodada}"
+            oid = otimizacao.gravar(conn, inst, par, av, status)
+            extra = f"   ({len(fora)} não medido(s) nesta sessão)" if fora else ""
+            print(f"    rodada {rodada}: {len(av.indices)} índice(s), "
+                  f"{av.mb:,.1f} MB, benefício {av.beneficio_ms:,.0f} ms, "
+                  f"objetivo {av.objetivo:,.0f}  -> otimização {oid}{extra}")
+            rodadas.append({"rodada": rodada, "nao_medidos": fora,
+                            **otimizacao.como_dict(inst, par, av, status, oid)})
+
+        if args.json:
+            corpo = {"sessao": sessao,
+                     "rotulos": {str(r): rotulo[r] for r in sorted(rotulo)},
+                     "otimizacoes": resultados, "rodadas": rodadas}
+            args.json.write_text(banco.como_json(corpo), encoding="utf-8")
+            print(f"\n  JSON em {args.json}")
+    return 0
+
+
+def cmd_validar(args) -> int:
+    """Cria o conjunto escolhido inteiro, mede, e põe ao lado do previsto."""
+    conn = banco.conectar(args.dsn)
+    with conn:
+        banco.aplicar_esquema(conn)
+        if not args.relatorio:
+            obs = banco.conectar(banco.DSN_OBSERVADO, "banco observado",
+                                 app=bancada.NOME_APP)
+            with obs:
+                qs = _corpus(conn, args)
+                faltando = corpus.anexar_parametros(conn, qs)
+                if faltando:
+                    print(f"  AVISO: {faltando} queries parametrizadas sem "
+                          f"valores gravados; elas vão falhar no replay")
+                b = bancada.Bancada(obs, conn, repeticoes=args.repeticoes,
+                                    timeout_ms=args.timeout * 1000,
+                                    verboso=not args.silencioso)
+                inicio = time.perf_counter()
+                if args.confirma_adaptacao and args.finalidade != "confirmacao":
+                    raise SystemExit("--confirma-adaptacao pede --finalidade confirmacao")
+                validacao = otimizacao.validar(
+                    conn, b, args.otimizacao, qs, refazer=args.refazer,
+                    forcar=args.forcar, nova=args.nova_validacao,
+                    finalidade=args.finalidade, ordem=args.ordem,
+                    confirma_adaptacao=args.confirma_adaptacao,
+                    movimento=args.movimento)
+                args.validacao = validacao
+                print(f"\nvalidação {validacao} concluída em "
+                      f"{(time.perf_counter() - inicio) / 60:.1f} min")
+
+        rel = otimizacao.relatorio(conn, args.otimizacao, args.validacao)
+        rotulo = graficos.rotulos_tpch(
+            [{"query_ref": r, "query_text": t} for r, t in rel["textos"].items()],
+            args.consultas)
+        otimizacao.mostrar_relatorio(rel, rotulo)
+        if args.json:
+            rel["rotulos"] = {str(r): rotulo[r] for r in sorted(rotulo)}
+            args.json.write_text(banco.como_json(rel), encoding="utf-8")
+            print(f"\n  JSON em {args.json}")
+    return 0
+
+
+def _parametros_adaptativos(args):
+    from . import adaptativa
+    return adaptativa.Parametros(
+        confianca=args.confianca, relevancia=args.relevancia,
+        margem_ms=None if args.margem_s is None else args.margem_s * 1000,
+        lambda_mb=args.lambda_mb, custo_entrada_ms=args.custo_entrada,
+        paciencia=args.paciencia, max_validacoes=args.max_validacoes,
+        max_medicoes=args.max_medicoes, exploracao=args.exploracao,
+        resolucao=args.resolucao,
+        vizinhos=args.vizinhos, amostras=args.amostras, semente=args.semente,
+        peso=args.peso, modelo=args.modelo)
+
+
+def cmd_adaptar(args) -> int:
+    """Seleção adaptativa: decide sobre configurações completas medidas e
+    diz até onde vale continuar. Ver adaptativa.py."""
+    from . import adaptativa, estatistica
+
+    conn = banco.conectar(args.dsn)
+    with conn:
+        banco.aplicar_esquema(conn)
+        if args.listar:
+            return adaptativa.listar(conn)
+        sessao = args.sessao or _ultima_sessao(conn)
+        if sessao is None:
+            print("nenhuma matriz concluída. Rode antes: matriz --globais N")
+            return 2
+        par = _parametros_adaptativos(args)
+        with conn.cursor() as cur:
+            cur.execute("SELECT query_ref, query_text FROM monitoring.query_resumo")
+            textos = [{"query_ref": r, "query_text": t} for r, t in cur.fetchall()]
+        rotulo = graficos.rotulos_tpch(textos, args.consultas)
+
+        precisa_bancada = args.executar
+        obs = None
+        if precisa_bancada or not args.sem_catalogo:
+            try:
+                obs = banco.psycopg.connect(banco.DSN_OBSERVADO,
+                                            application_name=bancada.NOME_APP,
+                                            connect_timeout=5)
+            except Exception as erro:               # noqa: BLE001
+                if precisa_bancada:
+                    raise SystemExit(f"banco observado inacessível: {erro}")
+                print(f"  (banco observado inacessível, seguindo sem catálogo: "
+                      f"{str(erro).splitlines()[0]})")
+        b = qs = None
+        if obs is not None:
+            b = bancada.Bancada(obs, conn, repeticoes=args.repeticoes,
+                                timeout_ms=args.timeout * 1000,
+                                verboso=not args.silencioso)
+            # A sessão é preparada antes de qualquer leitura de catálogo,
+            # para nem elas irem para o log do banco observado.
+            b.preparar_sessao()
+        if precisa_bancada:
+            qs = _corpus(conn, args)
+            faltando = corpus.anexar_parametros(conn, qs)
+            if faltando:
+                print(f"  AVISO: {faltando} queries parametrizadas sem valores "
+                      f"gravados; elas vão falhar no replay")
+
+        try:
+            if args.ruido:
+                an = adaptativa.preparar(conn, sessao, par, obs)
+                adaptativa.mostrar_ruido(an, rotulo)
+                return 0
+            if args.confirmar is not None:
+                return _confirmar(conn, b, qs, sessao, args, rotulo, obs)
+            inicio = time.perf_counter()
+            an, traj, rel, aid = adaptativa.executar(
+                conn, b, qs, sessao, par, rotulo, obs=obs, forcar=args.forcar,
+                modo="execucao" if args.executar else "analise",
+                medir=args.executar)
+            adaptativa.mostrar(rel)
+            print(f"\n  adaptação {aid} gravada "
+                  f"({rel['medicoes_nesta_execucao']} medição(ões) nesta execução, "
+                  f"{(time.perf_counter() - inicio) / 60:.1f} min)")
+            if rel.get("proxima"):
+                print(f"  para continuar: {rel['proxima']['comando']}")
+            elif rel["caminho"]:
+                print(f"  para a confirmação independente: adaptar --sessao {sessao} "
+                      f"--confirmar {aid} --executar")
+            if args.json:
+                args.json.write_text(banco.como_json(rel), encoding="utf-8")
+                print(f"  JSON em {args.json}")
+        finally:
+            if obs is not None:
+                obs.close()
+    return 0
+
+
+def _confirmar(conn, b, qs, sessao, args, rotulo, obs) -> int:
+    """Mede à parte (finalidade 'confirmacao') o último passo aceito de uma
+    adaptação e diz se ele se sustenta fora dos dados que o escolheram."""
+    from psycopg.types.json import Jsonb
+    from . import adaptativa, estatistica
+
+    with conn.cursor() as cur:
+        cur.execute("SELECT sessao_id, parametros, resultado FROM monitoring.adaptacao "
+                    " WHERE id = %s", (args.confirmar,))
+        linha = cur.fetchone()
+    if not linha:
+        raise SystemExit(f"adaptação {args.confirmar} não existe (adaptar --listar)")
+    sessao_x, par_x, rel_x = linha
+    if sessao_x != sessao:
+        raise SystemExit(f"a adaptação {args.confirmar} é da sessão {sessao_x}")
+    if not rel_x or len(rel_x.get("caminho_chaves") or []) < 2:
+        raise SystemExit(f"a adaptação {args.confirmar} não aceitou movimento "
+                         f"nenhum: nada a confirmar")
+    # A confirmação usa os parâmetros declarados na seleção: margem e
+    # confiança não se escolhem depois de ver o resultado.
+    par = adaptativa.Parametros(**{k: v for k, v in par_x.items()
+                                   if k in adaptativa.Parametros.__dataclass_fields__})
+    alvos = [frozenset(c) for c in rel_x["caminho_chaves"][-2:] if c]
+    if args.executar:
+        aid = adaptativa.abrir(conn, sessao, par, "confirmacao")
+        an = adaptativa.preparar(conn, sessao, par, obs)
+        medidas = 0
+        for c in alvos:
+            ja = [v for v in an.exp.validacoes if v.configuracao == c
+                  and v.finalidade == "confirmacao"
+                  and v.confirma_adaptacao == args.confirmar]
+            if ja and not args.repetir_confirmacao:
+                print(f"  {adaptativa._c(c)} já tem {len(ja)} sessão(ões) de "
+                      f"confirmação; --repetir-confirmacao mede mais uma")
+                continue
+            oid = adaptativa.otimizacao_para(conn, an, c, aid, "confirmacao")
+            print(f"\n>>> confirmação: otimização {oid} {adaptativa._c(c)}")
+            otimizacao.validar(conn, b, oid, qs, nova=True, finalidade="confirmacao",
+                               ordem=adaptativa.ordem_da_validacao(an, c),
+                               origem="adaptar", adaptacao_id=aid,
+                               confirma_adaptacao=args.confirmar, forcar=args.forcar)
+            medidas += 1
+        with conn.cursor() as cur:
+            cur.execute("UPDATE monitoring.adaptacao SET estado = 'concluida', "
+                        "       medicoes = %s, motivo = %s, concluida_em = now() "
+                        " WHERE id = %s",
+                        (medidas, f"confirmação da adaptação {args.confirmar}", aid))
+        conn.commit()
+    an = adaptativa.preparar(conn, sessao, par, obs)
+    res = adaptativa.confirmar(an, args.confirmar, rel_x)
+    with conn.cursor() as cur:
+        cur.execute("UPDATE monitoring.adaptacao SET confirmada = %s, confirmacao = %s "
+                    " WHERE id = %s", (res.get("confirmada"),
+                                       Jsonb(adaptativa._jsonavel(res)), args.confirmar))
+    conn.commit()
+    s = adaptativa._s
+    print(f"\nconfirmação da adaptação {args.confirmar}:")
+    if "confirmacao" not in res:
+        print(f"  {res.get('motivo')} {res.get('faltam', '')}")
+        print(f"  rode: adaptar --sessao {sessao} --confirmar {args.confirmar} --executar")
+        return 0
+    c, sel = res["confirmacao"], res["selecao"]
+    print(f"  {res['de']} → {res['para']}, {res['teste']} com margem "
+          f"{res['margem_ms'] / 1000:,.1f} s (a da seleção)")
+    print(f"  seleção:    ΔB {s(sel['delta_ms'])} s {adaptativa._ic_txt(sel)}")
+    print(f"  confirmação ΔB {s(c['delta_ms'])} s {adaptativa._ic_txt(c)} "
+          f"({', '.join(c['sessoes'])})")
+    rep = res.get("reproducao")
+    if rep:
+        print(f"  reprodução: a confirmação mediu {rep['razao_confirmacao_sobre_selecao']:.0%} "
+              f"do ganho estimado na seleção"
+              + ("" if rep["mesmo_sinal"] else ", com o sinal trocado")
+              + ("; a estimativa da seleção cabe no intervalo da confirmação"
+                 if rep["selecao_no_intervalo_da_confirmacao"] else
+                 "; a estimativa da seleção fica FORA do intervalo da confirmação"))
+    veredito = {True: "CONFIRMADA", False: "NÃO CONFIRMADA: a exploração se reabre; "
+                "estas sessões passam a ser evidência de seleção e a próxima "
+                "recomendação pede outra confirmação"}.get(
+        res["confirmada"], "INCONCLUSIVA: meça mais uma sessão de confirmação "
+                           "(--repetir-confirmacao)")
+    print(f"  {veredito}")
+
+    # Os outros conjuntos medidos à parte para esta adaptação (métodos de
+    # comparação: clusters, `otimizar`), na mesma régua.
+    av = adaptativa.avaliacao_independente(
+        an, args.confirmar, rotulo, frozenset(rel_x["caminho_chaves"][-1]))
+    if len(av["configuracoes"]) > 2:
+        adaptativa.mostrar_avaliacao(av)
+    if args.json:
+        res["avaliacao_independente"] = av
+        args.json.write_text(banco.como_json(res), encoding="utf-8")
+        print(f"\n  JSON em {args.json}")
+    return 0
+
+
 def cmd_limpar(args) -> int:
     obs = banco.conectar(banco.DSN_OBSERVADO, "banco observado")
     with obs:
@@ -533,6 +851,13 @@ def _corpus(conn, args) -> List[corpus.Query]:
                            minimo_execucoes=args.minimo_execucoes,
                            incluir_catalogo=args.incluir_catalogo,
                            incluir_irreplicaveis=args.incluir_irreplicaveis)
+
+
+def _ultima_sessao(conn) -> Optional[int]:
+    with conn.cursor() as cur:
+        cur.execute("SELECT max(id) FROM monitoring.matriz_sessao "
+                    " WHERE concluida_em IS NOT NULL")
+        return cur.fetchone()[0]
 
 
 def _listar_rodadas(conn) -> int:
@@ -668,10 +993,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     def lista_de_rodadas(texto: str) -> List[int]:
         return [int(x) for x in texto.split(",") if x.strip()]
 
+    def lista_de_numeros(texto: str) -> List[float]:
+        return [float(x) for x in texto.split(",") if x.strip()]
+
     p = com_corpus(sub.add_parser(
         "matriz", help="cada índice proposto contra o corpus inteiro"))
-    p.add_argument("--rodadas", type=lista_de_rodadas, required=True,
+    p.add_argument("--rodadas", type=lista_de_rodadas,
                    metavar="N,N,...", help="de quais rodadas vêm os índices")
+    p.add_argument("--globais", type=int, metavar="N",
+                   help="mede também os N primeiros candidatos da heurística "
+                        "para o corpus inteiro, sem cluster (os de otimizar)")
+    p.add_argument("--trigramas", action="store_true",
+                   help="com --globais, oferece também GIN com gin_trgm_ops "
+                        "para LIKE '%%x%%' e regex (pede a extensão pg_trgm)")
     p.add_argument("--repeticoes", type=int, default=bancada.REPETICOES,
                    help="a primeira é descartada (cache frio)")
     p.add_argument("--timeout", type=int, default=bancada.TIMEOUT_MS // 1000,
@@ -691,6 +1025,134 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--json", type=Path, metavar="ARQ")
     p.set_defaults(func=cmd_comparar)
 
+    p = sub.add_parser(
+        "otimizar", help="escolhe o conjunto de índices da carga inteira "
+                         "(programa inteiro sobre a matriz, sem clusters)")
+    p.add_argument("--sessao", type=int,
+                   help="sessão da matriz (padrão: a última concluída)")
+    p.add_argument("--orcamento-mb", type=lista_de_numeros, metavar="MB[,MB...]",
+                   help="espaço máximo do conjunto; uma lista resolve um "
+                        "problema por orçamento (padrão: sem limite)")
+    p.add_argument("--lambda", dest="lambda_mb", type=float, default=0.0,
+                   metavar="MS_POR_MB", help="penalidade por MB, nas unidades "
+                   "do benefício (padrão: 0)")
+    p.add_argument("--custo-escrita", type=float, default=0.0, metavar="MS",
+                   help="ms de manutenção por escrita na tabela, por índice "
+                        "(padrão: 0, não medido)")
+    p.add_argument("--peso", choices=otimizacao.PESOS, default="execucoes",
+                   help="w_q: execuções da query no corpus, ou 1")
+    p.add_argument("--modelo", choices=otimizacao.MODELOS, default="conservador",
+                   help="como o Δ(q, i) medido vira Δ(q, S)")
+    p.add_argument("--limiar", type=float, default=matriz.LIMIAR_PADRAO,
+                   metavar="PCT", help="|Δ| abaixo disto é ruído e vale 0")
+    p.add_argument("--rodadas", type=lista_de_rodadas, metavar="N,N,...",
+                   help="avalia também o conjunto de cada rodada, no mesmo modelo")
+    p.add_argument("--consultas", type=Path, metavar="PASTA",
+                   help="SQL de referência dos rótulos (queries/ycsb no YCSB)")
+    p.add_argument("--json", type=Path, metavar="ARQ")
+    p.add_argument("--listar", action="store_true", help="lista as otimizações")
+    p.set_defaults(func=cmd_otimizar)
+
+    p = com_corpus(sub.add_parser(
+        "validar", help="cria o conjunto de uma otimização de uma vez e "
+                        "compara o medido com o previsto"))
+    p.add_argument("--otimizacao", type=int, required=True)
+    p.add_argument("--repeticoes", type=int, default=bancada.REPETICOES,
+                   help="a primeira é descartada (cache frio)")
+    p.add_argument("--timeout", type=int, default=bancada.TIMEOUT_MS // 1000,
+                   metavar="SEG", help="statement_timeout por query")
+    p.add_argument("--forcar", action="store_true",
+                   help="medir mesmo com carga rodando no banco observado")
+    p.add_argument("--refazer", action="store_true",
+                   help="mede de novo e APAGA as validações anteriores")
+    p.add_argument("--nova-validacao", action="store_true",
+                   help="mede de novo e guarda as anteriores (outra sessão)")
+    p.add_argument("--finalidade", choices=otimizacao.FINALIDADES,
+                   default="selecao",
+                   help="selecao: evidência para decidir; confirmacao: medida "
+                        "independente do que foi decidido")
+    p.add_argument("--ordem", choices=otimizacao.ORDENS, default="base_primeiro",
+                   help="ordem dos blocos na sessão")
+    p.add_argument("--confirma-adaptacao", type=int, metavar="N",
+                   help="com --finalidade confirmacao: a adaptação cuja "
+                        "recomendação esta medida avalia de forma independente")
+    p.add_argument("--movimento", metavar="M",
+                   help="o movimento de `adaptar` que pediu esta validação "
+                        "(o comando que `adaptar` sugere já o traz); 'resolucao' "
+                        "conta no orçamento de resolução de incerteza")
+    p.add_argument("--validacao", type=int, metavar="N",
+                   help="com --relatorio: qual validação mostrar (padrão: a última)")
+    p.add_argument("--relatorio", action="store_true",
+                   help="só mostra previsto × medido, sem bancada")
+    p.add_argument("--consultas", type=Path, metavar="PASTA")
+    p.add_argument("--json", type=Path, metavar="ARQ")
+    p.set_defaults(func=cmd_validar)
+
+    p = com_corpus(sub.add_parser(
+        "adaptar", help="seleção adaptativa: configurações completas medidas, "
+                        "benefício marginal com incerteza e critério de parada"))
+    p.add_argument("--sessao", type=int,
+                   help="sessão da matriz (padrão: a última concluída)")
+    p.add_argument("--executar", action="store_true",
+                   help="roda as validações que a decisão pede (sem isto, só "
+                        "decide sobre a evidência existente)")
+    p.add_argument("--max-medicoes", type=int, default=6, metavar="N",
+                   help="validações por execução de --executar (padrão: 6)")
+    p.add_argument("--max-validacoes", type=int, default=3, metavar="N",
+                   help="sessões de seleção por configuração antes de declarar "
+                        "um par não ordenável (padrão: 3)")
+    p.add_argument("--confianca", type=float, default=0.90,
+                   help="nível do intervalo bilateral (padrão: 0.90; cada "
+                        "limite é unilateral a 95%%)")
+    p.add_argument("--relevancia", type=float, default=0.01, metavar="FRAÇÃO",
+                   help="ρ: ganho mínimo relevante como fração do tempo total "
+                        "ponderado da configuração atual (padrão: 0.01)")
+    p.add_argument("--margem-s", type=float, metavar="S",
+                   help="margem de relevância absoluta, em s ponderados, no "
+                        "lugar de ρ (declarada antes, por quem decide)")
+    p.add_argument("--lambda", dest="lambda_mb", type=float, default=0.0,
+                   metavar="MS_POR_MB", help="custo do espaço, em ms de "
+                   "benefício por MB (padrão: 0: espaço só desempata)")
+    p.add_argument("--custo-entrada", type=float, metavar="MS",
+                   help="HIPÓTESE de custo de manutenção por entrada de índice; "
+                        "sem isto e sem custo medido, só a leitura é avaliada")
+    p.add_argument("--paciencia", type=int, default=2,
+                   help="crescimentos seguidos sem ganho provado (rejeitados ou "
+                        "não ordenáveis) para parar (padrão: 2)")
+    p.add_argument("--exploracao", type=int, default=2,
+                   help="combinações sem ganho previsto testadas antes de "
+                        "parar (padrão: 2)")
+    p.add_argument("--resolucao", type=int, default=3, metavar="N",
+                   help="validações, no experimento, para remedir antes de parar "
+                        "alternativas já medidas inconclusivas e ainda "
+                        "competitivas: UCB(ΔB) − custo ≥ margem (padrão: 3)")
+    p.add_argument("--vizinhos", type=int, default=4,
+                   help="candidatas por tipo de movimento (padrão: 4)")
+    p.add_argument("--amostras", type=int, default=4000,
+                   help="sorteios do bootstrap paramétrico (padrão: 4000)")
+    p.add_argument("--semente", type=int, default=42)
+    p.add_argument("--peso", choices=otimizacao.PESOS, default="execucoes")
+    p.add_argument("--modelo", choices=otimizacao.MODELOS, default="conservador",
+                   help="modelo de interação usado só para PRIORIZAR candidatas")
+    p.add_argument("--confirmar", type=int, metavar="ADAPTACAO",
+                   help="confirmação independente da recomendação da adaptação "
+                        "N (com --executar, mede; sem, só analisa)")
+    p.add_argument("--repetir-confirmacao", action="store_true",
+                   help="com --confirmar --executar: mede mais uma sessão")
+    p.add_argument("--ruido", action="store_true",
+                   help="só mostra o modelo de ruído (σ_α, σ_ε por query)")
+    p.add_argument("--sem-catalogo", action="store_true",
+                   help="não consulta o banco observado (sem --executar)")
+    p.add_argument("--listar", action="store_true", help="lista as adaptações")
+    p.add_argument("--repeticoes", type=int, default=bancada.REPETICOES)
+    p.add_argument("--timeout", type=int, default=bancada.TIMEOUT_MS // 1000,
+                   metavar="SEG")
+    p.add_argument("--forcar", action="store_true",
+                   help="medir mesmo com carga rodando no banco observado")
+    p.add_argument("--consultas", type=Path, metavar="PASTA")
+    p.add_argument("--json", type=Path, metavar="ARQ")
+    p.set_defaults(func=cmd_adaptar)
+
     p = sub.add_parser("exportar",
                        help="o agrupamento em CSV/JSON, para conferir fora do banco")
     p.add_argument("--rodada", type=int, required=True)
@@ -705,6 +1167,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                    help="padrão: clusters-rodadaN.png")
     p.add_argument("--projecoes", action="store_true",
                    help="também gera UMAP x PCA x t-SNE lado a lado")
+    p.add_argument("--consultas", type=Path, metavar="PASTA",
+                   help="SQL de referência dos rótulos (padrão: queries/, "
+                        "o TPC-H; queries/ycsb para o YCSB)")
     p.set_defaults(func=cmd_grafico)
 
     p = sub.add_parser("relatar", help="o veredito da rodada")

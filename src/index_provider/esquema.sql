@@ -401,6 +401,18 @@ CREATE TABLE IF NOT EXISTS monitoring.matriz_medida (
 CREATE UNIQUE INDEX IF NOT EXISTS ux_matriz_medida
     ON monitoring.matriz_medida (sessao_id, coalesce(indice_id, 0), query_ref, repeticao);
 
+-- `matriz --globais` mede também o que a heurística propõe para o corpus
+-- inteiro, sem rodada de clusterização por trás. A sessão guarda quantos
+-- candidatos foram pedidos, e cada índice, de onde veio: 'rodada',
+-- 'heuristica' ou 'rodada+heuristica' quando as duas fontes o propuseram.
+ALTER TABLE monitoring.matriz_sessao
+    ADD COLUMN IF NOT EXISTS globais integer;
+-- Se a heurística ofereceu GIN com gin_trgm_ops (`matriz --trigramas`).
+ALTER TABLE monitoring.matriz_sessao
+    ADD COLUMN IF NOT EXISTS trigramas boolean NOT NULL DEFAULT false;
+ALTER TABLE monitoring.matriz_indice
+    ADD COLUMN IF NOT EXISTS origem text;
+
 DROP VIEW IF EXISTS monitoring.matriz_resultado;
 
 -- Uma linha por (índice, query). Quem não usa o índice tem ganho 0, e não a
@@ -453,3 +465,325 @@ SELECT i.sessao_id,
 
 COMMENT ON VIEW monitoring.matriz_resultado IS
     'Cada indice contra cada query, com linha de base unica. Sem usar o indice, ganho 0.';
+
+
+-- ---------------------------------------------------------------------------
+-- 8. A seleção como problema de otimização
+-- ---------------------------------------------------------------------------
+-- Sem agrupamento: o conjunto inteiro de índices escolhido de uma vez, para a
+-- carga inteira, por um programa inteiro resolvido sobre uma sessão da
+-- matriz. Uma linha por problema resolvido (um orçamento, um λ, um modelo de
+-- interação). `validar` cria o conjunto escolhido inteiro e grava em
+-- otimizacao_medida o que de fato aconteceu, para pôr ao lado do previsto.
+CREATE TABLE IF NOT EXISTS monitoring.otimizacao (
+    id                    bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sessao_id             bigint NOT NULL
+                              REFERENCES monitoring.matriz_sessao(id) ON DELETE CASCADE,
+    -- orçamento, λ, custo de escrita, peso, limiar e modelo de interação.
+    parametros            jsonb  NOT NULL,
+    -- A mensagem do solver. Ótimo aqui é o ótimo do MODELO, não da carga:
+    -- quem diz o quanto o modelo acertou é a validação.
+    status                text   NOT NULL,
+    -- matriz_indice.id dos escolhidos. Vazio é resposta possível: nenhum
+    -- índice paga o que custa.
+    indices               bigint[] NOT NULL,
+    armazenamento_bytes   bigint,
+    beneficio_previsto_ms double precision,
+    objetivo              double precision,
+    -- Por query: peso, Δ previsto por execução, o índice que a atende e os
+    -- que a pioram.
+    previsao              jsonb,
+    criado_em             timestamptz NOT NULL DEFAULT now(),
+    validado_em           timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS monitoring.otimizacao_medida (
+    id             bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    otimizacao_id  bigint  NOT NULL
+                       REFERENCES monitoring.otimizacao(id) ON DELETE CASCADE,
+    -- Qual validação do conjunto: 1, 2, ... Ver otimizacao_validacao.
+    validacao      integer NOT NULL DEFAULT 1,
+    query_ref      bigint  NOT NULL
+                       REFERENCES monitoring.query(id) ON DELETE CASCADE,
+    fase           text    NOT NULL,
+    -- 0 é a pergunta "quais índices do conjunto o plano usa?", feita com
+    -- EXPLAIN sem ANALYZE e o conjunto inteiro criado; de 1 em diante,
+    -- execuções medidas.
+    repeticao      integer NOT NULL,
+    tempo_ms       double precision,
+    -- matriz_indice.id dos índices do conjunto que o plano cita. Com mais de
+    -- um índice criado, "usou o índice" deixa de ser sim ou não.
+    indices_usados bigint[],
+    censurado      boolean NOT NULL DEFAULT false,
+    erro           text,
+    CONSTRAINT ck_otimizacao_medida_fase CHECK (fase IN ('antes', 'depois'))
+);
+
+-- Uma otimização pode ser validada mais de uma vez (a seleção adaptativa
+-- remede quando a evidência não decide). Até aqui a chave não tinha a
+-- validação, e `validar --refazer` apagava a medição anterior: foi por isso
+-- que o mesmo conjunto de 44 MB do TPC-H com PGTune virou duas otimizações
+-- (4 e 8) para poder ser medido duas vezes. Em banco que já existe, a coluna
+-- entra com 1 e as medições antigas viram a validação 1.
+ALTER TABLE monitoring.otimizacao_medida
+    ADD COLUMN IF NOT EXISTS validacao integer NOT NULL DEFAULT 1;
+
+DROP INDEX IF EXISTS monitoring.ux_otimizacao_medida;
+CREATE UNIQUE INDEX IF NOT EXISTS ux_otimizacao_medida_validacao
+    ON monitoring.otimizacao_medida
+       (otimizacao_id, validacao, query_ref, fase, repeticao);
+
+DROP VIEW IF EXISTS monitoring.otimizacao_resultado;
+
+-- Uma linha por (otimização, validação, query), com a regra de
+-- matriz_resultado: se o plano não cita nenhum índice do conjunto, o ganho é
+-- 0, e o que as medianas mostrarem é cache. Validações diferentes nunca se
+-- misturam aqui: cada uma tem a sua linha de base.
+CREATE VIEW monitoring.otimizacao_resultado AS
+WITH util AS (
+    SELECT otimizacao_id, validacao, query_ref, fase, tempo_ms, censurado
+      FROM monitoring.otimizacao_medida
+     WHERE tempo_ms IS NOT NULL
+       AND (censurado OR (repeticao > 1 AND erro IS NULL))
+),
+fase AS (
+    SELECT otimizacao_id, validacao, query_ref, fase,
+           percentile_cont(0.5) WITHIN GROUP (ORDER BY tempo_ms) AS mediana_ms,
+           bool_or(censurado) AS censurado
+      FROM util
+     GROUP BY 1, 2, 3, 4
+),
+uso AS (
+    SELECT otimizacao_id, validacao, query_ref, indices_usados, erro
+      FROM monitoring.otimizacao_medida
+     WHERE fase = 'depois' AND repeticao = 0
+)
+SELECT u.otimizacao_id,
+       u.validacao,
+       u.query_ref,
+       coalesce(cardinality(u.indices_usados), 0) > 0 AS usou_indice,
+       u.indices_usados,
+       u.erro,
+       round(b.mediana_ms::numeric, 1)        AS antes_ms,
+       round(d.mediana_ms::numeric, 1)        AS depois_ms,
+       coalesce(b.censurado, false)           AS antes_censurado,
+       coalesce(d.censurado, false)           AS depois_censurado,
+       CASE WHEN coalesce(cardinality(u.indices_usados), 0) = 0 THEN 0
+            WHEN d.censurado OR d.mediana_ms IS NULL OR b.mediana_ms IS NULL
+                 THEN NULL
+            ELSE round((b.mediana_ms - d.mediana_ms)::numeric, 1)
+       END                                    AS ganho_ms,
+       CASE WHEN coalesce(cardinality(u.indices_usados), 0) = 0 THEN 0
+            WHEN d.censurado OR d.mediana_ms IS NULL OR b.mediana_ms IS NULL
+                 THEN NULL
+            ELSE round((100.0 * (b.mediana_ms - d.mediana_ms)
+                        / nullif(b.mediana_ms, 0))::numeric, 2)
+       END                                    AS ganho_pct
+  FROM uso u
+  LEFT JOIN fase b ON b.otimizacao_id = u.otimizacao_id
+                  AND b.validacao = u.validacao
+                  AND b.query_ref = u.query_ref AND b.fase = 'antes'
+  LEFT JOIN fase d ON d.otimizacao_id = u.otimizacao_id
+                  AND d.validacao = u.validacao
+                  AND d.query_ref = u.query_ref AND d.fase = 'depois';
+
+COMMENT ON VIEW monitoring.otimizacao_resultado IS
+    'O conjunto escolhido pela otimizacao, criado inteiro, contra cada query, uma linha por validacao. Sem usar indice do conjunto, ganho 0.';
+
+
+-- ---------------------------------------------------------------------------
+-- 9. A seleção adaptativa
+-- ---------------------------------------------------------------------------
+-- `otimizar` escolhe sob um orçamento dado e prevê o conjunto a partir de
+-- medidas de um índice por vez. `adaptar` decide com o conjunto inteiro
+-- MEDIDO, quantas vezes for preciso para separar ganho de ruído, e para de
+-- explorar quando o benefício adicional não paga mais. Ver adaptativa.py.
+--
+-- O contrato dos dados experimentais, que estatistica.py e evidencia.py
+-- assumem e que o esquema abaixo garante:
+--
+--   sessão de medida  uma corrida da bancada sobre um estado do banco: a
+--                     linha de base de uma matriz_sessao, ou uma validação
+--                     (otimizacao_validacao). Cada uma tem o seu ambiente.
+--   configuração      o conjunto de índices criados além dos existentes,
+--                     pelos matriz_indice.id da sessão da matriz; vazio = só
+--                     os existentes. Duas otimizações com o mesmo conjunto
+--                     são a mesma configuração, e a evidência delas soma.
+--   bloco             uma fase de uma sessão: (sessão, configuração, fase).
+--                     Numa validação, 'antes' é a configuração vazia e
+--                     'depois' a da otimização. Um bloco nunca é medida de
+--                     outra configuração.
+--   repetição         uma execução dentro do bloco; a 1 é aquecimento. As
+--                     repetições de um bloco NÃO são sessões independentes:
+--                     a inferência usa o bloco como unidade, e as
+--                     repetições só para a variância dentro da sessão.
+--   censura           censurado = true e tempo_ms = timeout: o tempo real é
+--                     maior ou igual a tempo_ms, nunca igual.
+--   finalidade        'selecao' é evidência para decidir; 'confirmacao' é a
+--                     medida independente do que foi decidido, que a decisão
+--                     não lê; 'legado' é validação anterior a este registro,
+--                     cuja finalidade nunca foi declarada.
+
+-- O ambiente de cada sessão: valores brutos (para auditar) e o hash do
+-- subconjunto que precisa ser igual para duas sessões serem comparáveis
+-- (para conferir rápido). Ver ambiente.py. NULL nas sessões anteriores a esta
+-- coluna: o ambiente não foi registrado, e o relatório diz isso.
+ALTER TABLE monitoring.matriz_sessao
+    ADD COLUMN IF NOT EXISTS ambiente jsonb;
+ALTER TABLE monitoring.matriz_sessao
+    ADD COLUMN IF NOT EXISTS ambiente_hash text;
+
+-- Uma execução de `adaptar`: os parâmetros, quantas validações ela rodou e
+-- leu, por que parou e qual configuração recomendou. As decisões são função
+-- da evidência: rodar de novo sobre a mesma evidência dá as mesmas decisões.
+CREATE TABLE IF NOT EXISTS monitoring.adaptacao (
+    id                bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sessao_id         bigint NOT NULL
+                          REFERENCES monitoring.matriz_sessao(id) ON DELETE CASCADE,
+    parametros        jsonb  NOT NULL,
+    -- 'analise' (só lê a evidência), 'execucao' (roda validações de
+    -- seleção), 'confirmacao' (mede à parte o que foi recomendado)
+    modo              text   NOT NULL,
+    estado            text   NOT NULL DEFAULT 'em_andamento',
+    -- Validações que esta execução rodou, e as que a decisão final leu.
+    medicoes          integer NOT NULL DEFAULT 0,
+    validacoes_lidas  integer,
+    motivo            text,
+    recomendada       bigint REFERENCES monitoring.otimizacao(id) ON DELETE SET NULL,
+    resultado         jsonb,
+    -- Preenchidos pela confirmação: o veredito da medida independente.
+    -- false reabre a exploração; as validações de confirmação que falharam
+    -- passam a ser evidência de seleção, e a nova recomendação pede outra
+    -- confirmação.
+    confirmada        boolean,
+    confirmacao       jsonb,
+    iniciada_em       timestamptz NOT NULL DEFAULT now(),
+    concluida_em      timestamptz,
+    CONSTRAINT ck_adaptacao_modo CHECK (modo IN ('analise', 'execucao', 'confirmacao')),
+    CONSTRAINT ck_adaptacao_estado CHECK (estado IN (
+        'em_andamento',
+        'concluida',            -- o critério de parada foi atingido
+        'aguardando_medicao',   -- a decisão pede uma validação que não foi feita
+        'interrompida'))
+);
+
+-- Cada passo da exploração, na ordem: o que foi comparado com o quê, o
+-- benefício marginal com o intervalo, a margem e a decisão. É a resposta a
+-- "por que continuou" e "por que parou".
+CREATE TABLE IF NOT EXISTS monitoring.adaptacao_passo (
+    adaptacao_id     bigint  NOT NULL
+                         REFERENCES monitoring.adaptacao(id) ON DELETE CASCADE,
+    passo            integer NOT NULL,
+    -- 'comparacao' | 'salto' | 'medicao' | 'parada'
+    tipo             text    NOT NULL,
+    -- 'adicao' | 'remocao' | 'substituicao' | 'combinacao' | 'fronteira'
+    -- | 'medida' | 'resolucao'
+    movimento        text,
+    de_otimizacao    bigint,
+    para_otimizacao  bigint,
+    -- o teste usado: 'superioridade' | 'nao_inferioridade'
+    teste            text,
+    -- 'aceita' | 'rejeitada' | 'inconclusiva' | 'nao_ordenavel'
+    decisao          text,
+    delta_b_ms       double precision,
+    li_ms            double precision,
+    ls_ms            double precision,
+    margem_ms        double precision,
+    delta_mb         double precision,
+    detalhe          jsonb,
+    criado_em        timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (adaptacao_id, passo)
+);
+
+-- Cada validação de uma otimização. concluida_em NULL é validação
+-- interrompida, e não entra em conta nenhuma.
+CREATE TABLE IF NOT EXISTS monitoring.otimizacao_validacao (
+    otimizacao_id      bigint  NOT NULL
+                           REFERENCES monitoring.otimizacao(id) ON DELETE CASCADE,
+    validacao          integer NOT NULL,
+    finalidade         text    NOT NULL,
+    -- quem a criou: 'validar' (à mão), 'adaptar', 'migracao' (anterior)
+    origem             text    NOT NULL,
+    -- 'base_primeiro': linha de base, CREATE INDEX, conjunto.
+    -- 'conjunto_primeiro': CREATE INDEX, conjunto, DROP, linha de base.
+    -- A seleção adaptativa alterna as duas entre validações do mesmo
+    -- conjunto, para a deriva temporal da sessão não cair sempre do mesmo
+    -- lado da comparação.
+    ordem              text    NOT NULL DEFAULT 'base_primeiro',
+    ambiente           jsonb,
+    ambiente_hash      text,
+    -- A execução de `adaptar` que pediu esta validação.
+    adaptacao_id       bigint REFERENCES monitoring.adaptacao(id) ON DELETE SET NULL,
+    -- Só em 'confirmacao': a execução cuja recomendação está sendo
+    -- confirmada.
+    confirma_adaptacao bigint REFERENCES monitoring.adaptacao(id) ON DELETE SET NULL,
+    -- O que se sabe que falta nesta validação (texto livre, para o relatório).
+    limitacoes         text,
+    iniciada_em        timestamptz NOT NULL DEFAULT now(),
+    concluida_em       timestamptz,
+    PRIMARY KEY (otimizacao_id, validacao),
+    CONSTRAINT ck_otimizacao_validacao_finalidade
+        CHECK (finalidade IN ('selecao', 'confirmacao', 'legado')),
+    CONSTRAINT ck_otimizacao_validacao_origem
+        CHECK (origem IN ('validar', 'adaptar', 'migracao')),
+    CONSTRAINT ck_otimizacao_validacao_ordem
+        CHECK (ordem IN ('base_primeiro', 'conjunto_primeiro'))
+);
+
+-- O movimento da caminhada que pediu a validação, quando foi `adaptar`:
+-- 'fronteira', 'adicao', 'remocao', 'substituicao', 'combinacao',
+-- 'medida' ou 'resolucao' (a remedição de uma alternativa já medida que
+-- ficou inconclusiva perto da margem). NULL nas validações à mão e nas
+-- anteriores a esta coluna. É o que conta o orçamento de resolução, e o que
+-- documenta quantas medições cada parte do procedimento gastou.
+ALTER TABLE monitoring.otimizacao_validacao
+    ADD COLUMN IF NOT EXISTS movimento text;
+
+-- As validações feitas antes desta tabela: uma por otimização validada. O
+-- que se sabe delas pelo código da época vai registrado (a ordem era sempre
+-- linha de base primeiro); o que não se sabe fica dito em limitacoes, e a
+-- finalidade é 'legado', não 'selecao': ninguém a declarou. Idempotente.
+INSERT INTO monitoring.otimizacao_validacao
+       (otimizacao_id, validacao, finalidade, origem, ordem, limitacoes,
+        iniciada_em, concluida_em)
+SELECT o.id, 1, 'legado', 'migracao', 'base_primeiro',
+       'validação anterior ao registro de validações: finalidade e ambiente '
+       'não registrados; início desconhecido (iniciada_em = validado_em)',
+       o.validado_em, o.validado_em
+  FROM monitoring.otimizacao o
+ WHERE o.validado_em IS NOT NULL
+   AND EXISTS (SELECT 1 FROM monitoring.otimizacao_medida m
+                WHERE m.otimizacao_id = o.id AND m.validacao = 1)
+ON CONFLICT (otimizacao_id, validacao) DO NOTHING;
+
+-- Custo de manutenção MEDIDO de um índice, quando houver. A bancada só
+-- reexecuta leitura e não mede isto; a tabela existe para receber o
+-- resultado de um experimento A/B de escrita (a mesma carga de escrita com e
+-- sem o índice), e `adaptar` a lê quando há linha. Sem linha, nada é
+-- estimado: o relatório mostra o ponto de equilíbrio (quanto a manutenção
+-- pode custar antes de o índice deixar de se pagar) e diz que só a leitura
+-- foi avaliada. A contagem estática de manutencao.py ("escritas que PODEM
+-- manter o índice") nunca é gravada aqui: ela não é medida.
+CREATE TABLE IF NOT EXISTS monitoring.custo_manutencao (
+    id                     bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sessao_id              bigint NOT NULL
+                               REFERENCES monitoring.matriz_sessao(id) ON DELETE CASCADE,
+    -- matriz_indice.chave: o DDL sem o nome.
+    chave                  text   NOT NULL,
+    -- ms a mais por escrita da carga, com o índice contra sem ele.
+    ms_por_escrita         double precision,
+    wal_bytes_por_escrita  double precision,
+    -- throughput de escrita com o índice / sem o índice.
+    tps_relativo           double precision,
+    -- n_tup_hot_upd / n_tup_upd observados com o índice.
+    fracao_hot             double precision,
+    escritas_medidas       bigint,
+    metodo                 text   NOT NULL,
+    ambiente               jsonb,
+    observacao             text,
+    medido_em              timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS ix_custo_manutencao_sessao
+    ON monitoring.custo_manutencao (sessao_id, chave);
+
