@@ -1,0 +1,124 @@
+
+>>> confirmação: otimização 4 {i1,i14,i31}
+
+otimização 4, validação 3 (confirmacao, conjunto primeiro), ambiente 67c9b7ec26546e7a
+
+conjunto da otimização 4:
+  + i1 lineitem (l_partkey): 2.8s, 43.0 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i31 supplier USING gin (s_comment gin_trgm_ops): 0.2s, 1.2 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68        179.7 ms
+             usou i1 i14
+      ref=64      1,016.1 ms
+             usou i1
+      ref=69        516.4 ms
+             usou i14
+      ref=49        377.5 ms
+             usou i14
+      ref=55        834.3 ms
+             usou i1
+      ref=53        317.7 ms
+             usou i14
+      ref=62        248.1 ms
+             usou i31
+      ref=67         36.2 ms
+             usou i1
+      ref=54        177.5 ms
+             usou i1
+      ref=57        126.1 ms
+             usou i14
+  - 3 índice(s) derrubado(s)
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      4,684.2 ms
+      ref=48      3,276.5 ms
+      ref=59      2,239.4 ms
+      ref=69        636.1 ms
+      ref=49        583.3 ms
+      ref=55      1,088.2 ms
+      ref=50        486.4 ms
+      ref=70        189.8 ms
+      ref=58        477.9 ms
+      ref=53        357.9 ms
+      ref=56        328.3 ms
+      ref=62        275.8 ms
+      ref=67        481.0 ms
+      ref=52        302.9 ms
+      ref=54        319.2 ms
+      ref=60        304.3 ms
+      ref=34        203.5 ms
+      ref=51        150.5 ms
+      ref=57        121.8 ms
+
+>>> confirmação: otimização 12 {i2,i14,i17,i21}
+
+otimização 12, validação 4 (confirmacao, conjunto primeiro), ambiente 67c9b7ec26546e7a
+
+conjunto da otimização 12:
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 5.4s, 232.1 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.5s, 10.4 MB
+  + i21 customer (c_acctbal, c_phone): 0.2s, 5.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         46.6 ms
+             usou i2 i14
+      ref=64         75.8 ms
+             usou i2
+      ref=69        665.7 ms
+             usou i14
+      ref=49        409.8 ms
+             usou i14
+      ref=55      1,040.4 ms
+             usou i2
+      ref=70        265.3 ms
+             usou i21
+      ref=53        445.7 ms
+             usou i14
+      ref=56        360.9 ms
+             usou i17
+      ref=67         35.8 ms
+             usou i2
+      ref=54        175.8 ms
+             usou i2
+      ref=34        239.7 ms
+             usou i17
+      ref=51        141.6 ms
+             usou i17
+      ref=57        183.6 ms
+             usou i14
+  - 4 índice(s) derrubado(s)
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,340.2 ms
+      ref=48      2,314.0 ms
+      ref=59      1,542.3 ms
+      ref=69        526.2 ms
+      ref=49        531.7 ms
+      ref=55        936.0 ms
+      ref=50        359.4 ms
+      ref=70        158.1 ms
+      ref=58        429.6 ms
+      ref=53        427.6 ms
+      ref=56        333.8 ms
+      ref=62        386.2 ms
+      ref=67        471.1 ms
+      ref=52        327.5 ms
+      ref=54        339.6 ms
+      ref=60        303.2 ms
+      ref=34        213.9 ms
+      ref=51        163.5 ms
+      ref=57        169.3 ms
+
+confirmação da adaptação 8:
+  {i1,i14,i31} → {i2,i14,i17,i21}, superioridade com margem 6.0 s (a da seleção)
+  seleção:    ΔB +24.7 s [+16.1; +32.7]
+  confirmação ΔB +8.1 s [+3.1; +12.9] (v12.3, v12.4, v4.2, v4.3)
+  INCONCLUSIVA: meça mais uma sessão de confirmação (--repetir-confirmacao)
+saida=0

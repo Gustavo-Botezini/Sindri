@@ -1,0 +1,16 @@
+
+confirmação da adaptação 8:
+  {i1,i14,i31} → {i2,i14,i17,i21}, superioridade com margem 6.0 s (a da seleção)
+  seleção:    ΔB +24.7 s [+16.1; +32.7]
+  confirmação ΔB +8.1 s [+3.5; +12.6] (v12.3, v12.4, v2.2, v2.3, v3.2, v3.3, v4.2, v4.3, v5.2, v5.3)
+  INCONCLUSIVA: meça mais uma sessão de confirmação (--repetir-confirmacao)
+
+  avaliação independente (só sessões de confirmação da adaptação 8; referência {i2,i14,i17,i21}, margem 4.9 s)
+  configuração                 MB ses          fora de q17, q20 (s)  q17, q20 depois (ms)  +  −  contra a referência
+  {i1,i14,i31}               44.3   2            +9.2 [+5.8; +12.0]               1,127  4  0  -8.1 [-12.6; -3.5] a melhor
+  {i2,i14,i17,i21}          248.4   2             +5.1 [+1.0; +8.5]                 113  4  0  —
+  {i2,i9,i14,i17,i21,i25}   292.8   2           +10.8 [+7.5; +13.7]                 111  6  1  +5.7 [+1.4; +10.3] b melhor
+  {i1,i5,i6}                294.2   2             +1.8 [-1.1; +4.3]               1,068  4  5  -14.8 [-19.3; -10.1] a melhor; dominada por {i1,i14,i31}
+  {i1,i2,i3,i4}             358.1   2             +3.2 [+0.2; +5.8]                 121  5  3  -2.0 [-6.3; +2.6] não ordenável; dominada por {i2,i14,i17,i21}
+
+  JSON em figuras/tpch-pgtune/adaptativa/comparacao_metodos.json

@@ -1,0 +1,537 @@
+>>> 13:46 adaptar --executar (com resolução de incerteza)
+
+>>> medição 1 de no máximo 6: otimização 5 {i2,i9,i14,i17,i21,i25} — resolução de incerteza: {i2,i9,i14,i17,i21,i25} contra {i2,i14,i17,i21}, inconclusiva (superioridade) e ainda competitiva: UCB − custo = +8.3 s ≥ +4.9 s; nova sessão de {i2,i9,i14,i17,i21,i25}
+
+otimização 5, validação 4 (selecao, conjunto primeiro), ambiente 67c9b7ec26546e7a
+
+conjunto da otimização 5:
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 6.9s, 232.1 MB
+  + i9 lineitem (l_shipdate): 2.9s, 40.7 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.8s, 10.4 MB
+  + i21 customer (c_acctbal, c_phone): 0.2s, 5.8 MB
+  + i25 part (p_size, p_brand, p_container): 0.3s, 3.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         46.5 ms
+             usou i2 i14
+      ref=64         70.7 ms
+             usou i2 i25
+      ref=69        527.2 ms
+             usou i14
+      ref=49        234.7 ms
+             usou i14 i25
+      ref=55        803.2 ms
+             usou i2
+      ref=70        144.8 ms
+             usou i21
+      ref=53        344.7 ms
+             usou i14
+      ref=56        348.2 ms
+             usou i17
+      ref=62        282.1 ms
+             usou i25
+      ref=67         36.6 ms
+             usou i2
+      ref=52        400.6 ms
+             usou i9
+      ref=54        195.6 ms
+             usou i2
+      ref=60        161.0 ms
+             usou i9
+      ref=34        257.4 ms
+             usou i17
+      ref=51        147.6 ms
+             usou i17
+      ref=57        118.5 ms
+             usou i14
+  - 6 índice(s) derrubado(s)
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,330.0 ms
+      ref=48      2,135.7 ms
+      ref=59      1,471.8 ms
+      ref=69        464.0 ms
+      ref=49        254.3 ms
+      ref=55        807.8 ms
+      ref=50        325.7 ms
+      ref=70        141.9 ms
+      ref=58        347.0 ms
+      ref=53        301.8 ms
+      ref=56        290.1 ms
+      ref=62        243.3 ms
+      ref=67        336.1 ms
+      ref=52        289.3 ms
+      ref=54        280.6 ms
+      ref=60        306.8 ms
+      ref=34        203.7 ms
+      ref=51        142.1 ms
+      ref=57        113.1 ms
+
+>>> medição 2 de no máximo 6: otimização 20 {i1,i2,i14,i17,i18,i19,i21,i25} — fronteira: ponto da fronteira prevista, 609.6 MB
+
+otimização 20, validação 1 (selecao, base primeiro), ambiente 67c9b7ec26546e7a
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,114.0 ms
+      ref=48      2,017.8 ms
+      ref=59      1,444.8 ms
+      ref=69        462.4 ms
+      ref=49        230.9 ms
+      ref=55        745.8 ms
+      ref=50        301.6 ms
+      ref=70        145.7 ms
+      ref=58        345.0 ms
+      ref=53        293.4 ms
+      ref=56        304.7 ms
+      ref=62        264.2 ms
+      ref=67        395.9 ms
+      ref=52        306.6 ms
+      ref=54        314.8 ms
+      ref=60        315.5 ms
+      ref=34        190.0 ms
+      ref=51        141.8 ms
+      ref=57        110.3 ms
+
+conjunto da otimização 20:
+  + i1 lineitem (l_partkey): 1.7s, 43.0 MB
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 3.0s, 232.1 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.5s, 10.4 MB
+  + i18 lineitem (l_shipmode, l_commitdate, l_receiptdate): 7.1s, 133.7 MB
+  + i19 lineitem (l_shipdate, l_discount, l_quantity): 5.1s, 180.7 MB
+  + i21 customer (c_acctbal, c_phone): 0.1s, 5.8 MB
+  + i25 part (p_size, p_brand, p_container): 0.2s, 3.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         44.3 ms
+             usou i2 i14
+      ref=64         76.5 ms
+             usou i1 i2 i25
+      ref=69        504.1 ms
+             usou i14
+      ref=49        240.8 ms
+             usou i14 i25
+      ref=55        674.3 ms
+             usou i2
+      ref=70        136.3 ms
+             usou i21
+      ref=58        249.0 ms
+             usou i18
+      ref=53        315.1 ms
+             usou i14
+      ref=56        292.1 ms
+             usou i17
+      ref=62        259.3 ms
+             usou i25
+      ref=67         35.0 ms
+             usou i1
+      ref=52        175.7 ms
+             usou i19
+      ref=54        155.9 ms
+             usou i1
+      ref=60        144.5 ms
+             usou i19
+      ref=34        197.4 ms
+             usou i17
+      ref=51        131.6 ms
+             usou i17
+      ref=57        107.8 ms
+             usou i14
+  - 8 índice(s) derrubado(s)
+
+>>> medição 3 de no máximo 6: otimização 20 {i1,i2,i14,i17,i18,i19,i21,i25} — inconclusivo (superioridade): {i1,i2,i14,i17,i18,i19,i21,i25} contra {i2,i14,i17,i21}
+
+otimização 20, validação 2 (selecao, conjunto primeiro), ambiente 67c9b7ec26546e7a
+
+conjunto da otimização 20:
+  + i1 lineitem (l_partkey): 1.6s, 43.0 MB
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 3.2s, 232.1 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.4s, 10.4 MB
+  + i18 lineitem (l_shipmode, l_commitdate, l_receiptdate): 6.6s, 133.7 MB
+  + i19 lineitem (l_shipdate, l_discount, l_quantity): 5.2s, 180.7 MB
+  + i21 customer (c_acctbal, c_phone): 0.1s, 5.8 MB
+  + i25 part (p_size, p_brand, p_container): 0.2s, 3.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         51.6 ms
+             usou i2 i14
+      ref=64         71.7 ms
+             usou i1 i2 i25
+      ref=69        478.2 ms
+             usou i14
+      ref=49        230.0 ms
+             usou i14 i25
+      ref=55        776.9 ms
+             usou i2
+      ref=70        162.3 ms
+             usou i21
+      ref=58        290.0 ms
+             usou i18
+      ref=53        331.3 ms
+             usou i14
+      ref=56        327.0 ms
+             usou i17
+      ref=62        273.3 ms
+             usou i25
+      ref=67         33.8 ms
+             usou i1
+      ref=52        205.7 ms
+             usou i19
+      ref=54        159.8 ms
+             usou i1
+      ref=60        147.7 ms
+             usou i19
+      ref=34        220.2 ms
+             usou i17
+      ref=51        148.3 ms
+             usou i17
+      ref=57        119.4 ms
+             usou i14
+  - 8 índice(s) derrubado(s)
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,225.9 ms
+      ref=48      2,436.1 ms
+      ref=59      1,512.9 ms
+      ref=69        467.4 ms
+      ref=49        235.6 ms
+      ref=55        834.5 ms
+      ref=50        304.2 ms
+      ref=70        141.2 ms
+      ref=58        343.7 ms
+      ref=53        293.3 ms
+      ref=56        284.6 ms
+      ref=62        247.5 ms
+      ref=67        335.1 ms
+      ref=52        259.5 ms
+      ref=54        295.7 ms
+      ref=60        293.4 ms
+      ref=34        193.6 ms
+      ref=51        141.7 ms
+      ref=57        109.7 ms
+
+>>> medição 4 de no máximo 6: otimização 20 {i1,i2,i14,i17,i18,i19,i21,i25} — inconclusivo (superioridade): {i1,i2,i14,i17,i18,i19,i21,i25} contra {i2,i14,i17,i21}
+
+otimização 20, validação 3 (selecao, base primeiro), ambiente 67c9b7ec26546e7a
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,100.7 ms
+      ref=48      1,939.3 ms
+      ref=59      1,414.4 ms
+      ref=69        462.8 ms
+      ref=49        480.7 ms
+      ref=55        868.8 ms
+      ref=50        308.8 ms
+      ref=70        145.3 ms
+      ref=58        347.8 ms
+      ref=53        315.9 ms
+      ref=56        328.4 ms
+      ref=62        303.5 ms
+      ref=67        410.0 ms
+      ref=52        279.6 ms
+      ref=54        291.2 ms
+      ref=60        269.5 ms
+      ref=34        206.5 ms
+      ref=51        165.4 ms
+      ref=57        124.8 ms
+
+conjunto da otimização 20:
+  + i1 lineitem (l_partkey): 2.4s, 43.0 MB
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 3.8s, 232.1 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.6s, 10.4 MB
+  + i18 lineitem (l_shipmode, l_commitdate, l_receiptdate): 6.5s, 133.7 MB
+  + i19 lineitem (l_shipdate, l_discount, l_quantity): 5.1s, 180.7 MB
+  + i21 customer (c_acctbal, c_phone): 0.1s, 5.8 MB
+  + i25 part (p_size, p_brand, p_container): 0.3s, 3.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         48.0 ms
+             usou i2 i14
+      ref=64         73.6 ms
+             usou i1 i2 i25
+      ref=69        477.9 ms
+             usou i14
+      ref=49        242.3 ms
+             usou i14 i25
+      ref=55        727.9 ms
+             usou i2
+      ref=70        163.3 ms
+             usou i21
+      ref=58        272.1 ms
+             usou i18
+      ref=53        320.0 ms
+             usou i14
+      ref=56        295.1 ms
+             usou i17
+      ref=62        263.7 ms
+             usou i25
+      ref=67         32.4 ms
+             usou i1
+      ref=52        187.4 ms
+             usou i19
+      ref=54        160.5 ms
+             usou i1
+      ref=60        139.8 ms
+             usou i19
+      ref=34        229.2 ms
+             usou i17
+      ref=51        138.7 ms
+             usou i17
+      ref=57        124.3 ms
+             usou i14
+  - 8 índice(s) derrubado(s)
+
+>>> medição 5 de no máximo 6: otimização 12 {i2,i14,i17,i21} — inconclusivo (superioridade): {i1,i2,i14,i17,i18,i19,i21,i25} contra {i2,i14,i17,i21}
+
+otimização 12, validação 5 (selecao, base primeiro), ambiente 67c9b7ec26546e7a
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,179.0 ms
+      ref=48      1,907.1 ms
+      ref=59      1,438.1 ms
+      ref=69        476.8 ms
+      ref=49        221.9 ms
+      ref=55        821.3 ms
+      ref=50        301.8 ms
+      ref=70        143.5 ms
+      ref=58        363.8 ms
+      ref=53        308.5 ms
+      ref=56        312.6 ms
+      ref=62        242.9 ms
+      ref=67        325.8 ms
+      ref=52        251.5 ms
+      ref=54        275.2 ms
+      ref=60        305.1 ms
+      ref=34        210.0 ms
+      ref=51        146.7 ms
+      ref=57        115.8 ms
+
+conjunto da otimização 12:
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 5.1s, 232.1 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.6s, 10.4 MB
+  + i21 customer (c_acctbal, c_phone): 0.2s, 5.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         45.2 ms
+             usou i2 i14
+      ref=64         69.7 ms
+             usou i2
+      ref=69        481.3 ms
+             usou i14
+      ref=49        230.1 ms
+             usou i14
+      ref=55        679.1 ms
+             usou i2
+      ref=70        144.1 ms
+             usou i21
+      ref=53        329.1 ms
+             usou i14
+      ref=56        428.4 ms
+             usou i17
+      ref=67         39.3 ms
+             usou i2
+      ref=54        163.0 ms
+             usou i2
+      ref=34        201.1 ms
+             usou i17
+      ref=51        130.5 ms
+             usou i17
+      ref=57        103.5 ms
+             usou i14
+  - 4 índice(s) derrubado(s)
+
+>>> medição 6 de no máximo 6: otimização 21 {i1,i2,i14,i17,i18,i19,i21,i23} — fronteira: ponto da fronteira prevista, 607.5 MB
+
+otimização 21, validação 1 (selecao, base primeiro), ambiente 67c9b7ec26546e7a
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,153.1 ms
+      ref=48      2,474.2 ms
+      ref=59      1,459.7 ms
+      ref=69        465.8 ms
+      ref=49        319.9 ms
+      ref=55      1,110.0 ms
+      ref=50        511.0 ms
+      ref=70        205.1 ms
+      ref=58        492.7 ms
+      ref=53        432.9 ms
+      ref=56        313.7 ms
+      ref=62        324.4 ms
+      ref=67        584.2 ms
+      ref=52        362.7 ms
+      ref=54        350.3 ms
+      ref=60        352.2 ms
+      ref=34        275.5 ms
+      ref=51        165.4 ms
+      ref=57        127.5 ms
+
+conjunto da otimização 21:
+  + i1 lineitem (l_partkey): 3.6s, 43.0 MB
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 8.0s, 232.1 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.9s, 10.4 MB
+  + i18 lineitem (l_shipmode, l_commitdate, l_receiptdate): 6.4s, 133.7 MB
+  + i19 lineitem (l_shipdate, l_discount, l_quantity): 7.5s, 180.7 MB
+  + i21 customer (c_acctbal, c_phone): 0.2s, 5.8 MB
+  + i23 part (p_type, p_size): 0.2s, 1.7 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         49.7 ms
+             usou i2 i14
+      ref=64         93.0 ms
+             usou i1 i2
+      ref=69        505.6 ms
+             usou i14
+      ref=49        232.5 ms
+             usou i14 i23
+      ref=55      1,339.4 ms
+             usou i2
+      ref=70        144.5 ms
+             usou i21
+      ref=58        309.7 ms
+             usou i18
+      ref=53        306.4 ms
+             usou i14
+      ref=56        336.6 ms
+             usou i17
+      ref=62        299.6 ms
+             usou i23
+      ref=67         33.9 ms
+             usou i1
+      ref=52        184.9 ms
+             usou i19
+      ref=54        174.5 ms
+             usou i1
+      ref=60        155.7 ms
+             usou i19
+      ref=34        207.4 ms
+             usou i17
+      ref=51        154.5 ms
+             usou i17
+      ref=57        136.6 ms
+             usou i14
+  - 8 índice(s) derrubado(s)
+
+=== seleção adaptativa, sessão 1 (confiança 90%, relevância 1%, λ 0 ms/MB)
+  evidência: 22 sessões de medida (m1, v1.1, v11.1, v12.1, v12.2, v12.5, v13.1, v16.1, v17.1, v18.1, v19.1, v2.1…)
+  validações: {'selecao': 14, 'legado': 7, 'confirmacao': 10}
+  sem ambiente registrado (anteriores ao registro): m1, v1.1, v2.1, v3.1, v4.1, v5.1, v7.1, v8.1
+  ruído: σ_α/σ_ε mediano 2.3 (a sessão pesa mais que a repetição); d0 = 5.3, τ típico 0.091 em log
+  pareamento: β = 0.73 ± 0.28 (142 pontos) do γ da sessão chega ao bloco de configuração; σ_γ = 0.086
+  sessões deslocadas (γ ≥ 2%): m1 +3.3%, v1.1 -14.9%, v12.1 +5.5%, v13.1 +3.5%, v16.1 +8.6%, v17.1 +4.1%, v18.1 +5.5%, v19.1 +2.8%, v2.1 -15.4%, v20.1 -2.1%, v20.2 -3.0%, v21.1 +17.2%, v3.1 -12.6%, v4.1 -13.3%, v5.1 -9.8%, v5.4 -2.3%, v7.1 -16.7%, v8.1 -11.5%
+
+  passos:
+    1. medida       ∅ → {i1,i14,i31}  ΔB +8,494.5 s [+8,488.1; +∞]  margem 86.5 s  ΔMB +44.3  superioridade: ACEITA
+       já medida (otimizar ≤ 50 MB)
+    2. medida       {i1,i14,i31} → {i2,i14,i17,i21}  ΔB +24.6 s [+19.1; +31.2]  margem 5.8 s  ΔMB +204.1  superioridade: ACEITA
+       já medida (adaptar (fronteira))
+    3. medida       {i2,i14,i17,i21} → {i2,i3,i4,i14,i17,i21}  ΔB -1.8 s [-6.7; +1.7]  margem 5.1 s  ΔMB +83.0  superioridade: REJEITADA
+       já medida (adaptar (combinacao))
+    4. medida       {i2,i14,i17,i21} → {i2,i3,i5,i14,i17,i21}  ΔB -4.8 s [-9.5; -1.2]  margem 5.1 s  ΔMB +83.0  superioridade: REJEITADA
+       já medida (adaptar (combinacao))
+    5. resolucao    {i2,i14,i17,i21} → {i1,i2,i14,i17,i18,i19,i21,i23}  ΔB +1.6 s [-5.7; +6.8]  margem 5.1 s  ΔMB +359.1  superioridade: INCONCLUSIVA
+       resolução de incerteza: inconclusiva (superioridade) e ainda competitiva: UCB − custo = +6.8 s ≥ +5.1 s; nova sessão de {i1,i2,i14,i17,i18,i19,i21,i23}
+    6. medicao: resolução de incerteza (2 de 3): {i1,i2,i14,i17,i18,i19,i21,i23} contra {i2,i14,i17,i21}
+
+  EM ABERTO: aguardando medição para resolver incerteza (limite de 6 medições desta execução)
+  próxima medição: {i1,i2,i14,i17,i18,i19,i21,i23} (resolução de incerteza: {i1,i2,i14,i17,i18,i19,i21,i23} contra {i2,i14,i17,i21}, inconclusiva (superioridade) e ainda competitiva: UCB − custo = +6.8 s ≥ +5.1 s; nova sessão de {i1,i2,i14,i17,i18,i19,i21,i23}; ordem conjunto_primeiro)
+
+  configuração                    MB  benefício s                 IC 90%   +   − ses  situação
+  {i14,i31}                      1.3         -1.8           [-4.6; +0.2]   0   1   1  dominada por ∅
+  {i1,i14,i31}                  44.3    ≥+8,494.5         [+8,488.1; +∞]   4   1   2  alternativa compacta, com perda relevante; avaliar regressões
+  {i2,i14,i17,i21}             248.4    ≥+8,519.0         [+8,516.7; +∞]   6   0   3  atual (exploração em aberto)
+  {i2,i14,i17,i21,i25}         252.1    ≥+8,515.1         [+8,510.2; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i2,i9,i14,i17,i21,i25}      292.8    ≥+8,518.6         [+8,515.5; +∞]   5   2   2  dominada por {i2,i14,i17,i21}
+  {i1,i5,i6}                   294.2    ≥+8,498.2         [+8,492.1; +∞]   4   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i3,i4,i14,i17,i21}       331.4    ≥+8,517.2         [+8,512.4; +∞]   5   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i3,i5,i14,i17,i21}       331.4    ≥+8,514.2         [+8,509.8; +∞]   5   3   1  dominada por {i2,i14,i17,i21}
+  {i1,i2,i3,i4}                358.1    ≥+8,512.6         [+8,507.0; +∞]   5   2   1  dominada por {i2,i14,i17,i21}
+  {i2,i4,i8,i14,i17,i21}       377.4    ≥+8,495.1         [+8,489.5; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i2,i5,i8,i14,i17,i21}       377.4    ≥+8,495.0         [+8,489.5; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i1,i2,i14,i17,i18,i19,i21   607.5    ≥+8,520.6         [+8,513.3; +∞]   8   0   1  não ordenável contra a atual (evidência insuficiente)
+  {i1,i2,i14,i17,i18,i19,i21   609.6    ≥+8,523.0         [+8,520.7; +∞]   8   1   3  mais espaço, ganho sobre a atual abaixo da margem; avaliar custo; avaliar regressões
+  {i1,i2,i6,i7,i14,i17,i18,i   795.1    ≥+8,520.5         [+8,515.5; +∞]   8   1   1  dominada por {i1,i2,i14,i17,i18,i19,i21,i25}
+  {i1,i2,i3,i6,i7,i14,i16,i1   982.5    ≥+8,514.4         [+8,508.6; +∞]   8   3   1  dominada por {i2,i14,i17,i21}
+  (+/− = queries com melhora/piora em que o intervalo exclui zero, contra a linha de base)
+
+  ATUAL (exploração em aberto, ainda não é recomendação) {i2,i14,i17,i21}, 248.4 MB (origem: adaptar (fronteira)):
+    CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity);   -- 232.1 MB
+    CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey);   -- 0.1 MB
+    CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate);   -- 10.4 MB
+    CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone);   -- 5.8 MB
+    ∅ → {i1,i14,i31}: ΔB +8,494.5 s [+8,488.1; +∞], ΔMB +44.3, 191.93 s/MB
+    {i1,i14,i31} → {i2,i14,i17,i21}: ΔB +24.6 s [+19.1; +31.2], ΔMB +204.1, 0.12 s/MB
+    melhoram: q08 +43%, q09 +24%, q11 +13%, q17 +100%(piso), q19 +91%, q20 +100%(piso)
+    limitação: as sessões discordam mais do que o ruído da query explica em q10 (plano instável?): o intervalo usa a variância delas
+    limitação: benefício é piso: a linha de base estourou o timeout em alguma query
+
+  na fronteira de Pareto, o que a evidência permite afirmar:
+    {i1,i14,i31} × {i2,i14,i17,i21}: b melhor (ΔB +24.6 s [+19.1; +31.2])
+    {i1,i14,i31} × {i1,i2,i14,i17,i18,i19,i21,i23}: b melhor (ΔB +26.2 s [+16.1; +34.9])
+    {i1,i14,i31} × {i1,i2,i14,i17,i18,i19,i21,i25}: b melhor (ΔB +28.5 s [+23.2; +35.1])
+    {i2,i14,i17,i21} × {i1,i2,i14,i17,i18,i19,i21,i23}: não ordenável (ΔB +1.6 s [-5.7; +6.8])
+    {i2,i14,i17,i21} × {i1,i2,i14,i17,i18,i19,i21,i25}: b melhor (ΔB +3.9 s [+1.1; +6.9])
+    {i1,i2,i14,i17,i18,i19,i21,i23} × {i1,i2,i14,i17,i18,i19,i21,i25}: não ordenável (ΔB +2.3 s [-2.9; +10.1])
+
+  resolução de incerteza contra {i2,i14,i17,i21} (orçamento: 1 de 3 validações usadas):
+    {i1,i2,i14,i17,i18,i19,i21,i23   607.5 MB (+359.1)  ΔB +1.6 s [-5.7; +6.8]  sessões 1, P(vencer) 13%  → REMEDIR
+       inconclusiva (superioridade) e ainda competitiva: UCB − custo = +6.8 s ≥ +5.1 s; nova sessão de {i1,i2,i14,i17,i18,i19,i21,i23}
+    {i1,i2,i6,i7,i14,i17,i18,i19,i   795.1 MB (+546.8)  ΔB +1.4 s [-3.9; +6.3]  sessões 1, P(vencer) 10%  → REMEDIR
+       inconclusiva (superioridade) e ainda competitiva: UCB − custo = +6.3 s ≥ +5.1 s; nova sessão de {i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}
+    {i1,i2,i14,i17,i18,i19,i21,i25   609.6 MB (+361.2)  ΔB +3.9 s [+1.1; +6.9]  sessões 3, P(vencer) 24%  → SEM_ORCAMENTO
+       inconclusiva com 3 e 3 sessões: limite de 3 por configuração
+    {i2,i9,i14,i17,i21,i25}          292.8 MB (+44.5)  ΔB -0.5 s [-4.0; +3.0]  sessões 2, P(vencer) 1%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i3,i4,i14,i17,i21}           331.4 MB (+83.0)  ΔB -1.8 s [-6.7; +1.7]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i2,i3,i6,i7,i14,i16,i17,i1   982.5 MB (+734.1)  ΔB -4.6 s [-10.7; +1.2]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i14,i31}                          1.3 MB (-247.1)  ΔB -8,520.8 s [−∞; -8,517.9]  sessões 1, P(vencer) 0%  → DESCARTADA
+       perda relevante mesmo no melhor caso do intervalo
+    {i10}                             40.6 MB (-207.7)  ΔB -4,347.2 s [−∞; -4,329.6]  sessões 1, P(vencer) 0%  → DESCARTADA
+       perda relevante mesmo no melhor caso do intervalo
+    {i2,i14,i17,i21,i25}             252.1 MB (+3.8)  ΔB -4.0 s [-9.1; -0.1]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i5,i6}                       294.2 MB (+45.9)  ΔB -20.8 s [-27.2; -15.2]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i3,i5,i14,i17,i21}           331.4 MB (+83.0)  ΔB -4.8 s [-9.5; -1.2]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i2,i3,i4}                    358.1 MB (+109.7)  ΔB -6.5 s [-12.3; -1.4]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i4,i8,i14,i17,i21}           377.4 MB (+129.0)  ΔB -23.9 s [-29.8; -19.3]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i5,i8,i14,i17,i21}           377.4 MB (+129.0)  ΔB -24.1 s [-29.6; -19.4]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    (+ 31 índice(s) sozinho(s) da matriz, descartados; no JSON)
+
+  multiplicidade: 47 configurações medidas (15 conjuntos validados, 32 índices só na matriz); 4 comparações na caminhada + 45 na resolução de incerteza
+    22 sessões independentes (21 validações de seleção; por conjunto: mín 1, mediana 1, máx 3); origem das validações: {'legado': 7, 'resolucao': 1, 'adaptar': 8, 'medida': 3, 'fronteira': 2}
+    205 testes por query no relatório: ~20.5 marcas +/− esperadas por acaso se nada tivesse mudado
+    Bonferroni (49 comparações, 99.80%): ∅ → {i1,i14,i31} li +8,488.1 → +8,482.8 s, margem 86.5 s: sobrevive
+    Bonferroni (49 comparações, 99.80%): {i1,i14,i31} → {i2,i14,i17,i21} li +19.1 → +13.9 s, margem 5.8 s: sobrevive
+    unidade: a sessão de medida: numa validação, a linha de base e a configuração medidas na mesma sessão; na matriz, a linha de base da matriz e cada índice sozinho. As repetições de um bloco não são independentes (só dão a variância dentro da sessão), e as queries de uma sessão compartilham o deslocamento γ dela. Duas configurações nunca estão na mesma sessão: a diferença entre elas passa pela linha de base de cada sessão, com o pareamento β
+    cada decisão é um teste unilateral de nível 5% (intervalo bilateral de 90%), sem correção para o número de comparações; cada marca +/− por query é um teste bilateral de 10%
+    os intervalos são condicionais a cada comparação. O procedimento é sequencial (21 validações de seleção, cada uma pedida por uma análise intermediária sobre a evidência de então) e a recomendada é a que se saiu melhor entre as comparadas: o ganho dela estimado na seleção tende a ser otimista. Só a confirmação, em sessões que a seleção não leu, estima o ganho sem esse viés
+    confirmação: pendente: adaptar --sessao 1 --confirmar 13 --executar
+    AVISO: a maioria dos conjuntos tem menos de 3 sessões: a média de cada um é imprecisa (a variância entre sessões, não, porque é estimada em conjunto)
+
+  adaptação 13 gravada (6 medição(ões) nesta execução, 70.6 min)
+  para continuar: validar --otimizacao 21 --nova-validacao --ordem conjunto_primeiro --movimento resolucao   (ou: adaptar --sessao 1 --executar)
+  JSON em figuras/tpch-pgtune/adaptativa/resolucao_execucao.json
+>>> 15:01 fim (saida=0)

@@ -1,0 +1,243 @@
+{
+ "sessao": 1,
+ "rotulos": {
+  "14": "#14",
+  "15": "#15",
+  "46": "y14",
+  "48": "y21",
+  "49": "y15",
+  "50": "y05",
+  "51": "y08",
+  "52": "y10",
+  "53": "y16",
+  "56": "y01",
+  "57": "y07",
+  "58": "y22",
+  "59": "y09",
+  "60": "y03",
+  "61": "y02",
+  "62": "y04",
+  "63": "y18",
+  "64": "y20",
+  "65": "y12",
+  "66": "y17",
+  "67": "y13",
+  "68": "y06",
+  "69": "y19",
+  "70": "y11"
+ },
+ "otimizacoes": [
+  {
+   "otimizacao": 4,
+   "sessao": 1,
+   "status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "parametros": {
+    "modelo": "otimista",
+    "peso": "execucoes",
+    "limiar": 10.0,
+    "orcamento_mb": null,
+    "lambda_mb": 0.0,
+    "custo_escrita": 0.0,
+    "rodada": null
+   },
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_usertable_left_field2_3 ON usertable ((\"left\"(field2, 3)))",
+     "mb": 6.8,
+     "origem": "rodada",
+     "escritas": 186221.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_usertable_field7_left1 ON usertable ((left(field7, 1)))",
+     "mb": 6.7,
+     "origem": "rodada",
+     "escritas": 186221.0
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_usertable_field9_trgm ON usertable USING gin (field9 gin_trgm_ops)",
+     "mb": 262.6,
+     "origem": "heuristica",
+     "escritas": 186221.0
+    }
+   ],
+   "armazenamento_mb": 276.1,
+   "beneficio_previsto_ms": 258698.5,
+   "custo": 0.0,
+   "objetivo": 258698.5,
+   "por_query": {
+    "64": {
+     "peso": 328.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "67": {
+     "peso": 225.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "46": {
+     "peso": 300.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "65": {
+     "peso": 291.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "51": {
+     "peso": 508.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "66": {
+     "peso": 288.0,
+     "delta_ms": 287.7,
+     "atende": 2,
+     "pioram": [],
+     "piso": false
+    },
+    "68": {
+     "peso": 200.0,
+     "delta_ms": 491.1,
+     "atende": 1,
+     "pioram": [],
+     "piso": false
+    },
+    "63": {
+     "peso": 299.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "49": {
+     "peso": 289.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "57": {
+     "peso": 606.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "69": {
+     "peso": 343.0,
+     "delta_ms": 226.3,
+     "atende": 7,
+     "pioram": [],
+     "piso": false
+    },
+    "58": {
+     "peso": 308.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "48": {
+     "peso": 305.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "61": {
+     "peso": 594.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "59": {
+     "peso": 565.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "62": {
+     "peso": 628.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "56": {
+     "peso": 1081.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "60": {
+     "peso": 611.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "50": {
+     "peso": 817.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "53": {
+     "peso": 283.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "70": {
+     "peso": 492.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "14": {
+     "peso": 12020.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "52": {
+     "peso": 595.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "15": {
+     "peso": 3664.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    }
+   }
+  }
+ ],
+ "rodadas": []
+}

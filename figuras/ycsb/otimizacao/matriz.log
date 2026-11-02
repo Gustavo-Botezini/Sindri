@@ -1,0 +1,101 @@
+  heurística: 6 candidatos para o corpus inteiro, 1 de trigrama
+sessão 1: 11 índices distintos × 24 queries
+
+linha de base: 24 queries × 5 repetições
+      ref=53      1,208.3 ms
+      ref=65      1,123.6 ms
+      ref=49        450.4 ms
+      ref=63        788.2 ms
+      ref=67        883.9 ms
+      ref=64        330.7 ms
+      ref=68        491.0 ms
+      ref=69        226.4 ms
+      ref=66        302.6 ms
+      ref=46        194.0 ms
+      ref=48        604.1 ms
+      ref=58         71.2 ms
+      ref=70         11.5 ms
+      ref=51          4.6 ms
+      ref=15          0.2 ms
+      ref=57          0.4 ms
+      ref=56          0.0 ms
+      ref=52          0.1 ms
+      ref=14          0.0 ms
+      ref=61          0.0 ms
+      ref=62          0.0 ms
+      ref=59          0.0 ms
+      ref=60          0.0 ms
+      ref=50          0.0 ms
+  = 37.8s
+
+índice 1/11: CREATE INDEX brokk_exp_usertable_left_field2_3 ON usertable (("left"(field2, 3)))
+  1 de 24 queries usam o índice: ref=68
+      ref=68          0.0 ms (usou o índice)
+  = 2.1s
+
+índice 2/11: CREATE INDEX brokk_exp_usertable_field7_left1 ON usertable ((left(field7, 1)))
+  1 de 24 queries usam o índice: ref=66
+      ref=66         29.6 ms (usou o índice)
+  = 2.1s
+
+índice 3/11: CREATE INDEX brokk_exp_usertable_key_cover ON usertable (ycsb_key) INCLUDE (field3, field4, field5, field6)
+  5 de 24 queries usam o índice: ref=56, ref=52, ref=14, ref=61, ref=50
+      ref=56          0.0 ms (usou o índice)
+      ref=52          0.1 ms (usou o índice)
+      ref=14          0.0 ms (usou o índice)
+      ref=61          0.0 ms (usou o índice)
+      ref=50          0.0 ms (usou o índice)
+  = 7.5s
+
+índice 4/11: CREATE INDEX brokk_exp_usertable_key_inc_field1 ON usertable (ycsb_key) INCLUDE (field1)
+  6 de 24 queries usam o índice: ref=57, ref=56, ref=52, ref=14, ref=61, ref=50
+      ref=57          0.4 ms (usou o índice)
+      ref=56          0.0 ms (usou o índice)
+      ref=52          0.0 ms (usou o índice)
+      ref=14          0.0 ms (usou o índice)
+      ref=61          0.0 ms (usou o índice)
+      ref=50          0.0 ms (usou o índice)
+  = 2.5s
+
+índice 5/11: CREATE INDEX brokk_exp_usertable_key_inc_f1f2 ON public.usertable (ycsb_key) INCLUDE (field1, field2)
+  5 de 24 queries usam o índice: ref=56, ref=52, ref=14, ref=61, ref=50
+      ref=56          0.0 ms (usou o índice)
+      ref=52          0.1 ms (usou o índice)
+      ref=14          0.0 ms (usou o índice)
+      ref=61          0.0 ms (usou o índice)
+      ref=50          0.0 ms (usou o índice)
+  = 3.6s
+
+índice 6/11: CREATE INDEX brokk_exp_usertable_ycsb_key_field1 ON usertable (ycsb_key, field1)
+  4 de 24 queries usam o índice: ref=56, ref=52, ref=14, ref=50
+      ref=56          0.0 ms (usou o índice)
+      ref=52          0.0 ms (usou o índice)
+      ref=14          0.0 ms (usou o índice)
+      ref=50          0.0 ms (usou o índice)
+  = 2.0s
+
+índice 7/11: CREATE INDEX brokk_exp_usertable_field9_trgm ON usertable USING gin (field9 gin_trgm_ops)
+  1 de 24 queries usam o índice: ref=69
+      ref=69          1.3 ms (usou o índice)
+  = 23.6s
+
+índice 8/11: CREATE INDEX brokk_exp_usertable_field3 ON usertable (field3)
+  0 de 24 queries usam o índice: 
+  = 3.7s
+
+índice 9/11: CREATE INDEX brokk_exp_usertable_field2 ON usertable (field2)
+  0 de 24 queries usam o índice: 
+  = 3.2s
+
+índice 10/11: CREATE INDEX brokk_exp_usertable_field7 ON usertable (field7)
+  0 de 24 queries usam o índice: 
+  = 3.3s
+
+índice 11/11: CREATE INDEX brokk_exp_usertable_field9 ON usertable (field9)
+  0 de 24 queries usam o índice: 
+  = 3.3s
+
+sessão 1 concluída em 1.6 min. Para avaliar:
+  python -m src.index_provider comparar --sessao 1 --rodadas 1,2
+  python -m src.index_provider otimizar --sessao 1
+saida=0

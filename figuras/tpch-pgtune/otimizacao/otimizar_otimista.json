@@ -1,0 +1,282 @@
+{
+ "sessao": 1,
+ "rotulos": {
+  "34": "q05",
+  "48": "q01",
+  "49": "q02",
+  "50": "q03",
+  "51": "q04",
+  "52": "q06",
+  "53": "q07",
+  "54": "q08",
+  "55": "q09",
+  "56": "q10",
+  "57": "q11",
+  "58": "q12",
+  "59": "q13",
+  "60": "q14",
+  "62": "q16",
+  "64": "q17",
+  "66": "q18",
+  "67": "q19",
+  "68": "q20",
+  "69": "q21",
+  "70": "q22"
+ },
+ "otimizacoes": [
+  {
+   "otimizacao": 7,
+   "sessao": 1,
+   "status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "parametros": {
+    "modelo": "otimista",
+    "peso": "execucoes",
+    "limiar": 10.0,
+    "orcamento_mb": null,
+    "lambda_mb": 0.0,
+    "custo_escrita": 0.0,
+    "rodada": null
+   },
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "mb": 43.0,
+     "origem": "rodada+heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1,
+     "origem": "rodada",
+     "escritas": 0.0
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "mb": 12.0,
+     "origem": "rodada+heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3,
+     "origem": "rodada",
+     "escritas": 0.0
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)",
+     "mb": 5.2,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "mb": 0.1,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 16,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_partkey_l_suppkey ON lineitem (l_shipdate, l_partkey, l_suppkey)",
+     "mb": 180.1,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "mb": 10.4,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "mb": 3.8,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 26,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_mktsegment ON customer (c_mktsegment)",
+     "mb": 1.0,
+     "origem": "heuristica",
+     "escritas": 0.0
+    }
+   ],
+   "armazenamento_mb": 982.5,
+   "beneficio_previsto_ms": 7217632.8,
+   "custo": 0.0,
+   "objetivo": 7217632.8,
+   "por_query": {
+    "54": {
+     "peso": 12.0,
+     "delta_ms": 224.89999999999998,
+     "atende": 1,
+     "pioram": [],
+     "piso": false
+    },
+    "70": {
+     "peso": 12.0,
+     "delta_ms": 172.7,
+     "atende": 3,
+     "pioram": [],
+     "piso": false
+    },
+    "69": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": 14,
+     "pioram": [],
+     "piso": false
+    },
+    "58": {
+     "peso": 12.0,
+     "delta_ms": 106.19999999999999,
+     "atende": 18,
+     "pioram": [],
+     "piso": false
+    },
+    "50": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": 26,
+     "pioram": [],
+     "piso": false
+    },
+    "67": {
+     "peso": 12.0,
+     "delta_ms": 377.8,
+     "atende": 1,
+     "pioram": [],
+     "piso": false
+    },
+    "52": {
+     "peso": 12.0,
+     "delta_ms": 95.0,
+     "atende": 19,
+     "pioram": [],
+     "piso": false
+    },
+    "60": {
+     "peso": 12.0,
+     "delta_ms": 119.80000000000001,
+     "atende": 16,
+     "pioram": [],
+     "piso": false
+    },
+    "48": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "53": {
+     "peso": 12.0,
+     "delta_ms": 110.80000000000001,
+     "atende": 14,
+     "pioram": [],
+     "piso": false
+    },
+    "62": {
+     "peso": 12.0,
+     "delta_ms": 79.79999999999998,
+     "atende": 25,
+     "pioram": [],
+     "piso": false
+    },
+    "51": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": 17,
+     "pioram": [],
+     "piso": false
+    },
+    "59": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "49": {
+     "peso": 12.0,
+     "delta_ms": 42.79999999999998,
+     "atende": 25,
+     "pioram": [],
+     "piso": false
+    },
+    "64": {
+     "peso": 12.0,
+     "delta_ms": 299914.0,
+     "atende": 2,
+     "pioram": [],
+     "piso": true
+    },
+    "34": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": 17,
+     "pioram": [],
+     "piso": false
+    },
+    "57": {
+     "peso": 12.0,
+     "delta_ms": 37.000000000000014,
+     "atende": 7,
+     "pioram": [],
+     "piso": false
+    },
+    "55": {
+     "peso": 12.0,
+     "delta_ms": 129.39999999999998,
+     "atende": 6,
+     "pioram": [],
+     "piso": false
+    },
+    "68": {
+     "peso": 12.0,
+     "delta_ms": 299955.9,
+     "atende": 2,
+     "pioram": [],
+     "piso": true
+    },
+    "56": {
+     "peso": 12.0,
+     "delta_ms": 103.30000000000001,
+     "atende": 17,
+     "pioram": [],
+     "piso": false
+    },
+    "66": {
+     "peso": 12.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    }
+   }
+  }
+ ],
+ "rodadas": []
+}

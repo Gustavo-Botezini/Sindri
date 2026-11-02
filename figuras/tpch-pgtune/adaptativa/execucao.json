@@ -1,0 +1,1730 @@
+{
+ "sessao": 1,
+ "parametros": {
+  "confianca": 0.9,
+  "relevancia": 0.01,
+  "margem_ms": null,
+  "lambda_mb": 0.0,
+  "custo_entrada_ms": null,
+  "paciencia": 2,
+  "min_sessoes": 2,
+  "max_validacoes": 3,
+  "economia_minima": 0.1,
+  "max_medicoes": 4,
+  "exploracao": 2,
+  "vizinhos": 4,
+  "amostras": 4000,
+  "semente": 42,
+  "peso": "execucoes",
+  "modelo": "conservador"
+ },
+ "recomendada": "{i2,i14,i17,i21}",
+ "recomendada_otimizacao": 12,
+ "caminho": [
+  {
+   "de": "∅",
+   "para": "{i1,i14,i31}",
+   "delta_ms": 7593108.468038695,
+   "li_ms": 7584984.268325777,
+   "ls_ms": null,
+   "aberto_abaixo": false,
+   "aberto_acima": true,
+   "delta_mb": 44.3,
+   "eficiencia_ms_por_mb": 171565.38109601993
+  },
+  {
+   "de": "{i1,i14,i31}",
+   "para": "{i2,i14,i17,i21}",
+   "delta_ms": 18073.500484478358,
+   "li_ms": 10429.066057082606,
+   "ls_ms": 27366.74483440016,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "delta_mb": 204.1,
+   "eficiencia_ms_por_mb": 88.55489442708735
+  }
+ ],
+ "caminho_chaves": [
+  [],
+  [
+   1,
+   14,
+   31
+  ],
+  [
+   2,
+   14,
+   17,
+   21
+  ]
+ ],
+ "margem_final_ms": 4870.967718409149,
+ "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+ "motivo": "aguardando medição da candidata (limite de 4 medições desta execução)",
+ "concluida": false,
+ "proxima": {
+  "configuracao": "{i2,i17,i21}",
+  "chave": [
+   2,
+   17,
+   21
+  ],
+  "motivo": "remocao: −i14: plano usou o índice nas queries que pioraram [69]",
+  "ordem": "base_primeiro",
+  "otimizacao": 14,
+  "comando": "validar --otimizacao 14 --nova-validacao --ordem base_primeiro   (ou: adaptar --sessao 1 --executar)"
+ },
+ "passos": [
+  {
+   "tipo": "comparacao",
+   "movimento": "medida",
+   "de": "∅",
+   "para": "{i1,i14,i31}",
+   "teste": "superioridade",
+   "decisao": "aceita",
+   "delta_ms": 7593108.468038695,
+   "li_ms": 7584984.268325777,
+   "ls_ms": null,
+   "aberto_abaixo": false,
+   "aberto_acima": true,
+   "margem_ms": 77380.97891908536,
+   "custo_ms": 0.0,
+   "delta_mb": 44.2578125,
+   "previsto_ms": 7193510.399999999,
+   "texto": "já medida (otimizar ≤ 50 MB)",
+   "detalhe": {
+    "fonte_margem": "1% de C(A) = 7,738.1 s",
+    "notas": [],
+    "insuficiencias": [],
+    "sessoes": [
+     0,
+     2
+    ],
+    "prob_positivo": 1.0
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "medida",
+   "de": "{i1,i14,i31}",
+   "para": "{i2,i14,i17,i21}",
+   "teste": "superioridade",
+   "decisao": "aceita",
+   "delta_ms": 18073.500484478358,
+   "li_ms": 10429.066057082606,
+   "ls_ms": 27366.74483440016,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5733.199773286855,
+   "custo_ms": 0.0,
+   "delta_mb": 204.09375,
+   "previsto_ms": 16118.400000000373,
+   "texto": "já medida (adaptar (fronteira))",
+   "detalhe": {
+    "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+    "notas": [],
+    "insuficiencias": [],
+    "sessoes": [
+     2,
+     2
+    ],
+    "prob_positivo": 1.0
+   }
+  },
+  {
+   "tipo": "medicao",
+   "movimento": "remocao",
+   "de": "{i2,i14,i17,i21}",
+   "para": "{i2,i17,i21}",
+   "teste": null,
+   "decisao": null,
+   "delta_ms": null,
+   "margem_ms": null,
+   "custo_ms": null,
+   "delta_mb": null,
+   "previsto_ms": -1766.3999999994412,
+   "texto": "−i14: plano usou o índice nas queries que pioraram [69]: sem medida",
+   "detalhe": {}
+  }
+ ],
+ "configuracoes": [
+  {
+   "chave": [],
+   "rotulo": "∅",
+   "otimizacoes": [],
+   "origem": "linha de base (só os índices existentes)",
+   "mb": 0,
+   "indices": [],
+   "sessoes": 0,
+   "validacoes": [],
+   "limitacoes": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "referência (linha de base)"
+  },
+  {
+   "chave": [
+    14,
+    31
+   ],
+   "rotulo": "{i14,i31}",
+   "otimizacoes": [
+    13
+   ],
+   "origem": "adaptar (remocao)",
+   "mb": 1.3,
+   "indices": [
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_comment_trgm ON supplier USING gin (s_comment gin_trgm_ops)",
+     "curto": "supplier USING gin (s_comment gin_trgm_ops)",
+     "mb": 1.2
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v13.1"
+   ],
+   "limitacoes": [
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": -4226.147553374544,
+   "beneficio_li_ms": -8323.62843878752,
+   "beneficio_ls_ms": -1065.2948330724614,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": false,
+   "carga_ms": 7742324.039461911,
+   "carga_e_piso": true,
+   "melhoram": [],
+   "pioram": [
+    {
+     "query": "q21",
+     "ganho_pct": -50.738023944269784,
+     "ganho_ponderado_ms": -2335.5814879099744,
+     "li_ms": -3817.8972076221885,
+     "ls_ms": -1076.9327371235752,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q07",
+    "q11",
+    "q16"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "∅",
+   "situacao": "dominada por ∅",
+   "contra_recomendada": {
+    "delta_ms": -7615408.116076547,
+    "li_ms": null,
+    "ls_ms": -7609440.132081382,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    14,
+    31
+   ],
+   "rotulo": "{i1,i14,i31}",
+   "otimizacoes": [
+    4,
+    8
+   ],
+   "origem": "otimizar ≤ 50 MB",
+   "mb": 44.3,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_comment_trgm ON supplier USING gin (s_comment gin_trgm_ops)",
+     "curto": "supplier USING gin (s_comment gin_trgm_ops)",
+     "mb": 1.2
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v4.1",
+    "v8.1"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em q07, q08, q16, q19 (plano instável?): o intervalo usa a variância delas",
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 7593108.468038695,
+   "beneficio_li_ms": 7584984.268325777,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 144989.4238698407,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 34.23575558308425,
+     "ganho_ponderado_ms": 1112.0746974858407,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.62774833084339,
+     "ganho_ponderado_ms": 3790792.7417026386,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 88.09183817714572,
+     "ganho_ponderado_ms": 3755.4324267843504,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.95095727671382,
+     "ganho_ponderado_ms": 3803090.702326925,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q09",
+     "ganho_pct": -50.869699903645355,
+     "ganho_ponderado_ms": -5028.582001523617,
+     "li_ms": -10188.158348852756,
+     "ls_ms": -942.6321394725935,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q07",
+    "q11",
+    "q16",
+    "q21"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "q07",
+    "q08",
+    "q16",
+    "q19"
+   ],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "alternativa compacta, com perda relevante; avaliar regressões",
+   "contra_recomendada": {
+    "delta_ms": -18073.500484478358,
+    "li_ms": -27366.744834400164,
+    "ls_ms": -10429.066057082608,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    2,
+    14,
+    17,
+    21
+   ],
+   "rotulo": "{i2,i14,i17,i21}",
+   "otimizacoes": [
+    12
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 248.4,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v12.1",
+    "v12.2"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 7611181.968523172,
+   "beneficio_li_ms": 7606085.473918911,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 126915.92338536237,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 34.261752243070454,
+     "ganho_ponderado_ms": 1112.9191429288408,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.9772005791283,
+     "ganho_ponderado_ms": 3804089.248635336,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 89.88270251552865,
+     "ganho_ponderado_ms": 3831.7785463284854,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98417309249614,
+     "ganho_ponderado_ms": 3804354.54975384,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q05",
+     "ganho_pct": -22.729329744391237,
+     "ganho_ponderado_ms": -490.3857373205317,
+     "li_ms": -987.9751925728644,
+     "ls_ms": -58.148203105602974,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q10",
+     "ganho_pct": -18.60266010064161,
+     "ganho_ponderado_ms": -627.4256437306553,
+     "li_ms": -1201.0512265667078,
+     "ls_ms": -98.67251407128302,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -26.426755329741766,
+     "ganho_ponderado_ms": -1216.4809690157795,
+     "li_ms": -2116.7927958333953,
+     "ls_ms": -429.62990442714,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q11",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "atual (exploração em aberto); avaliar regressões"
+  },
+  {
+   "chave": [
+    2,
+    14,
+    17,
+    21,
+    25
+   ],
+   "rotulo": "{i2,i14,i17,i21,i25}",
+   "otimizacoes": [
+    11
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 252.1,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v11.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 7607623.259421022,
+   "beneficio_li_ms": 7598555.664815258,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 130474.63248751298,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 40.74589757491995,
+     "ganho_ponderado_ms": 1323.5426222579667,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97883860421702,
+     "ganho_ponderado_ms": 3804151.5747816265,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.17224984827038,
+     "ganho_ponderado_ms": 3886.7530816482395,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98708305956998,
+     "ganho_ponderado_ms": 3804465.2727426356,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q07",
+     "ganho_pct": -40.87535344300789,
+     "ganho_ponderado_ms": -1408.97204038668,
+     "li_ms": -2674.242218433995,
+     "ls_ms": -370.0609872605274,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q10",
+     "ganho_pct": -30.040488823935714,
+     "ganho_ponderado_ms": -1013.1977328173266,
+     "li_ms": -1970.6827210799088,
+     "ls_ms": -244.42300002221154,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -37.94850568499327,
+     "ganho_ponderado_ms": -1746.8521728214953,
+     "li_ms": -3132.614117169787,
+     "ls_ms": -613.457671524758,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q22",
+     "ganho_pct": -40.8300173582279,
+     "ganho_ponderado_ms": -688.3031370365089,
+     "li_ms": -1373.4945882040752,
+     "ls_ms": -120.28766372755257,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q09",
+    "q11",
+    "q16"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -3558.709102150598,
+    "li_ms": -13434.101037337827,
+    "ls_ms": 4696.63862839227,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    2,
+    9,
+    14,
+    17,
+    21,
+    25
+   ],
+   "rotulo": "{i2,i9,i14,i17,i21,i25}",
+   "otimizacoes": [
+    5
+   ],
+   "origem": "otimizar ≤ 294 MB",
+   "mb": 292.8,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 9,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate ON lineitem (l_shipdate)",
+     "curto": "lineitem (l_shipdate)",
+     "mb": 40.7
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v5.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 7616106.737901417,
+   "beneficio_li_ms": 7608462.7498557065,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 121991.15400711735,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 46.69295653858412,
+     "ganho_ponderado_ms": 1516.7200090370402,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 37.99651283180053,
+     "ganho_ponderado_ms": 1145.01455516643,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.978300121127,
+     "ganho_ponderado_ms": 3804131.085732909,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 89.99413925842619,
+     "ganho_ponderado_ms": 3836.529192545801,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98569019978285,
+     "ganho_ponderado_ms": 3804412.275030053,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q06",
+     "ganho_pct": -36.7452563771937,
+     "ganho_ponderado_ms": -1034.8382854653225,
+     "li_ms": -1974.4004128247211,
+     "ls_ms": -315.6709976256237,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q10",
+    "q11",
+    "q16",
+    "q21",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "não ordenável contra a atual (evidência insuficiente); avaliar regressões",
+   "contra_recomendada": {
+    "delta_ms": 4924.769378245044,
+    "li_ms": -3844.7924482874682,
+    "ls_ms": 12391.304878639028,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    1,
+    5,
+    6
+   ],
+   "rotulo": "{i1,i5,i6}",
+   "otimizacoes": [
+    3
+   ],
+   "origem": "clusters (rodada 2)",
+   "mb": 294.2,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 5,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cov ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "mb": 71.0
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v3.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 7596644.988844364,
+   "beneficio_li_ms": 7586603.96667211,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 141452.90306417173,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 40.37647469130474,
+     "ganho_ponderado_ms": 1311.5427164710554,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.68284818871814,
+     "ganho_ponderado_ms": 3792889.2674677987,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 90.33772924335395,
+     "ganho_ponderado_ms": 3851.1767353558544,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.9827176550579,
+     "ganho_ponderado_ms": 3804299.170988694,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -28.485474761389632,
+     "ganho_ponderado_ms": -885.2796574148022,
+     "li_ms": -1762.9228722089883,
+     "ls_ms": -158.45445555329044,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -27.456577927991702,
+     "ganho_ponderado_ms": -946.4273056177299,
+     "li_ms": -2087.8893893872187,
+     "ls_ms": -28.34624818201883,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q22",
+     "ganho_pct": -48.78498523284069,
+     "ganho_ponderado_ms": -822.4061743945679,
+     "li_ms": -1562.9437130033834,
+     "ls_ms": -238.28666500435938,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q04",
+    "q09",
+    "q10"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -14536.979678809357,
+    "li_ms": -25185.02491954457,
+    "ls_ms": -5675.9397629004525,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "rotulo": "{i1,i2,i3,i4}",
+   "otimizacoes": [
+    2
+   ],
+   "origem": "clusters (rodada 1)",
+   "mb": 358.1,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "curto": "orders (o_custkey)",
+     "mb": 12.0
+    },
+    {
+     "id": 4,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "mb": 71.0
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v2.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 7610405.984817259,
+   "beneficio_li_ms": 7602372.878842164,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 127691.90709127611,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 48.15695114094042,
+     "ganho_ponderado_ms": 1564.2747168799924,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97724177355784,
+     "ganho_ponderado_ms": 3804090.8160655666,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 90.80977109160234,
+     "ganho_ponderado_ms": 3871.3002939101266,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.9860821971667,
+     "ganho_ponderado_ms": 3804427.190360996,
+     "piso": true
+    },
+    {
+     "query": "q22",
+     "ganho_pct": 56.56597460132741,
+     "ganho_ponderado_ms": 953.5763217052665,
+     "piso": false
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -35.64201870852694,
+     "ganho_ponderado_ms": -1107.692758367683,
+     "li_ms": -2057.902095062141,
+     "ls_ms": -364.0473711017707,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q04",
+    "q07",
+    "q09",
+    "q10"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i9,i14,i17,i21,i25}",
+   "situacao": "dominada por {i2,i9,i14,i17,i21,i25}",
+   "contra_recomendada": {
+    "delta_ms": -775.9837059137641,
+    "li_ms": -9806.703649652356,
+    "ls_ms": 7059.333570029921,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    6,
+    7,
+    14,
+    17,
+    18,
+    19,
+    21,
+    25
+   ],
+   "rotulo": "{i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}",
+   "otimizacoes": [
+    1
+   ],
+   "origem": "otimizar (conservador, sem orçamento)",
+   "mb": 795.1,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)",
+     "curto": "partsupp (ps_suppkey)",
+     "mb": 5.2
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v1.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 7617153.9207494,
+   "beneficio_li_ms": 7609152.843819913,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 120943.97115913371,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 26.83448417280647,
+     "ganho_ponderado_ms": 755.7261625195437,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 47.30598111605806,
+     "ganho_ponderado_ms": 1536.6327905701153,
+     "piso": false
+    },
+    {
+     "query": "q11",
+     "ganho_pct": 28.763452597782344,
+     "ganho_ponderado_ms": 414.16514176190157,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 37.173602500837276,
+     "ganho_ponderado_ms": 1120.2163766935582,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97666614302345,
+     "ganho_ponderado_ms": 3804068.913572654,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 86.7310199628818,
+     "ganho_ponderado_ms": 3697.4195511927574,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98059739848298,
+     "ganho_ponderado_ms": 3804218.4961428866,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q21",
+     "ganho_pct": -25.586706396981945,
+     "ganho_ponderado_ms": -1177.8116913464833,
+     "li_ms": -2396.8154564206634,
+     "ls_ms": -127.15763641664812,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q10",
+    "q12",
+    "q16",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "não ordenável contra a atual (evidência insuficiente); avaliar regressões",
+   "contra_recomendada": {
+    "delta_ms": 5971.952226228696,
+    "li_ms": -3117.8375915000647,
+    "ls_ms": 13572.121425267009,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    3,
+    6,
+    7,
+    14,
+    16,
+    17,
+    18,
+    19,
+    25,
+    26
+   ],
+   "rotulo": "{i1,i2,i3,i6,i7,i14,i16,i17,i18,i19,i25,i26}",
+   "otimizacoes": [
+    7
+   ],
+   "origem": "otimizar (otimista, sem orçamento)",
+   "mb": 982.5,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "curto": "orders (o_custkey)",
+     "mb": 12.0
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)",
+     "curto": "partsupp (ps_suppkey)",
+     "mb": 5.2
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 16,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_partkey_l_suppkey ON lineitem (l_shipdate, l_partkey, l_suppkey)",
+     "curto": "lineitem (l_shipdate, l_partkey, l_suppkey)",
+     "mb": 180.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    },
+    {
+     "id": 26,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_mktsegment ON customer (c_mktsegment)",
+     "curto": "customer (c_mktsegment)",
+     "mb": 1.0
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v7.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 7612303.461718548,
+   "beneficio_li_ms": 7602822.527846228,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 125794.43018998642,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 32.28999856783565,
+     "ganho_ponderado_ms": 909.3670870767436,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 39.205656605719014,
+     "ganho_ponderado_ms": 1273.5112155982652,
+     "piso": false
+    },
+    {
+     "query": "q11",
+     "ganho_pct": 32.88464808644066,
+     "ganho_ponderado_ms": 473.5062625117896,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 36.20783051877501,
+     "ganho_ponderado_ms": 1091.113101313305,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97944328362604,
+     "ganho_ponderado_ms": 3804174.5825716564,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 87.6813623546723,
+     "ganho_ponderado_ms": 3737.933481978274,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.9774398860169,
+     "ganho_ponderado_ms": 3804098.354158963,
+     "piso": true
+    },
+    {
+     "query": "q22",
+     "ganho_pct": 46.958527996577764,
+     "ganho_ponderado_ms": 791.616174127045,
+     "piso": false
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q05",
+     "ganho_pct": -81.36266091528674,
+     "ganho_ponderado_ms": -1755.4010132282465,
+     "li_ms": -2655.169295996496,
+     "ls_ms": -1036.5591585530071,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q03",
+     "ganho_pct": -98.5148087992648,
+     "ganho_ponderado_ms": -3061.6711469492566,
+     "li_ms": -4468.717257031428,
+     "ls_ms": -1955.347513609478,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -27.207919349242268,
+     "ganho_ponderado_ms": -937.856052881072,
+     "li_ms": -2075.32968136045,
+     "ls_ms": -33.20460331134191,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q04",
+    "q09",
+    "q10",
+    "q12",
+    "q16",
+    "q21"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": null,
+   "situacao": "não ordenável contra a atual (evidência insuficiente); avaliar regressões",
+   "contra_recomendada": {
+    "delta_ms": 1121.4931953759396,
+    "li_ms": -9302.638336330812,
+    "ls_ms": 9568.448656154798,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  }
+ ],
+ "ordem_na_fronteira": [
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i2,i14,i17,i21}",
+   "delta_ms": 18073.500484478358,
+   "li_ms": 10429.066057082606,
+   "ls_ms": 27366.74483440016,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5733.199773286855,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i2,i9,i14,i17,i21,i25}",
+   "delta_ms": 22998.269862723402,
+   "li_ms": 13363.815581068186,
+   "ls_ms": 32670.24069490602,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5733.199773286855,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 24045.452710707046,
+   "li_ms": 14166.510569963475,
+   "ls_ms": 34042.40698296777,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5733.199773286855,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i2,i14,i17,i21}",
+   "b": "{i2,i9,i14,i17,i21,i25}",
+   "delta_ms": 4924.769378245044,
+   "li_ms": -3844.7924482874682,
+   "ls_ms": 12391.304878639028,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4870.967718409149,
+   "afirmacao": "não ordenável"
+  },
+  {
+   "a": "{i2,i14,i17,i21}",
+   "b": "{i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 5971.952226228696,
+   "li_ms": -3117.8375915000647,
+   "ls_ms": 13572.121425267009,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4870.967718409149,
+   "afirmacao": "não ordenável"
+  },
+  {
+   "a": "{i2,i9,i14,i17,i21,i25}",
+   "b": "{i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 1047.1828479836506,
+   "li_ms": -8725.32225309605,
+   "ls_ms": 10648.468135413113,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4727.943640825887,
+   "afirmacao": "não ordenável"
+  }
+ ],
+ "nao_ordenaveis": [],
+ "evidencia": {
+  "sessoes": [
+   "m1",
+   "v1.1",
+   "v11.1",
+   "v12.1",
+   "v12.2",
+   "v13.1",
+   "v2.1",
+   "v3.1",
+   "v4.1",
+   "v5.1",
+   "v7.1",
+   "v8.1"
+  ],
+  "validacoes": {
+   "selecao": 4,
+   "legado": 7,
+   "confirmacao": 0
+  },
+  "excluidas_por_ambiente": {},
+  "sem_ambiente_registrado": [
+   "m1",
+   "v1.1",
+   "v2.1",
+   "v3.1",
+   "v4.1",
+   "v5.1",
+   "v7.1",
+   "v8.1"
+  ],
+  "ambiente_referencia": "67c9b7ec26546e7a"
+ },
+ "ruido": {
+  "suficiente": true,
+  "d0": 5.568688566692679,
+  "s0": 0.1013794971302089,
+  "deslocamento_por_sessao": {
+   "m1": 0.13060987275678615,
+   "v1.1": -0.027733663735428404,
+   "v11.1": 0.12493802955642819,
+   "v12.1": 0.1825341765422528,
+   "v12.2": 0.133375776236885,
+   "v13.1": 0.1383132844505437,
+   "v2.1": -0.04304351765679071,
+   "v3.1": -0.02500278030430403,
+   "v4.1": -0.009217170033892774,
+   "v5.1": 0.009217170033892774,
+   "v7.1": -0.05537078093556991,
+   "v8.1": -0.011212723121241996
+  },
+  "mediana_sigma_alfa_sobre_sigma_eps": 2.368118418921346,
+  "por_query": [
+   {
+    "query": "q05",
+    "blocos": 25,
+    "gl_entre": 11.421052631578949,
+    "sigma_entre_bruto": 0.0752883489155136,
+    "sigma_eps": 0.02590146416705235,
+    "sigma_alfa": 0.08354087746428202,
+    "tau_moderado": 0.08472998236203533,
+    "limiar_matriz_pct": 17.888877857831854
+   },
+   {
+    "query": "q01",
+    "blocos": 12,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.1123479309770787,
+    "sigma_eps": 0.1254008360483218,
+    "sigma_alfa": 0.08435366580863447,
+    "tau_moderado": 0.10865372723886367,
+    "limiar_matriz_pct": 22.333604203960444
+   },
+   {
+    "query": "q02",
+    "blocos": 27,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.2614416252763528,
+    "sigma_eps": 0.030404644340694734,
+    "sigma_alfa": 0.22382882271280977,
+    "tau_moderado": 0.22444388345876584,
+    "limiar_matriz_pct": 40.672402189063085
+   },
+   {
+    "query": "q03",
+    "blocos": 19,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.07114118586340924,
+    "sigma_eps": 0.03173862462799117,
+    "sigma_alfa": 0.08110143003790779,
+    "tau_moderado": 0.08293299220854976,
+    "limiar_matriz_pct": 17.544925765738807
+   },
+   {
+    "query": "q04",
+    "blocos": 23,
+    "gl_entre": 11.421052631578949,
+    "sigma_entre_bruto": 0.06623415826752725,
+    "sigma_eps": 0.03485262365749976,
+    "sigma_alfa": 0.07717191561399947,
+    "tau_moderado": 0.07948452955053567,
+    "limiar_matriz_pct": 16.880833795429595
+   },
+   {
+    "query": "q06",
+    "blocos": 18,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.08587453968704323,
+    "sigma_eps": 0.044280990736020084,
+    "sigma_alfa": 0.08832197193661172,
+    "tau_moderado": 0.09157281888308719,
+    "limiar_matriz_pct": 19.185545047772457
+   },
+   {
+    "query": "q07",
+    "blocos": 30,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.10689947434080158,
+    "sigma_eps": 0.02935863851016866,
+    "sigma_alfa": 0.10399298650506049,
+    "tau_moderado": 0.10522172666277801,
+    "limiar_matriz_pct": 21.711078207939018
+   },
+   {
+    "query": "q08",
+    "blocos": 33,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.11292248546478559,
+    "sigma_eps": 0.05044614273006688,
+    "sigma_alfa": 0.10595646652060167,
+    "tau_moderado": 0.10947951118419587,
+    "limiar_matriz_pct": 22.482651734982916
+   },
+   {
+    "query": "q09",
+    "blocos": 29,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.2609981331789366,
+    "sigma_eps": 0.03206298889479934,
+    "sigma_alfa": 0.2234020345192574,
+    "tau_moderado": 0.2240872163750185,
+    "limiar_matriz_pct": 40.6231594476845
+   },
+   {
+    "query": "q10",
+    "blocos": 23,
+    "gl_entre": 11.421052631578949,
+    "sigma_entre_bruto": 0.05807129496712661,
+    "sigma_eps": 0.03330877699804666,
+    "sigma_alfa": 0.07283394338662291,
+    "tau_moderado": 0.07507119365098398,
+    "limiar_matriz_pct": 16.023121576102795
+   },
+   {
+    "query": "q11",
+    "blocos": 23,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.12238977904191602,
+    "sigma_eps": 0.03398251958777108,
+    "sigma_alfa": 0.11480204367159852,
+    "tau_moderado": 0.11629244086384077,
+    "limiar_matriz_pct": 23.701468026809824
+   },
+   {
+    "query": "q12",
+    "blocos": 16,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.10637804279823651,
+    "sigma_eps": 0.04533485575564539,
+    "sigma_alfa": 0.10169385613042621,
+    "tau_moderado": 0.10466431308036757,
+    "limiar_matriz_pct": 21.609499728856896
+   },
+   {
+    "query": "q13",
+    "blocos": 12,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.14405543041412155,
+    "sigma_eps": 0.05381404313171442,
+    "sigma_alfa": 0.12743802673684068,
+    "tau_moderado": 0.1307829045226,
+    "limiar_matriz_pct": 26.230427219248686
+   },
+   {
+    "query": "q14",
+    "blocos": 18,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.07486850800756031,
+    "sigma_eps": 0.03417044871751599,
+    "sigma_alfa": 0.08297185379806227,
+    "tau_moderado": 0.08504452397488162,
+    "limiar_matriz_pct": 17.948934836352983
+   },
+   {
+    "query": "q16",
+    "blocos": 22,
+    "gl_entre": 11.421052631578949,
+    "sigma_entre_bruto": 0.13565598100652423,
+    "sigma_eps": 0.029775619431219494,
+    "sigma_alfa": 0.12439892336043233,
+    "tau_moderado": 0.12545723119390792,
+    "limiar_matriz_pct": 25.310852675281602
+   },
+   {
+    "query": "q17",
+    "blocos": 15,
+    "gl_entre": 2.0,
+    "sigma_entre_bruto": 0.07302976844651472,
+    "sigma_eps": 0.029966374023108595,
+    "sigma_alfa": 0.093292140421262,
+    "tau_moderado": 0.09471666730178567,
+    "limiar_matriz_pct": 19.77439662256798
+   },
+   {
+    "query": "q18",
+    "blocos": 12,
+    "gl_entre": 10.421052631578949,
+    "sigma_entre_bruto": 0.06130025193595801,
+    "sigma_eps": 0.03379079699596122,
+    "sigma_alfa": 0.07541815820355821,
+    "tau_moderado": 0.0776430666181519,
+    "limiar_matriz_pct": 16.524023883795934
+   },
+   {
+    "query": "q19",
+    "blocos": 30,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.11643014348922975,
+    "sigma_eps": 0.05055635067018618,
+    "sigma_alfa": 0.1085307100482745,
+    "tau_moderado": 0.11198761314748511,
+    "limiar_matriz_pct": 22.933593092840976
+   },
+   {
+    "query": "q20",
+    "blocos": 16,
+    "gl_entre": 2.0,
+    "sigma_entre_bruto": 0.154681442189892,
+    "sigma_eps": 0.1155886052960614,
+    "sigma_alfa": 0.09949646986682109,
+    "tau_moderado": 0.11783201580349814,
+    "limiar_matriz_pct": 23.97422874687365
+   },
+   {
+    "query": "q21",
+    "blocos": 24,
+    "gl_entre": 12.421052631578949,
+    "sigma_entre_bruto": 0.06673754570568369,
+    "sigma_eps": 0.03710231452172837,
+    "sigma_alfa": 0.07645987119477603,
+    "tau_moderado": 0.07909916186618222,
+    "limiar_matriz_pct": 16.80628967437424
+   },
+   {
+    "query": "q22",
+    "blocos": 24,
+    "gl_entre": 11.421052631578949,
+    "sigma_entre_bruto": 0.13892753282283785,
+    "sigma_eps": 0.030540188918807033,
+    "sigma_alfa": 0.1267486250612209,
+    "tau_moderado": 0.1278412791948488,
+    "limiar_matriz_pct": 25.723910707753173
+   }
+  ],
+  "avisos": []
+ },
+ "adaptacao": 4,
+ "medicoes_nesta_execucao": 4
+}

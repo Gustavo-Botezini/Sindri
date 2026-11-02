@@ -1,0 +1,417 @@
+índices de experimento no banco observado antes de começar:
+0
+
+################ validar --otimizacao 2  (00:07:04)
+
+linha de base: 21 queries × 5 repetições
+      ref=50   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=47   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=48      3,124.9 ms
+      ref=32      2,970.8 ms
+      ref=40      1,736.8 ms
+      ref=51        847.5 ms
+      ref=34        651.6 ms
+      ref=33        300.8 ms
+      ref=44        816.0 ms
+      ref=41        656.5 ms
+      ref=43        708.1 ms
+      ref=38        603.2 ms
+      ref=39        612.5 ms
+      ref=49        629.2 ms
+      ref=36        369.2 ms
+      ref=4         400.8 ms
+      ref=37        364.6 ms
+      ref=45        370.6 ms
+      ref=52        241.2 ms
+      ref=35        346.9 ms
+      ref=42        243.9 ms
+
+conjunto da otimização 2:
+  + i7 orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority): 2.4s, 71.0 MB
+  + i8 lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice): 5.8s, 223.2 MB
+  + i9 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 4.5s, 232.1 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=50         61.8 ms
+             usou i9
+      ref=47         75.6 ms
+             usou i8 i9
+      ref=40      1,664.7 ms
+             usou i9
+      ref=34      1,016.2 ms
+             usou i7
+      ref=41        730.2 ms
+             usou i7
+      ref=39        316.1 ms
+             usou i8
+      ref=49         42.8 ms
+             usou i8
+      ref=36        371.2 ms
+             usou i7
+      ref=35        306.9 ms
+             usou i7
+  - 3 índice(s) derrubado(s)
+
+validação concluída em 12.0 min
+
+otimização 2 (sessão 2, modelo conservador, peso execucoes), validada em 2026-11-01 03:19
+  i7  orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)
+  i8  lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)
+  i9  lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)
+
+  query    previsto ms    medido ms   antes → depois (ms)          usou (previsto)
+  q14             +0.0         +0.0   não usa o conjunto           - (-)
+  q01             +0.0         +0.0   não usa o conjunto           - (-)
+  q02             +0.0         +0.0   não usa o conjunto           - (-)
+  q03           -206.9       -376.5   621.0 → 997.5                i7 (-)
+  q04           +114.7        +31.9   337.2 → 305.2                i7 (i7)
+  q05            +61.1         +9.7   365.1 → 355.3                i7 (i7)
+  q06             +0.0         +0.0   não usa o conjunto           - (-)
+  q07             +0.0         +0.0   não usa o conjunto           - (-)
+  q08           +122.3       +282.2   601.6 → 319.4                i8 (i9)
+  q09             +0.0       +109.8   1,707.4 → 1,597.6            i9 (-)
+  q10            +94.5        -94.5   626.2 → 720.7                i7 (i7)
+  q11             +0.0         +0.0   não usa o conjunto           - (-)
+  q12             +0.0         +0.0   não usa o conjunto           - (-)
+  q13             +0.0         +0.0   não usa o conjunto           - (-)
+  q16             +0.0         +0.0   não usa o conjunto           - (-)
+  q17      +299,935.5*   +299,923.6   ≥300,000.0 → 76.4            i8 i9 (i8)
+  q18             +0.0         +0.0   não usa o conjunto           - (-)
+  q19           +516.8       +557.6   600.4 → 42.8                 i8 (i8)
+  q20      +299,950.0*   +299,939.9   ≥300,000.0 → 60.1            i9 (i9)
+  q21             +0.0         +0.0   não usa o conjunto           - (-)
+  q22             +0.0         +0.0   não usa o conjunto           - (-)
+
+  Σ peso × Δ nas 21 queries medidas: previsto 3,603,528 ms, medido 3,602,302 ms
+  classe igual (melhora/neutra/piora, ±10%): 18 de 21
+  índice que atende conforme o modelo: 6 de 7
+  * previsão com piso: a matriz tinha timeout num dos lados
+
+  JSON em figuras/tpch-puro/otimizacao/validar_2.json
+################ fim 2, código 0  (00:19:09)
+
+################ validar --otimizacao 6  (00:19:09)
+
+linha de base: 21 queries × 5 repetições
+      ref=50   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=47   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=48      3,106.7 ms
+      ref=32      2,901.6 ms
+      ref=40      1,580.0 ms
+      ref=51        805.0 ms
+      ref=34        637.6 ms
+      ref=33        301.6 ms
+      ref=44        783.5 ms
+      ref=41        642.5 ms
+      ref=43        659.8 ms
+      ref=38        594.0 ms
+      ref=39        504.3 ms
+      ref=49        593.3 ms
+      ref=36        366.2 ms
+      ref=4         410.7 ms
+      ref=37        406.7 ms
+      ref=45        361.5 ms
+      ref=52        243.4 ms
+      ref=35        301.7 ms
+      ref=42        179.8 ms
+
+conjunto da otimização 6:
+  + i9 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 5.4s, 232.1 MB
+  + i12 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 partsupp (ps_suppkey, ps_partkey): 0.5s, 17.2 MB
+  + i20 lineitem (l_receiptdate, l_commitdate): 2.9s, 49.4 MB
+  + i23 lineitem (l_shipdate, l_discount, l_quantity): 6.3s, 180.7 MB
+  + i25 orders (o_orderdate): 0.6s, 10.4 MB
+  + i29 customer (c_acctbal, c_phone): 0.1s, 5.8 MB
+  + i31 part (p_type, p_size): 0.3s, 1.7 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=50         58.0 ms
+             usou i9 i12
+      ref=47         77.2 ms
+             usou i9
+      ref=40      1,562.1 ms
+             usou i9
+      ref=51        986.4 ms
+             usou i12
+      ref=33        421.0 ms
+             usou i17 i31
+      ref=41        694.3 ms
+             usou i25
+      ref=43        678.7 ms
+             usou i20
+      ref=39        353.5 ms
+             usou i9
+      ref=49         51.2 ms
+             usou i9
+      ref=36        403.0 ms
+             usou i25
+      ref=4         275.7 ms
+             usou i23
+      ref=37        253.0 ms
+             usou i23
+      ref=45        370.0 ms
+             usou i31
+      ref=52        221.9 ms
+             usou i29
+      ref=35        307.6 ms
+             usou i25
+      ref=42         79.7 ms
+             usou i12 i17
+  - 8 índice(s) derrubado(s)
+
+validação concluída em 12.2 min
+
+otimização 6 (sessão 2, modelo conservador, peso execucoes), validada em 2026-11-01 03:31
+  i9  lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)
+  i12  supplier (s_nationkey)
+  i17  partsupp (ps_suppkey, ps_partkey)
+  i20  lineitem (l_receiptdate, l_commitdate)
+  i23  lineitem (l_shipdate, l_discount, l_quantity)
+  i25  orders (o_orderdate)
+  i29  customer (c_acctbal, c_phone)
+  i31  part (p_type, p_size)
+
+  query    previsto ms    medido ms   antes → depois (ms)          usou (previsto)
+  q14           +148.4       +146.7   412.0 → 265.3                i23 (i23)
+  q01             +0.0         +0.0   não usa o conjunto           - (-)
+  q02             +0.0       -118.4   296.0 → 414.4                i17 i31 (-)
+  q03             +0.0         +0.0   não usa o conjunto           - (-)
+  q04           +113.1         -3.5   301.0 → 304.5                i25 (i25)
+  q05             +0.0        -37.9   362.6 → 400.5                i25 (-)
+  q06           +102.3       +152.0   406.9 → 255.0                i23 (i23)
+  q07             +0.0         +0.0   não usa o conjunto           - (-)
+  q08           +193.3       +153.8   501.1 → 347.3                i9 (i9)
+  q09             +0.0         +8.5   1,542.5 → 1,534.0            i9 (-)
+  q10             +0.0        -62.2   648.5 → 710.7                i25 (-)
+  q11           +141.4        +97.5   177.5 → 80.0                 i12 i17 (i17)
+  q12           +209.3         -6.5   661.2 → 667.6                i20 (i20)
+  q13             +0.0         +0.0   não usa o conjunto           - (-)
+  q16           +163.7        -19.2   347.2 → 366.4                i31 (i31)
+  q17      +299,922.2*   +299,922.6   ≥300,000.0 → 77.4            i9 (i9)
+  q18             +0.0         +0.0   não usa o conjunto           - (-)
+  q19           +511.8       +536.8   588.0 → 51.3                 i9 (i9)
+  q20      +299,950.0*   +299,948.5   ≥300,000.0 → 51.5            i9 i12 (i9)
+  q21           +126.7       -175.6   806.0 → 981.6                i12 (i12)
+  q22            +40.5        +22.6   240.5 → 217.9                i29 (i29)
+
+  Σ peso × Δ nas 21 queries medidas: previsto 3,609,736 ms, medido 3,603,394 ms
+  classe igual (melhora/neutra/piora, ±10%): 14 de 21
+  índice que atende conforme o modelo: 12 de 12
+  * previsão com piso: a matriz tinha timeout num dos lados
+
+  JSON em figuras/tpch-puro/otimizacao/validar_6.json
+################ fim 6, código 0  (00:31:24)
+
+################ validar --otimizacao 3  (00:31:24)
+
+linha de base: 21 queries × 5 repetições
+      ref=50   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=47   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=48      2,936.0 ms
+      ref=32      2,817.9 ms
+      ref=40      2,210.7 ms
+      ref=51        819.7 ms
+      ref=34        644.4 ms
+      ref=33        316.8 ms
+      ref=44        901.2 ms
+      ref=41        705.0 ms
+      ref=43        666.5 ms
+      ref=38        562.7 ms
+      ref=39        521.4 ms
+      ref=49        564.6 ms
+      ref=36        360.2 ms
+      ref=4         397.6 ms
+      ref=37        442.9 ms
+      ref=45        361.0 ms
+      ref=52        212.5 ms
+      ref=35        307.7 ms
+      ref=42        191.2 ms
+
+conjunto da otimização 3:
+  + i10 lineitem (l_partkey): 2.5s, 43.0 MB
+  + i12 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i31 part (p_type, p_size): 0.3s, 1.7 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=50      1,708.0 ms
+             usou i10 i12
+      ref=47      1,147.4 ms
+             usou i10
+      ref=40      1,551.3 ms
+             usou i10
+      ref=51        702.0 ms
+             usou i12
+      ref=33        295.6 ms
+             usou i12 i31
+      ref=39        302.0 ms
+             usou i10
+      ref=49         40.3 ms
+             usou i10
+      ref=45        293.6 ms
+             usou i31
+      ref=42        157.3 ms
+             usou i12
+  - 3 índice(s) derrubado(s)
+
+validação concluída em 11.9 min
+
+otimização 3 (sessão 2, modelo conservador, peso execucoes), validada em 2026-11-01 03:43
+  i10  lineitem (l_partkey)
+  i12  supplier (s_nationkey)
+  i31  part (p_type, p_size)
+
+  query    previsto ms    medido ms   antes → depois (ms)          usou (previsto)
+  q14             +0.0         +0.0   não usa o conjunto           - (-)
+  q01             +0.0         +0.0   não usa o conjunto           - (-)
+  q02             +0.0        +13.5   302.3 → 288.8                i12 i31 (-)
+  q03             +0.0         +0.0   não usa o conjunto           - (-)
+  q04             +0.0         +0.0   não usa o conjunto           - (-)
+  q05             +0.0         +0.0   não usa o conjunto           - (-)
+  q06             +0.0         +0.0   não usa o conjunto           - (-)
+  q07             +0.0         +0.0   não usa o conjunto           - (-)
+  q08           +190.6       +219.3   519.4 → 300.2                i10 (i10)
+  q09             +0.0       +605.1   2,155.5 → 1,550.4            i10 (-)
+  q10             +0.0         +0.0   não usa o conjunto           - (-)
+  q11            +60.7        +33.8   192.2 → 158.4                i12 (i12)
+  q12             +0.0         +0.0   não usa o conjunto           - (-)
+  q13             +0.0         +0.0   não usa o conjunto           - (-)
+  q16           +163.7        +65.0   360.9 → 295.9                i31 (i31)
+  q17      +298,853.9*   +298,849.9   ≥300,000.0 → 1,150.1         i10 (i10)
+  q18             +0.0         +0.0   não usa o conjunto           - (-)
+  q19           +516.2       +505.1   545.0 → 39.9                 i10 (i10)
+  q20      +297,989.6*   +298,268.9   ≥300,000.0 → 1,731.1         i10 i12 (i10)
+  q21           +126.7       +109.7   802.6 → 692.9                i12 (i12)
+  q22             +0.0         +0.0   não usa o conjunto           - (-)
+
+  Σ peso × Δ nas 21 queries medidas: previsto 3,587,408 ms, medido 3,592,022 ms
+  classe igual (melhora/neutra/piora, ±10%): 20 de 21
+  índice que atende conforme o modelo: 7 de 7
+  * previsão com piso: a matriz tinha timeout num dos lados
+
+  JSON em figuras/tpch-puro/otimizacao/validar_3.json
+################ fim 3, código 0  (00:43:24)
+
+################ validar --otimizacao 8  (00:43:24)
+
+linha de base: 21 queries × 5 repetições
+      ref=50   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=47   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=48      2,896.7 ms
+      ref=32      2,778.1 ms
+      ref=40      1,829.8 ms
+      ref=51        851.3 ms
+      ref=34        580.7 ms
+      ref=33        271.9 ms
+      ref=44        843.4 ms
+      ref=41        789.8 ms
+      ref=43        650.0 ms
+      ref=38        702.2 ms
+      ref=39        516.4 ms
+      ref=49        563.8 ms
+      ref=36        387.4 ms
+      ref=4         402.1 ms
+      ref=37        394.2 ms
+      ref=45        310.3 ms
+      ref=52        198.2 ms
+      ref=35        283.5 ms
+      ref=42        172.8 ms
+
+conjunto da otimização 8:
+  + i7 orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority): 1.6s, 71.0 MB
+  + i8 lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice): 5.0s, 223.2 MB
+  + i9 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 4.9s, 232.1 MB
+  + i12 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i15 lineitem (l_shipdate, l_partkey, l_suppkey): 5.5s, 180.1 MB
+  + i17 partsupp (ps_suppkey, ps_partkey): 0.6s, 17.2 MB
+  + i20 lineitem (l_receiptdate, l_commitdate): 2.9s, 49.4 MB
+  + i23 lineitem (l_shipdate, l_discount, l_quantity): 6.6s, 180.7 MB
+  + i27 customer (c_mktsegment): 0.1s, 1.0 MB
+  + i29 customer (c_acctbal, c_phone): 0.1s, 5.8 MB
+  + i31 part (p_type, p_size): 0.3s, 1.7 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=50         55.1 ms
+             usou i9 i12
+      ref=47         75.1 ms
+             usou i8 i9
+      ref=40      1,575.1 ms
+             usou i9
+      ref=51      1,049.7 ms
+             usou i12
+      ref=34        826.1 ms
+             usou i7 i27
+      ref=33        377.5 ms
+             usou i17 i31
+      ref=41        570.5 ms
+             usou i7
+      ref=43        809.3 ms
+             usou i20
+      ref=39        357.7 ms
+             usou i8
+      ref=49         54.6 ms
+             usou i8
+      ref=36        381.8 ms
+             usou i7
+      ref=4         266.2 ms
+             usou i15
+      ref=37        269.0 ms
+             usou i23
+      ref=45        311.8 ms
+             usou i31
+      ref=52        205.4 ms
+             usou i29
+      ref=35        288.6 ms
+             usou i7
+      ref=42         83.5 ms
+             usou i12 i17
+  - 11 índice(s) derrubado(s)
+
+validação concluída em 12.5 min
+
+otimização 8 (sessão 2, modelo otimista, peso execucoes), validada em 2026-11-01 03:55
+  i7  orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)
+  i8  lineitem (l_partkey) INCLUDE (l_quantity, l_extendedprice)
+  i9  lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)
+  i12  supplier (s_nationkey)
+  i15  lineitem (l_shipdate, l_partkey, l_suppkey)
+  i17  partsupp (ps_suppkey, ps_partkey)
+  i20  lineitem (l_receiptdate, l_commitdate)
+  i23  lineitem (l_shipdate, l_discount, l_quantity)
+  i27  customer (c_mktsegment)
+  i29  customer (c_acctbal, c_phone)
+  i31  part (p_type, p_size)
+
+  query    previsto ms    medido ms   antes → depois (ms)          usou (previsto)
+  q14           +168.4       +134.0   396.4 → 262.4                i15 (i15)
+  q01             +0.0         +0.0   não usa o conjunto           - (-)
+  q02             +0.0        -74.5   270.9 → 345.4                i17 i31 (i31)
+  q03             +0.0       -233.9   581.2 → 815.1                i7 i27 (i27)
+  q04           +114.7         -9.8   279.0 → 288.8                i7 (i7)
+  q05            +61.1        -12.9   369.6 → 382.6                i7 (i7)
+  q06           +102.3       +138.0   402.2 → 264.3                i23 (i23)
+  q07             +0.0         +0.0   não usa o conjunto           - (-)
+  q08           +193.3       +155.5   518.4 → 362.9                i8 (i9)
+  q09             +0.0       +243.2   1,822.2 → 1,578.9            i9 (i9)
+  q10            +94.5       +239.6   811.9 → 572.3                i7 (i7)
+  q11           +141.4        +92.2   172.2 → 80.0                 i12 i17 (i17)
+  q12           +209.3       -110.7   648.1 → 758.8                i20 (i20)
+  q13             +0.0         +0.0   não usa o conjunto           - (-)
+  q16           +163.7         -3.3   306.8 → 310.1                i31 (i31)
+  q17      +299,935.5*   +299,926.5   ≥300,000.0 → 73.5            i8 i9 (i8)
+  q18             +0.0         +0.0   não usa o conjunto           - (-)
+  q19           +516.8       +509.9   565.0 → 55.1                 i8 (i8)
+  q20      +299,950.0*   +299,944.7   ≥300,000.0 → 55.3            i9 i12 (i9)
+  q21           +126.7       -178.8   863.6 → 1,042.4              i12 (i12)
+  q22            +40.5        -10.7   198.8 → 209.4                i29 (i29)
+
+  Σ peso × Δ nas 21 queries medidas: previsto 3,610,909 ms, medido 3,604,494 ms
+  classe igual (melhora/neutra/piora, ±10%): 12 de 21
+  índice que atende conforme o modelo: 16 de 17
+  * previsão com piso: a matriz tinha timeout num dos lados
+
+  JSON em figuras/tpch-puro/otimizacao/validar_8.json
+################ fim 8, código 0  (00:55:57)
+
+índices de experimento no banco observado no fim:
+0

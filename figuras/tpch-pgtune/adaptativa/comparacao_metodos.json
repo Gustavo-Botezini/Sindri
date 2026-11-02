@@ -1,0 +1,426 @@
+{
+ "confirmada": null,
+ "decisao": "inconclusiva",
+ "teste": "superioridade",
+ "de": "{i1,i14,i31}",
+ "para": "{i2,i14,i17,i21}",
+ "margem_ms": 5956.47649258067,
+ "custo_ms": 0.0,
+ "confirmacao": {
+  "delta_ms": 8125.8201914209,
+  "li_ms": 3496.663470907803,
+  "ls_ms": 12570.396129415747,
+  "aberto_abaixo": false,
+  "aberto_acima": false,
+  "sessoes": [
+   "v12.3",
+   "v12.4",
+   "v2.2",
+   "v2.3",
+   "v3.2",
+   "v3.3",
+   "v4.2",
+   "v4.3",
+   "v5.2",
+   "v5.3"
+  ]
+ },
+ "selecao": {
+  "delta_ms": 24747.349569566726,
+  "li_ms": 16093.472810207695,
+  "ls_ms": 32658.99887720784,
+  "aberto_abaixo": false,
+  "aberto_acima": false
+ },
+ "avaliacao_independente": {
+  "adaptacao": 8,
+  "referencia": "{i2,i14,i17,i21}",
+  "margem_ms": 4917.616478335728,
+  "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+  "queries_com_piso": [
+   "q17",
+   "q20"
+  ],
+  "pareamento": {
+   "beta": 0.40208558468236905,
+   "ep": 0.0945353509213826
+  },
+  "configuracoes": [
+   {
+    "rotulo": "{i1,i14,i31}",
+    "chave": [
+     1,
+     14,
+     31
+    ],
+    "otimizacoes": [
+     4,
+     8
+    ],
+    "origem": "otimizar ≤ 50 MB",
+    "mb": 44.3,
+    "sessoes": [
+     "v4.2",
+     "v4.3"
+    ],
+    "beneficio_ms": 7276425.124162282,
+    "beneficio_li_ms": 7272596.967402549,
+    "beneficio_ls_ms": null,
+    "beneficio_aberto_abaixo": false,
+    "beneficio_aberto_acima": true,
+    "fora_dos_pisos_ms": 9158.922527256731,
+    "fora_li_ms": 5758.645822865165,
+    "fora_ls_ms": 11963.869216772653,
+    "fora_aberto_abaixo": false,
+    "fora_aberto_acima": false,
+    "pisos": {
+     "q17": 960.5678183189652,
+     "q20": 166.32076032447597
+    },
+    "pisos_resolvidos": [
+     "q17",
+     "q20"
+    ],
+    "melhoram": [
+     [
+      "q08",
+      47.869055983496715
+     ],
+     [
+      "q17",
+      99.68336360154858
+     ],
+     [
+      "q19",
+      92.00885495354039
+     ],
+     [
+      "q20",
+      99.94517492098683
+     ]
+    ],
+    "pioram": [],
+    "sessoes_discordam": [],
+    "contra_referencia": {
+     "delta_ms": -8125.8201914209,
+     "li_ms": -12570.396129415747,
+     "ls_ms": -3496.663470907803,
+     "aberto_abaixo": false,
+     "aberto_acima": false,
+     "afirmacao": "a melhor"
+    },
+    "dominada_por": null
+   },
+   {
+    "rotulo": "{i2,i14,i17,i21}",
+    "chave": [
+     2,
+     14,
+     17,
+     21
+    ],
+    "otimizacoes": [
+     12
+    ],
+    "origem": "adaptar (fronteira)",
+    "mb": 248.4,
+    "sessoes": [
+     "v12.3",
+     "v12.4"
+    ],
+    "beneficio_ms": 7284550.944353703,
+    "beneficio_li_ms": 7280457.682723351,
+    "beneficio_ls_ms": null,
+    "beneficio_aberto_abaixo": false,
+    "beneficio_aberto_acima": true,
+    "fora_dos_pisos_ms": 5117.438768061058,
+    "fora_li_ms": 1008.4587126662659,
+    "fora_ls_ms": 8524.717782676873,
+    "fora_aberto_abaixo": false,
+    "fora_aberto_acima": false,
+    "pisos": {
+     "q17": 70.03235633110656,
+     "q20": 42.91422642761991
+    },
+    "pisos_resolvidos": [
+     "q17",
+     "q20"
+    ],
+    "melhoram": [
+     [
+      "q08",
+      46.70956042889945
+     ],
+     [
+      "q17",
+      99.97691491151289
+     ],
+     [
+      "q19",
+      91.66477333065491
+     ],
+     [
+      "q20",
+      99.98585398569551
+     ]
+    ],
+    "pioram": [],
+    "sessoes_discordam": [
+     "q11",
+     "q21",
+     "q22"
+    ],
+    "dominada_por": null
+   },
+   {
+    "rotulo": "{i2,i9,i14,i17,i21,i25}",
+    "chave": [
+     2,
+     9,
+     14,
+     17,
+     21,
+     25
+    ],
+    "otimizacoes": [
+     5
+    ],
+    "origem": "otimizar ≤ 294 MB",
+    "mb": 292.8,
+    "sessoes": [
+     "v5.2",
+     "v5.3"
+    ],
+    "beneficio_ms": 7290298.176571597,
+    "beneficio_li_ms": 7287009.805801602,
+    "beneficio_ls_ms": null,
+    "beneficio_aberto_abaixo": false,
+    "beneficio_aberto_acima": true,
+    "fora_dos_pisos_ms": 10836.753815579821,
+    "fora_li_ms": 7536.617269638595,
+    "fora_ls_ms": 13691.68216199392,
+    "fora_aberto_abaixo": false,
+    "fora_aberto_acima": false,
+    "pisos": {
+     "q17": 66.74339881319672,
+     "q20": 43.87675308089213
+    },
+    "pisos_resolvidos": [
+     "q17",
+     "q20"
+    ],
+    "melhoram": [
+     [
+      "q02",
+      43.32838650602541
+     ],
+     [
+      "q08",
+      44.20927347124362
+     ],
+     [
+      "q14",
+      54.63270725725655
+     ],
+     [
+      "q17",
+      99.9779990657426
+     ],
+     [
+      "q19",
+      91.83273632728356
+     ],
+     [
+      "q20",
+      99.98553670359728
+     ]
+    ],
+    "pioram": [
+     [
+      "q06",
+      -17.453514122871105
+     ]
+    ],
+    "sessoes_discordam": [],
+    "contra_referencia": {
+     "delta_ms": 5747.232217894414,
+     "li_ms": 1410.46194755512,
+     "ls_ms": 10312.974425835866,
+     "aberto_abaixo": false,
+     "aberto_acima": false,
+     "afirmacao": "b melhor"
+    },
+    "dominada_por": null
+   },
+   {
+    "rotulo": "{i1,i5,i6}",
+    "chave": [
+     1,
+     5,
+     6
+    ],
+    "otimizacoes": [
+     3
+    ],
+    "origem": "clusters (rodada 2)",
+    "mb": 294.2,
+    "sessoes": [
+     "v3.2",
+     "v3.3"
+    ],
+    "beneficio_ms": 7269754.157110675,
+    "beneficio_li_ms": 7266478.450869682,
+    "beneficio_ls_ms": null,
+    "beneficio_aberto_abaixo": false,
+    "beneficio_aberto_acima": true,
+    "fora_dos_pisos_ms": 1783.0043361611793,
+    "fora_li_ms": -1138.1753249704082,
+    "fora_ls_ms": 4293.840904900572,
+    "fora_aberto_abaixo": false,
+    "fora_aberto_acima": false,
+    "pisos": {
+     "q17": 1012.8667701678078,
+     "q20": 55.275880184802304
+    },
+    "pisos_resolvidos": [
+     "q17",
+     "q20"
+    ],
+    "melhoram": [
+     [
+      "q08",
+      35.61279193703625
+     ],
+     [
+      "q17",
+      99.66612405693714
+     ],
+     [
+      "q19",
+      89.30491901345756
+     ],
+     [
+      "q20",
+      99.9817791567767
+     ]
+    ],
+    "pioram": [
+     [
+      "q03",
+      -31.307256483989388
+     ],
+     [
+      "q04",
+      -27.1607378048617
+     ],
+     [
+      "q07",
+      -37.60565519651161
+     ],
+     [
+      "q10",
+      -28.071742820911116
+     ],
+     [
+      "q22",
+      -49.58476902531786
+     ]
+    ],
+    "sessoes_discordam": [
+     "q04"
+    ],
+    "contra_referencia": {
+     "delta_ms": -14796.787243026483,
+     "li_ms": -19255.880088869595,
+     "ls_ms": -10116.979686182684,
+     "aberto_abaixo": false,
+     "aberto_acima": false,
+     "afirmacao": "a melhor"
+    },
+    "dominada_por": "{i1,i14,i31}"
+   },
+   {
+    "rotulo": "{i1,i2,i3,i4}",
+    "chave": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "otimizacoes": [
+     2
+    ],
+    "origem": "clusters (rodada 1)",
+    "mb": 358.1,
+    "sessoes": [
+     "v2.2",
+     "v2.3"
+    ],
+    "beneficio_ms": 7282548.53921972,
+    "beneficio_li_ms": 7279531.010750344,
+    "beneficio_ls_ms": null,
+    "beneficio_aberto_abaixo": false,
+    "beneficio_aberto_acima": true,
+    "fora_dos_pisos_ms": 3207.1491231642317,
+    "fora_li_ms": 214.89381618157992,
+    "fora_ls_ms": 5799.1498760626955,
+    "fora_aberto_abaixo": false,
+    "fora_aberto_acima": false,
+    "pisos": {
+     "q17": 72.18397165447988,
+     "q20": 48.43890186139588
+    },
+    "pisos_resolvidos": [
+     "q17",
+     "q20"
+    ],
+    "melhoram": [
+     [
+      "q08",
+      43.86048101587112
+     ],
+     [
+      "q17",
+      99.97620566463428
+     ],
+     [
+      "q19",
+      92.11070259464191
+     ],
+     [
+      "q20",
+      99.98403286146191
+     ],
+     [
+      "q22",
+      52.30111535440344
+     ]
+    ],
+    "pioram": [
+     [
+      "q03",
+      -49.49676208342287
+     ],
+     [
+      "q07",
+      -50.09185569435372
+     ],
+     [
+      "q10",
+      -16.375528598597345
+     ]
+    ],
+    "sessoes_discordam": [],
+    "contra_referencia": {
+     "delta_ms": -2002.4051339826183,
+     "li_ms": -6285.745085437337,
+     "ls_ms": 2587.916289821599,
+     "aberto_abaixo": false,
+     "aberto_acima": false,
+     "afirmacao": "não ordenável"
+    },
+    "dominada_por": "{i2,i14,i17,i21}"
+   }
+  ]
+ }
+}

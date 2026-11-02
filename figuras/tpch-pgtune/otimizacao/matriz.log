@@ -1,0 +1,248 @@
+  heurística: 28 candidatos para o corpus inteiro, 3 de trigrama
+sessão 1: 32 índices distintos × 21 queries
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      2,778.8 ms
+      ref=48      2,395.5 ms
+      ref=59      1,357.8 ms
+      ref=69        383.3 ms
+      ref=49        277.0 ms
+      ref=55        699.8 ms
+      ref=50        256.1 ms
+      ref=70        243.5 ms
+      ref=58        404.2 ms
+      ref=53        367.6 ms
+      ref=56        357.6 ms
+      ref=62        333.2 ms
+      ref=67        437.2 ms
+      ref=52        267.9 ms
+      ref=54        367.7 ms
+      ref=60        258.9 ms
+      ref=34        183.8 ms
+      ref=51        121.4 ms
+      ref=57        148.7 ms
+  = 662.1s
+
+índice 1/32: CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)
+  5 de 21 queries usam o índice: ref=68, ref=64, ref=55, ref=67, ref=54
+      ref=68        219.3 ms (usou o índice)
+      ref=64      1,096.1 ms (usou o índice)
+      ref=55        642.1 ms (usou o índice)
+      ref=67         34.8 ms (usou o índice)
+      ref=54        153.7 ms (usou o índice)
+  = 13.6s
+
+índice 2/32: CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)
+  5 de 21 queries usam o índice: ref=68, ref=64, ref=55, ref=67, ref=54
+      ref=68         44.2 ms (usou o índice)
+      ref=64         84.1 ms (usou o índice)
+      ref=55        663.2 ms (usou o índice)
+      ref=67         41.0 ms (usou o índice)
+      ref=54        162.5 ms (usou o índice)
+  = 9.2s
+
+índice 3/32: CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)
+  5 de 21 queries usam o índice: ref=50, ref=70, ref=53, ref=54, ref=34
+      ref=50        461.1 ms (usou o índice)
+      ref=70         62.3 ms (usou o índice)
+      ref=53        355.5 ms (usou o índice)
+      ref=54        386.3 ms (usou o índice)
+      ref=34        291.0 ms (usou o índice)
+  = 8.8s
+
+índice 4/32: CREATE INDEX brokk_exp_orders_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)
+  8 de 21 queries usam o índice: ref=55, ref=50, ref=70, ref=53, ref=56, ref=54, ref=34, ref=51
+      ref=55        691.2 ms (usou o índice)
+      ref=50        350.7 ms (usou o índice)
+      ref=70        205.9 ms (usou o índice)
+      ref=53        376.0 ms (usou o índice)
+      ref=56        336.9 ms (usou o índice)
+      ref=54        271.5 ms (usou o índice)
+      ref=34        191.3 ms (usou o índice)
+      ref=51        119.6 ms (usou o índice)
+  = 14.0s
+
+índice 5/32: CREATE INDEX brokk_exp_orders_orderdate_cov ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)
+  8 de 21 queries usam o índice: ref=55, ref=50, ref=70, ref=53, ref=56, ref=54, ref=34, ref=51
+      ref=55        738.2 ms (usou o índice)
+      ref=50        385.5 ms (usou o índice)
+      ref=70        216.9 ms (usou o índice)
+      ref=53        390.7 ms (usou o índice)
+      ref=56        279.7 ms (usou o índice)
+      ref=54        271.6 ms (usou o índice)
+      ref=34        191.6 ms (usou o índice)
+      ref=51        131.8 ms (usou o índice)
+  = 14.3s
+
+índice 6/32: CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)
+  5 de 21 queries usam o índice: ref=68, ref=64, ref=55, ref=67, ref=54
+      ref=68         57.2 ms (usou o índice)
+      ref=64      1,020.9 ms (usou o índice)
+      ref=55        582.8 ms (usou o índice)
+      ref=67         35.9 ms (usou o índice)
+      ref=54        152.7 ms (usou o índice)
+  = 12.9s
+
+índice 7/32: CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)
+  2 de 21 queries usam o índice: ref=49, ref=57
+      ref=49        239.0 ms (usou o índice)
+      ref=57        105.5 ms (usou o índice)
+  = 2.2s
+
+índice 8/32: CREATE INDEX brokk_exp_lineitem_l_suppkey_l_partkey ON lineitem (l_suppkey, l_partkey)
+  5 de 21 queries usam o índice: ref=68, ref=64, ref=69, ref=55, ref=53
+      ref=68        144.6 ms (usou o índice)
+      ref=64    117,227.1 ms (usou o índice)
+      ref=69        649.7 ms (usou o índice)
+      ref=55        571.5 ms (usou o índice)
+      ref=53        851.1 ms (usou o índice)
+  = 599.5s
+
+índice 9/32: CREATE INDEX brokk_exp_lineitem_l_shipdate ON lineitem (l_shipdate)
+  3 de 21 queries usam o índice: ref=68, ref=52, ref=60
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=52        316.4 ms (usou o índice)
+      ref=60        155.9 ms (usou o índice)
+  = 303.8s
+
+índice 10/32: CREATE INDEX brokk_exp_lineitem_l_suppkey ON lineitem (l_suppkey)
+  3 de 21 queries usam o índice: ref=68, ref=69, ref=53
+      ref=68      6,424.4 ms (usou o índice)
+      ref=69        632.7 ms (usou o índice)
+      ref=53        824.2 ms (usou o índice)
+  = 42.3s
+
+índice 11/32: CREATE INDEX brokk_exp_part_p_name ON part (p_name)
+  0 de 21 queries usam o índice: 
+  = 0.8s
+
+índice 12/32: CREATE INDEX brokk_exp_lineitem_l_receiptdate_l_commitdate ON lineitem (l_receiptdate, l_commitdate)
+  1 de 21 queries usam o índice: ref=58
+      ref=58        364.5 ms (usou o índice)
+  = 4.1s
+
+índice 13/32: CREATE INDEX brokk_exp_orders_o_comment ON orders (o_comment)
+  0 de 21 queries usam o índice: 
+  = 4.0s
+
+índice 14/32: CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)
+  4 de 21 queries usam o índice: ref=69, ref=49, ref=53, ref=57
+      ref=69        388.2 ms (usou o índice)
+      ref=49        229.8 ms (usou o índice)
+      ref=53        244.3 ms (usou o índice)
+      ref=57        108.3 ms (usou o índice)
+  = 5.2s
+
+índice 15/32: CREATE INDEX brokk_exp_customer_c_nationkey ON customer (c_nationkey)
+  3 de 21 queries usam o índice: ref=53, ref=54, ref=34
+      ref=53        251.2 ms (usou o índice)
+      ref=54        237.2 ms (usou o índice)
+      ref=34        175.3 ms (usou o índice)
+  = 3.9s
+
+índice 16/32: CREATE INDEX brokk_exp_lineitem_l_shipdate_l_partkey_l_suppkey ON lineitem (l_shipdate, l_partkey, l_suppkey)
+  4 de 21 queries usam o índice: ref=68, ref=64, ref=52, ref=60
+      ref=68      3,322.1 ms (usou o índice)
+      ref=64     31,595.0 ms (usou o índice)
+      ref=52        331.7 ms (usou o índice)
+      ref=60        140.3 ms (usou o índice)
+  = 180.3s
+
+índice 17/32: CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)
+  3 de 21 queries usam o índice: ref=56, ref=34, ref=51
+      ref=56        259.7 ms (usou o índice)
+      ref=34        177.6 ms (usou o índice)
+      ref=51        118.2 ms (usou o índice)
+  = 3.6s
+
+índice 18/32: CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)
+  2 de 21 queries usam o índice: ref=58, ref=67
+      ref=58        288.1 ms (usou o índice)
+      ref=67        375.1 ms (usou o índice)
+  = 10.0s
+
+índice 19/32: CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)
+  3 de 21 queries usam o índice: ref=68, ref=52, ref=60
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=52        177.3 ms (usou o índice)
+      ref=60        143.2 ms (usou o índice)
+  = 306.2s
+
+índice 20/32: CREATE INDEX brokk_exp_lineitem_l_shipmode_l_shipinstruct_l_quantity ON lineitem (l_shipmode, l_shipinstruct, l_quantity)
+  1 de 21 queries usam o índice: ref=67
+      ref=67        248.5 ms (usou o índice)
+  = 11.3s
+
+índice 21/32: CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)
+  1 de 21 queries usam o índice: ref=70
+      ref=70        134.3 ms (usou o índice)
+  = 1.5s
+
+índice 22/32: CREATE INDEX brokk_exp_part_p_type_trgm ON part USING gin (p_type gin_trgm_ops)
+  2 de 21 queries usam o índice: ref=49, ref=54
+      ref=49        303.8 ms (usou o índice)
+      ref=54        226.6 ms (usou o índice)
+  = 4.4s
+
+índice 23/32: CREATE INDEX brokk_exp_part_p_type_p_size ON part (p_type, p_size)
+  3 de 21 queries usam o índice: ref=49, ref=62, ref=54
+      ref=49        238.6 ms (usou o índice)
+      ref=62        258.6 ms (usou o índice)
+      ref=54        225.9 ms (usou o índice)
+  = 4.4s
+
+índice 24/32: CREATE INDEX brokk_exp_part_p_brand_p_container ON part (p_brand, p_container)
+  2 de 21 queries usam o índice: ref=64, ref=67
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=67        244.0 ms (usou o índice)
+  = 301.9s
+
+índice 25/32: CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)
+  4 de 21 queries usam o índice: ref=64, ref=49, ref=62, ref=67
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=49        229.1 ms (usou o índice)
+      ref=62        250.7 ms (usou o índice)
+      ref=67        253.2 ms (usou o índice)
+  = 304.5s
+
+índice 26/32: CREATE INDEX brokk_exp_customer_c_mktsegment ON customer (c_mktsegment)
+  1 de 21 queries usam o índice: ref=50
+      ref=50        258.6 ms (usou o índice)
+  = 1.8s
+
+índice 27/32: CREATE INDEX brokk_exp_part_p_type ON part (p_type)
+  1 de 21 queries usam o índice: ref=54
+      ref=54        200.0 ms (usou o índice)
+  = 1.5s
+
+índice 28/32: CREATE INDEX brokk_exp_part_p_name_trgm ON part USING gin (p_name gin_trgm_ops)
+  1 de 21 queries usam o índice: ref=55
+      ref=55        704.5 ms (usou o índice)
+  = 4.9s
+
+índice 29/32: CREATE INDEX brokk_exp_part_p_brand_p_type_p_size ON part (p_brand, p_type, p_size)
+  4 de 21 queries usam o índice: ref=64, ref=49, ref=67, ref=54
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=49        236.3 ms (usou o índice)
+      ref=67        250.5 ms (usou o índice)
+      ref=54        208.2 ms (usou o índice)
+  = 303.6s
+
+índice 30/32: CREATE INDEX brokk_exp_supplier_s_comment ON supplier (s_comment)
+  0 de 21 queries usam o índice: 
+  = 0.2s
+
+índice 31/32: CREATE INDEX brokk_exp_supplier_s_comment_trgm ON supplier USING gin (s_comment gin_trgm_ops)
+  1 de 21 queries usam o índice: ref=62
+      ref=62        259.6 ms (usou o índice)
+  = 1.7s
+
+índice 32/32: CREATE INDEX brokk_exp_nation_n_regionkey ON nation (n_regionkey)
+  0 de 21 queries usam o índice: 
+  = 0.1s
+
+sessão 1 concluída em 52.5 min. Para avaliar:
+  python -m src.index_provider comparar --sessao 1 --rodadas 1,2
+  python -m src.index_provider otimizar --sessao 1

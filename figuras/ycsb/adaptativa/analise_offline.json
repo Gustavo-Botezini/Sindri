@@ -1,0 +1,688 @@
+{
+ "sessao": 1,
+ "parametros": {
+  "confianca": 0.9,
+  "relevancia": 0.01,
+  "margem_ms": null,
+  "lambda_mb": 0.0,
+  "custo_entrada_ms": null,
+  "paciencia": 2,
+  "min_sessoes": 2,
+  "max_validacoes": 3,
+  "economia_minima": 0.1,
+  "max_medicoes": 6,
+  "exploracao": 2,
+  "vizinhos": 4,
+  "amostras": 4000,
+  "semente": 42,
+  "peso": "execucoes",
+  "modelo": "conservador"
+ },
+ "recomendada": "∅",
+ "recomendada_otimizacao": null,
+ "caminho": [],
+ "caminho_chaves": [
+  []
+ ],
+ "margem_final_ms": 61499.06493469825,
+ "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+ "motivo": "aguardando segunda sessão para aceitar",
+ "concluida": false,
+ "proxima": {
+  "configuracao": "{i1}",
+  "chave": [
+   1
+  ],
+  "motivo": "confirmar a aceitação de {i1} numa sessão independente",
+  "ordem": "base_primeiro",
+  "otimizacao": 5,
+  "comando": "validar --otimizacao 5 --nova-validacao --ordem base_primeiro   (ou: adaptar --sessao 1 --executar)"
+ },
+ "passos": [
+  {
+   "tipo": "comparacao",
+   "movimento": "fronteira",
+   "de": "∅",
+   "para": "{i1}",
+   "teste": "superioridade",
+   "decisao": "aceita",
+   "delta_ms": 116717.47120400929,
+   "li_ms": 103915.17994720301,
+   "ls_ms": 131295.31473354224,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 61499.06493469825,
+   "custo_ms": 0.0,
+   "delta_mb": 6.796875,
+   "previsto_ms": 98220.0,
+   "texto": "ponto da fronteira prevista, 6.8 MB — aceitação pede outra sessão independente",
+   "detalhe": {
+    "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+    "notas": [
+     "manutenção não medida: só a leitura foi avaliada"
+    ],
+    "insuficiencias": [],
+    "sessoes": [
+     0,
+     1
+    ],
+    "prob_positivo": 1.0
+   }
+  },
+  {
+   "tipo": "medicao",
+   "movimento": "fronteira",
+   "de": "∅",
+   "para": "{i1}",
+   "teste": null,
+   "decisao": null,
+   "delta_ms": null,
+   "margem_ms": null,
+   "custo_ms": null,
+   "delta_mb": null,
+   "previsto_ms": null,
+   "texto": "segunda sessão antes de aceitar",
+   "detalhe": {}
+  }
+ ],
+ "configuracoes": [
+  {
+   "chave": [],
+   "rotulo": "∅",
+   "otimizacoes": [],
+   "origem": "linha de base (só os índices existentes)",
+   "mb": 0,
+   "indices": [],
+   "sessoes": 0,
+   "validacoes": [],
+   "limitacoes": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "atual (exploração em aberto)"
+  },
+  {
+   "chave": [
+    5
+   ],
+   "rotulo": "{i5}",
+   "otimizacoes": [
+    3
+   ],
+   "origem": "clusters (rodada 2), matriz (índice sozinho)",
+   "mb": 237.6,
+   "indices": [
+    {
+     "id": 5,
+     "ddl": "CREATE INDEX brokk_exp_usertable_key_inc_f1f2 ON public.usertable (ycsb_key) INCLUDE (field1, field2)",
+     "curto": "public.usertable (ycsb_key) INCLUDE (field1, field2)",
+     "mb": 237.6
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v3.1"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em y02 (plano instável?): o intervalo usa a variância delas",
+    "custo de manutenção não medido: só a leitura foi avaliada"
+   ],
+   "beneficio_ms": 13.901963486549528,
+   "beneficio_li_ms": -194.43716140070123,
+   "beneficio_ls_ms": 189.7007690759473,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": false,
+   "carga_ms": 1889739.7606858816,
+   "carga_e_piso": false,
+   "melhoram": [],
+   "pioram": [],
+   "indefinidas": [
+    "#14",
+    "y05",
+    "y10",
+    "y01",
+    "y02"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "y02"
+   ],
+   "sem_uso": [],
+   "exposicao": {
+    "entradas_min": 82567.0,
+    "entradas_max": 139492.0,
+    "entradas_hot_observado": null,
+    "certas": 42183.0,
+    "provaveis": 40384.0,
+    "possiveis_hot": 56925.0,
+    "deletes": 46729.0,
+    "hot_observado": {
+     "usertable": null
+    }
+   },
+   "equilibrio_ms_por_entrada": {
+    "com_exposicao_max": 9.966136758057471e-05,
+    "com_exposicao_min": 0.00016837190992223926,
+    "com_li_e_exposicao_max": -0.0013938947136803632
+   },
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "mais espaço sem ganho relevante; só a leitura avaliada",
+   "contra_recomendada": {
+    "delta_ms": 13.901963486549528,
+    "li_ms": -194.43716140070123,
+    "ls_ms": 189.7007690759473,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "equivalentes"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    7
+   ],
+   "rotulo": "{i1,i2,i7}",
+   "otimizacoes": [
+    1,
+    4
+   ],
+   "origem": "otimizar (conservador, sem orçamento), otimizar (otimista, sem orçamento)",
+   "mb": 276.1,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_usertable_left_field2_3 ON usertable ((\"left\"(field2, 3)))",
+     "curto": "usertable ((\"left\"(field2, 3)))",
+     "mb": 6.8
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_usertable_field7_left1 ON usertable ((left(field7, 1)))",
+     "curto": "usertable ((left(field7, 1)))",
+     "mb": 6.7
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_usertable_field9_trgm ON usertable USING gin (field9 gin_trgm_ops)",
+     "curto": "usertable USING gin (field9 gin_trgm_ops)",
+     "mb": 262.6
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v1.1"
+   ],
+   "limitacoes": [
+    "uma sessão só de medida",
+    "custo de manutenção não medido: só a leitura foi avaliada"
+   ],
+   "beneficio_ms": 283036.75157282327,
+   "beneficio_li_ms": 264763.2705464875,
+   "beneficio_ls_ms": 303125.09244090755,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": false,
+   "carga_ms": 1606716.911076545,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "y17",
+     "ganho_pct": 92.9116961360633,
+     "ganho_ponderado_ms": 86807.9406938903,
+     "piso": false
+    },
+    {
+     "query": "y06",
+     "ganho_pct": 99.98999416652973,
+     "ganho_ponderado_ms": 116710.64190521395,
+     "piso": false
+    },
+    {
+     "query": "y19",
+     "ganho_pct": 99.07413700040105,
+     "ganho_ponderado_ms": 79518.16897371903,
+     "piso": false
+    }
+   ],
+   "pioram": [],
+   "indefinidas": [],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "exposicao": {
+    "entradas_min": 183522.0,
+    "entradas_max": 418476.0,
+    "entradas_hot_observado": null,
+    "certas": 126549.0,
+    "provaveis": 56973.0,
+    "possiveis_hot": 234954.0,
+    "deletes": 140187.0,
+    "hot_observado": {
+     "usertable": null
+    }
+   },
+   "equilibrio_ms_por_entrada": {
+    "com_exposicao_max": 0.6763512162533174,
+    "com_exposicao_min": 1.5422497116030953,
+    "com_li_e_exposicao_max": 0.6326844802246424
+   },
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "ganho relevante sobre a atual; só a leitura avaliada",
+   "contra_recomendada": {
+    "delta_ms": 283036.75157282327,
+    "li_ms": 264763.2705464875,
+    "ls_ms": 303125.09244090755,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "b melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "rotulo": "{i1,i2,i3,i4}",
+   "otimizacoes": [
+    2
+   ],
+   "origem": "clusters (rodada 1)",
+   "mb": 607.6,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_usertable_left_field2_3 ON usertable ((\"left\"(field2, 3)))",
+     "curto": "usertable ((\"left\"(field2, 3)))",
+     "mb": 6.8
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_usertable_field7_left1 ON usertable ((left(field7, 1)))",
+     "curto": "usertable ((left(field7, 1)))",
+     "mb": 6.7
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_usertable_key_cover ON usertable (ycsb_key) INCLUDE (field3, field4, field5, field6)",
+     "curto": "usertable (ycsb_key) INCLUDE (field3, field4, field5, field6)",
+     "mb": 461.2
+    },
+    {
+     "id": 4,
+     "ddl": "CREATE INDEX brokk_exp_usertable_key_inc_field1 ON usertable (ycsb_key) INCLUDE (field1)",
+     "curto": "usertable (ycsb_key) INCLUDE (field1)",
+     "mb": 132.9
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v2.1"
+   ],
+   "limitacoes": [
+    "índice(s) i3 sem uso nas validações: candidatos a remoção (461.2 MB)",
+    "uma sessão só de medida",
+    "custo de manutenção não medido: só a leitura foi avaliada"
+   ],
+   "beneficio_ms": 205258.92067204922,
+   "beneficio_li_ms": 188113.2421734518,
+   "beneficio_ls_ms": 224214.58363183227,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": false,
+   "carga_ms": 1684494.741977319,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "y17",
+     "ganho_pct": 94.68306197141874,
+     "ganho_ponderado_ms": 88462.93814606826,
+     "piso": false
+    },
+    {
+     "query": "y06",
+     "ganho_pct": 99.99657306334593,
+     "ganho_ponderado_ms": 116718.32094627048,
+     "piso": false
+    }
+   ],
+   "pioram": [],
+   "indefinidas": [
+    "#14",
+    "y05",
+    "y10",
+    "y01",
+    "y07",
+    "y02"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [
+    3
+   ],
+   "exposicao": {
+    "entradas_min": 415832.0,
+    "entradas_max": 557968.0,
+    "entradas_hot_observado": null,
+    "certas": 168732.0,
+    "provaveis": 247100.0,
+    "possiveis_hot": 142136.0,
+    "deletes": 186916.0,
+    "hot_observado": {
+     "usertable": null
+    }
+   },
+   "equilibrio_ms_por_entrada": {
+    "com_exposicao_max": 0.3678686244946829,
+    "com_exposicao_min": 0.4936102095847583,
+    "com_li_e_exposicao_max": 0.33713983987155505
+   },
+   "fronteira_pareto": false,
+   "dominada_por": "{i1,i2,i7}",
+   "situacao": "dominada por {i1,i2,i7}",
+   "contra_recomendada": {
+    "delta_ms": 205258.92067204922,
+    "li_ms": 188113.2421734518,
+    "ls_ms": 224214.58363183227,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "b melhor"
+   }
+  }
+ ],
+ "ordem_na_fronteira": [
+  {
+   "a": "{i5}",
+   "b": "{i1,i2,i7}",
+   "delta_ms": 283022.8496093367,
+   "li_ms": 264710.3142429864,
+   "ls_ms": 303050.66397205624,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 61499.06086354565,
+   "afirmacao": "b melhor"
+  }
+ ],
+ "nao_ordenaveis": [],
+ "evidencia": {
+  "sessoes": [
+   "m1",
+   "v1.1",
+   "v2.1",
+   "v3.1"
+  ],
+  "validacoes": {
+   "selecao": 0,
+   "legado": 3,
+   "confirmacao": 0
+  },
+  "excluidas_por_ambiente": {},
+  "sem_ambiente_registrado": [
+   "m1",
+   "v1.1",
+   "v2.1",
+   "v3.1"
+  ],
+  "ambiente_referencia": null
+ },
+ "ruido": {
+  "suficiente": true,
+  "d0": 1.681978692723238,
+  "s0": 0.11567657471631897,
+  "deslocamento_por_sessao": {
+   "m1": -0.03303168575256077,
+   "v1.1": 0.03303168575256077,
+   "v2.1": 0.0888168396831821,
+   "v3.1": -0.06939428821214522
+  },
+  "mediana_sigma_alfa_sobre_sigma_eps": 2.1698512753932375,
+  "por_query": [
+   {
+    "query": "#14",
+    "blocos": 10,
+    "gl_entre": 3.875,
+    "sigma_entre_bruto": 0.42307137066056405,
+    "sigma_eps": 0.17256331178382203,
+    "sigma_alfa": 0.34638413603386714,
+    "tau_moderado": 0.3589753292345654,
+    "limiar_matriz_pct": 56.61425208372576
+   },
+   {
+    "query": "#15",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.46734366155315066,
+    "sigma_eps": 0.12392399191468953,
+    "sigma_alfa": 0.37169033944570673,
+    "tau_moderado": 0.37780150892536835,
+    "limiar_matriz_pct": 58.473240666943205
+   },
+   {
+    "query": "y14",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.201068926277137,
+    "sigma_eps": 0.07394298182063036,
+    "sigma_alfa": 0.16974904891033954,
+    "tau_moderado": 0.17448621933018593,
+    "limiar_matriz_pct": 33.3613442660875
+   },
+   {
+    "query": "y21",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.12368962559557792,
+    "sigma_eps": 0.04706629363380185,
+    "sigma_alfa": 0.11802744038414673,
+    "tau_moderado": 0.12079391880209263,
+    "limiar_matriz_pct": 24.496238546801795
+   },
+   {
+    "query": "y15",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.13019395515832996,
+    "sigma_eps": 0.06275342444898506,
+    "sigma_alfa": 0.12024349200278335,
+    "tau_moderado": 0.12503201016761922,
+    "limiar_matriz_pct": 25.23693823480021
+   },
+   {
+    "query": "y05",
+    "blocos": 10,
+    "gl_entre": 3.875,
+    "sigma_entre_bruto": 0.09838805011007315,
+    "sigma_eps": 0.10081986504152272,
+    "sigma_alfa": 0.08814065278281373,
+    "tau_moderado": 0.10392487719502272,
+    "limiar_matriz_pct": 21.47454758967212
+   },
+   {
+    "query": "y08",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.29252161588063175,
+    "sigma_eps": 0.1654354626001096,
+    "sigma_alfa": 0.22530342000757522,
+    "tau_moderado": 0.24274349258285696,
+    "limiar_matriz_pct": 43.14486677789326
+   },
+   {
+    "query": "y10",
+    "blocos": 10,
+    "gl_entre": 3.875,
+    "sigma_entre_bruto": 0.48060294203879544,
+    "sigma_eps": 0.1460519463080185,
+    "sigma_alfa": 0.3984405427392745,
+    "tau_moderado": 0.40634577376317094,
+    "limiar_matriz_pct": 61.141024211389336
+   },
+   {
+    "query": "y16",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.05105880407934587,
+    "sigma_eps": 0.10560960390599229,
+    "sigma_alfa": 0.05707194561767708,
+    "tau_moderado": 0.0811400337563166,
+    "limiar_matriz_pct": 17.200309441639316
+   },
+   {
+    "query": "y01",
+    "blocos": 10,
+    "gl_entre": 3.875,
+    "sigma_entre_bruto": 0.3950641554012333,
+    "sigma_eps": 0.18087625426573553,
+    "sigma_alfa": 0.32113464998495606,
+    "tau_moderado": 0.335983743422574,
+    "limiar_matriz_pct": 54.23070578239644
+   },
+   {
+    "query": "y07",
+    "blocos": 6,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.49930976636665564,
+    "sigma_eps": 0.1216000539805037,
+    "sigma_alfa": 0.3972641446089285,
+    "tau_moderado": 0.4027764839551932,
+    "limiar_matriz_pct": 60.81704317408176
+   },
+   {
+    "query": "y22",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.06804649518036826,
+    "sigma_eps": 0.07098943519247777,
+    "sigma_alfa": 0.07973199052777091,
+    "tau_moderado": 0.08865788832001355,
+    "limiar_matriz_pct": 18.63570958747458
+   },
+   {
+    "query": "y09",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.10967194915872135,
+    "sigma_eps": 0.06825172151536764,
+    "sigma_alfa": 0.10553691366850584,
+    "tau_moderado": 0.11192576724333801,
+    "limiar_matriz_pct": 22.92250518649648
+   },
+   {
+    "query": "y03",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.22236838311657176,
+    "sigma_eps": 0.1582130390661329,
+    "sigma_alfa": 0.1693219347643704,
+    "tau_moderado": 0.19009345707173556,
+    "limiar_matriz_pct": 35.73728068647946
+   },
+   {
+    "query": "y02",
+    "blocos": 9,
+    "gl_entre": 3.875,
+    "sigma_entre_bruto": 0.25629344600758913,
+    "sigma_eps": 0.09933636354044581,
+    "sigma_alfa": 0.21659085963138314,
+    "tau_moderado": 0.22328153957354127,
+    "limiar_matriz_pct": 40.51177431478353
+   },
+   {
+    "query": "y04",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.11636708898796812,
+    "sigma_eps": 0.051893434021837506,
+    "sigma_alfa": 0.11260103399681894,
+    "tau_moderado": 0.11611269861931942,
+    "limiar_matriz_pct": 23.66956004085653
+   },
+   {
+    "query": "y18",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.0817401841491417,
+    "sigma_eps": 0.024981878468802243,
+    "sigma_alfa": 0.09470029207559107,
+    "tau_moderado": 0.09567800912336415,
+    "limiar_matriz_pct": 19.953600572514908
+   },
+   {
+    "query": "y20",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.08681050680615801,
+    "sigma_eps": 0.03199248033983848,
+    "sigma_alfa": 0.09689266494300056,
+    "tau_moderado": 0.09845533505782222,
+    "limiar_matriz_pct": 20.469076954696664
+   },
+   {
+    "query": "y12",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.08840397376433193,
+    "sigma_eps": 0.03585054184298951,
+    "sigma_alfa": 0.09739748589820911,
+    "tau_moderado": 0.09934585777504445,
+    "limiar_matriz_pct": 20.63365561967253
+   },
+   {
+    "query": "y17",
+    "blocos": 7,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.09671654764553983,
+    "sigma_eps": 0.04039281811144752,
+    "sigma_alfa": 0.10175376214641144,
+    "tau_moderado": 0.10411746622384063,
+    "limiar_matriz_pct": 21.509718771965737
+   },
+   {
+    "query": "y13",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.042897584558450795,
+    "sigma_eps": 0.06943424273142082,
+    "sigma_alfa": 0.06827909006313437,
+    "tau_moderado": 0.07810205765115236,
+    "limiar_matriz_pct": 16.613103048471277
+   },
+   {
+    "query": "y06",
+    "blocos": 7,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.10966642564737221,
+    "sigma_eps": 0.16050365036071945,
+    "sigma_alfa": 0.06959359870067812,
+    "tau_moderado": 0.1119223526634979,
+    "limiar_matriz_pct": 22.921892964623037
+   },
+   {
+    "query": "y19",
+    "blocos": 6,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.01293615700992747,
+    "sigma_eps": 0.05338568022019089,
+    "sigma_alfa": 0.06476497841022395,
+    "tau_moderado": 0.07102481348272952,
+    "limiar_matriz_pct": 15.228950281530885
+   },
+   {
+    "query": "y11",
+    "blocos": 4,
+    "gl_entre": 2.875,
+    "sigma_entre_bruto": 0.11515929276343556,
+    "sigma_eps": 0.03786627187595024,
+    "sigma_alfa": 0.11348166699217366,
+    "tau_moderado": 0.11535049137997848,
+    "limiar_matriz_pct": 23.534104069691665
+   }
+  ],
+  "avisos": [
+   "índices existentes lidos do banco observado AGORA, não do ambiente da medição"
+  ]
+ },
+ "adaptacao": 1,
+ "medicoes_nesta_execucao": 0
+}

@@ -1,0 +1,55 @@
+
+=== seleção adaptativa, sessão 1 (confiança 90%, relevância 1%, λ 0 ms/MB)
+  evidência: 16 sessões de medida (m1, v1.1, v11.1, v12.1, v12.2, v13.1, v16.1, v17.1, v18.1, v19.1, v2.1, v3.1…)
+  validações: {'selecao': 8, 'legado': 7, 'confirmacao': 0}
+  sem ambiente registrado (anteriores ao registro): m1, v1.1, v2.1, v3.1, v4.1, v5.1, v7.1, v8.1
+  ruído: σ_α/σ_ε mediano 2.0 (a sessão pesa mais que a repetição); d0 = 3.7, τ típico 0.089 em log
+  sessões deslocadas (γ ≥ 2%): v1.1 -14.4%, v12.1 +5.8%, v13.1 +2.1%, v16.1 +6.1%, v17.1 +4.9%, v18.1 +4.5%, v19.1 +2.2%, v2.1 -16.6%, v3.1 -16.3%, v4.1 -12.9%, v5.1 -10.4%, v7.1 -18.3%, v8.1 -12.8%
+
+  passos:
+    1. medida       ∅ → {i1,i14,i31}  ΔB +8,628.6 s [+8,621.3; +∞]  margem 87.9 s  ΔMB +44.3  superioridade: ACEITA
+       já medida (otimizar ≤ 50 MB)
+    2. medida       {i1,i14,i31} → {i2,i14,i17,i21}  ΔB +24.7 s [+16.1; +32.7]  margem 6.0 s  ΔMB +204.1  superioridade: ACEITA
+       já medida (adaptar (fronteira))
+    3. medida       {i2,i14,i17,i21} → {i2,i3,i4,i14,i17,i21}  ΔB -2.5 s [-8.4; +1.8]  margem 4.9 s  ΔMB +83.0  superioridade: REJEITADA
+       já medida (adaptar (combinacao))
+    4. medida       {i2,i14,i17,i21} → {i2,i3,i5,i14,i17,i21}  ΔB -4.5 s [-10.0; -0.1]  margem 4.9 s  ΔMB +83.0  superioridade: REJEITADA
+       já medida (adaptar (combinacao))
+    5. parada: 2 crescimentos seguidos com ganho insuficiente: mesmo no limite superior do intervalo, o benefício adicional não passou da margem
+
+  PAROU: paciência esgotada: ganho adicional insuficiente
+
+  configuração                    MB  benefício s                 IC 90%   +   − ses  situação
+  {i14,i31}                      1.3         -1.5           [-4.5; +0.6]   0   1   1  dominada por ∅
+  {i1,i14,i31}                  44.3    ≥+8,628.6         [+8,621.3; +∞]   4   1   2  alternativa compacta, com perda relevante; avaliar regressões
+  {i2,i14,i17,i21}             248.4    ≥+8,653.4         [+8,649.8; +∞]   6   0   2  recomendada
+  {i2,i14,i17,i21,i25}         252.1    ≥+8,649.4         [+8,643.5; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i2,i9,i14,i17,i21,i25}      292.8    ≥+8,655.2         [+8,650.2; +∞]   5   1   1  não ordenável contra a recomendada (evidência insuficiente); avaliar regressões
+  {i1,i5,i6}                   294.2    ≥+8,630.8         [+8,623.0; +∞]   4   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i3,i4,i14,i17,i21}       331.4    ≥+8,650.9         [+8,645.1; +∞]   5   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i3,i5,i14,i17,i21}       331.4    ≥+8,648.9         [+8,643.4; +∞]   5   3   1  dominada por {i2,i14,i17,i21}
+  {i1,i2,i3,i4}                358.1    ≥+8,646.3         [+8,639.3; +∞]   5   1   1  dominada por {i2,i14,i17,i21}
+  {i2,i4,i8,i14,i17,i21}       377.4    ≥+8,629.1         [+8,622.2; +∞]   4   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i5,i8,i14,i17,i21}       377.4    ≥+8,629.1         [+8,622.6; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i1,i2,i6,i7,i14,i17,i18,i   795.1    ≥+8,655.1         [+8,649.2; +∞]   8   1   1  não ordenável contra a recomendada (evidência insuficiente); avaliar regressões
+  {i1,i2,i3,i6,i7,i14,i16,i1   982.5    ≥+8,648.1         [+8,640.9; +∞]   8   3   1  dominada por {i2,i9,i14,i17,i21,i25}
+  (+/− = queries com melhora/piora em que o intervalo exclui zero, contra a linha de base)
+
+  RECOMENDADA {i2,i14,i17,i21}, 248.4 MB (origem: adaptar (fronteira)):
+    CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity);   -- 232.1 MB
+    CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey);   -- 0.1 MB
+    CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate);   -- 10.4 MB
+    CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone);   -- 5.8 MB
+    ∅ → {i1,i14,i31}: ΔB +8,628.6 s [+8,621.3; +∞], ΔMB +44.3, 194.96 s/MB
+    {i1,i14,i31} → {i2,i14,i17,i21}: ΔB +24.7 s [+16.1; +32.7], ΔMB +204.1, 0.12 s/MB
+    melhoram: q08 +43%, q09 +26%, q11 +16%, q17 +100%(piso), q19 +91%, q20 +100%(piso)
+    limitação: benefício é piso: a linha de base estourou o timeout em alguma query
+
+  na fronteira de Pareto, o que a evidência permite afirmar:
+    {i1,i14,i31} × {i2,i14,i17,i21}: b melhor (ΔB +24.7 s [+16.1; +32.7])
+    {i1,i14,i31} × {i2,i9,i14,i17,i21,i25}: b melhor (ΔB +26.6 s [+19.7; +33.7])
+    {i2,i14,i17,i21} × {i2,i9,i14,i17,i21,i25}: não ordenável (ΔB +1.8 s [-3.7; +8.3])
+
+  adaptação 8 gravada (0 medição(ões) nesta execução, 0.0 min)
+  para a confirmação independente: adaptar --sessao 1 --confirmar 8 --executar
+  JSON em figuras/tpch-pgtune/adaptativa/selecao_final.json

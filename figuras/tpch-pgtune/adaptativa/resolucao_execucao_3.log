@@ -1,0 +1,201 @@
+>>> 16:51 adaptar --executar (regras corrigidas)
+
+>>> medição 1 de no máximo 6: otimização 1 {i1,i2,i6,i7,i14,i17,i18,i19,i21,i25} — resolução de incerteza: {i1,i2,i6,i7,i14,i17,i18,i19,i21,i25} contra {i2,i14,i17,i21}, inconclusiva (superioridade) e ainda competitiva: UCB − custo = +8.3 s ≥ +4.8 s; nova sessão de {i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}
+
+otimização 1, validação 2 (selecao, conjunto primeiro), ambiente 67c9b7ec26546e7a
+
+conjunto da otimização 1:
+  + i1 lineitem (l_partkey): 4.7s, 43.0 MB
+  + i2 lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity): 4.1s, 232.1 MB
+  + i6 lineitem (l_partkey, l_suppkey, l_shipdate): 2.7s, 180.3 MB
+  + i7 partsupp (ps_suppkey): 0.4s, 5.2 MB
+  + i14 supplier (s_nationkey): 0.0s, 0.1 MB
+  + i17 orders (o_orderdate): 0.9s, 10.4 MB
+  + i18 lineitem (l_shipmode, l_commitdate, l_receiptdate): 6.7s, 133.7 MB
+  + i19 lineitem (l_shipdate, l_discount, l_quantity): 5.2s, 180.7 MB
+  + i21 customer (c_acctbal, c_phone): 0.3s, 5.8 MB
+  + i25 part (p_size, p_brand, p_container): 0.4s, 3.8 MB
+
+replay de quem usa algum índice do conjunto:
+      ref=68         78.4 ms
+             usou i6 i14
+      ref=64        101.3 ms
+             usou i1 i2 i25
+      ref=69        538.7 ms
+             usou i14
+      ref=49        364.0 ms
+             usou i7 i14 i25
+      ref=55      1,051.8 ms
+             usou i6
+      ref=70        167.6 ms
+             usou i21
+      ref=58        270.3 ms
+             usou i18
+      ref=53        483.4 ms
+             usou i14
+      ref=56        419.3 ms
+             usou i17
+      ref=62        399.8 ms
+             usou i25
+      ref=67         49.0 ms
+             usou i1
+      ref=52        213.3 ms
+             usou i19
+      ref=54        167.0 ms
+             usou i1
+      ref=60        148.1 ms
+             usou i19
+      ref=34        206.0 ms
+             usou i17
+      ref=51        184.8 ms
+             usou i17
+      ref=57         98.9 ms
+             usou i7 i14
+  - 10 índice(s) derrubado(s)
+
+linha de base: 21 queries × 5 repetições
+      ref=68   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=64   ≥  300,000 ms (estourou o timeout; vale como piso)
+      ref=66      3,164.0 ms
+      ref=48      2,651.5 ms
+      ref=59      1,406.5 ms
+      ref=69        462.4 ms
+      ref=49        234.0 ms
+      ref=55        761.2 ms
+      ref=50        307.9 ms
+      ref=70        155.9 ms
+      ref=58        426.6 ms
+      ref=53        383.9 ms
+      ref=56        371.6 ms
+      ref=62        301.6 ms
+      ref=67        431.6 ms
+      ref=52        289.1 ms
+      ref=54        313.4 ms
+      ref=60        303.2 ms
+      ref=34        217.3 ms
+      ref=51        149.1 ms
+      ref=57        112.8 ms
+
+=== seleção adaptativa, sessão 1 (confiança 90%, relevância 1%, λ 0 ms/MB)
+  evidência: 29 sessões de medida (m1, v1.1, v1.2, v11.1, v12.1, v12.2, v12.5, v13.1, v16.1, v17.1, v18.1, v19.1…)
+  validações: {'selecao': 21, 'legado': 7, 'confirmacao': 10}
+  sem ambiente registrado (anteriores ao registro): m1, v1.1, v2.1, v3.1, v4.1, v5.1, v7.1, v8.1
+  ruído: σ_α/σ_ε mediano 1.9 (a sessão pesa mais que a repetição); d0 = 5.3, τ típico 0.087 em log
+  pareamento: β = 0.72 ± 0.10 (295 pontos) do γ da sessão chega ao bloco de configuração; σ_γ = 0.075
+  sessões deslocadas (γ ≥ 2%): v1.1 -17.2%, v12.1 +3.4%, v12.5 -2.8%, v16.1 +5.0%, v17.1 +2.2%, v18.1 +3.0%, v2.1 -17.0%, v20.1 -4.4%, v20.2 -4.3%, v21.1 +15.1%, v22.1 +3.4%, v22.3 +2.3%, v3.1 -15.0%, v4.1 -14.3%, v5.1 -12.2%, v5.4 -2.2%, v7.1 -19.0%, v8.1 -11.8%
+
+  passos:
+    1. medida       ∅ → {i1,i14,i31}  ΔB +8,692.6 s [+8,686.7; +∞]  margem 88.6 s  ΔMB +44.3  superioridade: ACEITA
+       já medida (otimizar ≤ 50 MB)
+    2. medida       {i1,i14,i31} → {i2,i14,i17,i21}  ΔB +24.4 s [+19.8; +30.5]  margem 5.5 s  ΔMB +204.1  superioridade: ACEITA
+       já medida (adaptar (fronteira))
+    3. medida       {i2,i14,i17,i21} → {i1,i2,i14,i17,i18,i19,i21,i25}  ΔB +4.2 s [+1.5; +7.0]  margem 4.8 s  ΔMB +361.2  superioridade: NAO_ORDENAVEL
+       já medida (adaptar (fronteira))
+    4. medida       {i2,i14,i17,i21} → {i1,i2,i14,i17,i18,i19,i21,i23}  ΔB -1.3 s [-5.9; +2.7]  margem 4.8 s  ΔMB +359.1  superioridade: REJEITADA
+       já medida (adaptar (fronteira))
+    5. resolucao    {i2,i14,i17,i21} → {i1,i2,i14,i17,i18,i19,i21,i31}  ΔB +2.3 s [-3.6; +6.7]  margem 4.8 s  ΔMB +358.7  superioridade: NAO_ORDENAVEL
+       resolução de incerteza: ainda competitiva e sem decisão, mas o orçamento de resolução acabou (3 de 3 validações)
+    6. resolucao    {i2,i14,i17,i21} → {i1,i2,i7,i14,i17,i18,i19,i21,i25}  ΔB +4.7 s [+2.0; +7.3]  margem 4.8 s  ΔMB +366.5  superioridade: NAO_ORDENAVEL
+       resolução de incerteza: inconclusiva com 3 e 3 sessões: limite de 3 por configuração
+    7. resolucao    {i2,i14,i17,i21} → {i1,i2,i14,i17,i18,i19,i21,i25}  ΔB +4.2 s [+1.5; +7.0]  margem 4.8 s  ΔMB +361.2  superioridade: NAO_ORDENAVEL
+       resolução de incerteza: inconclusiva com 3 e 3 sessões: limite de 3 por configuração
+    8. parada: 2 crescimentos seguidos sem ganho provado: rejeitados (nem o limite superior do intervalo passou da margem) ou não ordenáveis (sessões esgotadas sem decidir)
+
+  PAROU: paciência esgotada: ganho adicional não provado
+
+  configuração                    MB  benefício s                 IC 90%   +   − ses  situação
+  {i14,i31}                      1.3         -2.0           [-4.6; -0.1]   0   1   1  dominada por ∅
+  {i1,i14,i31}                  44.3    ≥+8,692.6         [+8,686.7; +∞]   4   1   2  alternativa compacta, com perda relevante; avaliar regressões
+  {i2,i14,i17,i21}             248.4    ≥+8,717.0         [+8,714.8; +∞]   7   0   3  recomendada
+  {i2,i14,i17,i21,i25}         252.1    ≥+8,713.2         [+8,708.6; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i2,i9,i14,i17,i21,i25}      292.8    ≥+8,716.9         [+8,714.1; +∞]   5   2   2  dominada por {i2,i14,i17,i21}
+  {i1,i5,i6}                   294.2    ≥+8,695.9         [+8,690.2; +∞]   4   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i3,i4,i14,i17,i21}       331.4    ≥+8,714.6         [+8,710.4; +∞]   5   3   1  dominada por {i2,i14,i17,i21}
+  {i2,i3,i5,i14,i17,i21}       331.4    ≥+8,712.1         [+8,708.0; +∞]   5   3   1  dominada por {i2,i14,i17,i21}
+  {i1,i2,i3,i4}                358.1    ≥+8,710.7         [+8,705.6; +∞]   5   2   1  dominada por {i2,i14,i17,i21}
+  {i2,i4,i8,i14,i17,i21}       377.4    ≥+8,692.4         [+8,687.1; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i2,i5,i8,i14,i17,i21}       377.4    ≥+8,692.4         [+8,687.0; +∞]   4   4   1  dominada por {i2,i14,i17,i21}
+  {i1,i2,i14,i17,i18,i19,i21   607.0    ≥+8,719.3         [+8,713.5; +∞]   7   0   2  não ordenável contra a recomendada (evidência insuficiente)
+  {i1,i2,i14,i17,i18,i19,i21   607.5    ≥+8,715.7         [+8,711.4; +∞]   8   1   2  dominada por {i2,i14,i17,i21}
+  {i1,i2,i14,i17,i18,i19,i21   609.6    ≥+8,721.2         [+8,719.0; +∞]   7   1   3  mais espaço, ganho sobre a recomendada abaixo da margem; avaliar custo; avaliar regressões
+  {i1,i2,i7,i14,i17,i18,i19,   614.9    ≥+8,721.7         [+8,719.5; +∞]   9   0   3  mais espaço, ganho sobre a recomendada abaixo da margem; avaliar custo
+  {i1,i2,i6,i7,i14,i17,i18,i   795.1    ≥+8,715.2         [+8,710.3; +∞]   8   3   2  dominada por {i2,i14,i17,i21}
+  {i1,i2,i3,i6,i7,i14,i16,i1   982.5    ≥+8,712.5         [+8,707.5; +∞]   9   3   1  dominada por {i2,i14,i17,i21}
+  (+/− = queries com melhora/piora em que o intervalo exclui zero, contra a linha de base)
+
+  RECOMENDADA {i2,i14,i17,i21}, 248.4 MB (origem: adaptar (fronteira)):
+    CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity);   -- 232.1 MB
+    CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey);   -- 0.1 MB
+    CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate);   -- 10.4 MB
+    CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone);   -- 5.8 MB
+    ∅ → {i1,i14,i31}: ΔB +8,692.6 s [+8,686.7; +∞], ΔMB +44.3, 196.41 s/MB
+    {i1,i14,i31} → {i2,i14,i17,i21}: ΔB +24.4 s [+19.8; +30.5], ΔMB +204.1, 0.12 s/MB
+    melhoram: q04 +8%, q08 +43%, q09 +22%, q11 +14%, q17 +100%(piso), q19 +91%, q20 +100%(piso)
+    limitação: as sessões discordam mais do que o ruído da query explica em q10 (plano instável?): o intervalo usa a variância delas
+    limitação: benefício é piso: a linha de base estourou o timeout em alguma query
+
+  na fronteira de Pareto, o que a evidência permite afirmar:
+    {i1,i14,i31} × {i2,i14,i17,i21}: b melhor (ΔB +24.4 s [+19.8; +30.5])
+    {i1,i14,i31} × {i1,i2,i14,i17,i18,i19,i21,i31}: b melhor (ΔB +26.8 s [+20.0; +33.6])
+    {i1,i14,i31} × {i1,i2,i14,i17,i18,i19,i21,i25}: b melhor (ΔB +28.6 s [+24.0; +34.7])
+    {i1,i14,i31} × {i1,i2,i7,i14,i17,i18,i19,i21,i25}: b melhor (ΔB +29.1 s [+24.4; +35.1])
+    {i2,i14,i17,i21} × {i1,i2,i14,i17,i18,i19,i21,i31}: não ordenável (ΔB +2.3 s [-3.6; +6.7])
+    {i2,i14,i17,i21} × {i1,i2,i14,i17,i18,i19,i21,i25}: b melhor (ΔB +4.2 s [+1.5; +7.0])
+    {i2,i14,i17,i21} × {i1,i2,i7,i14,i17,i18,i19,i21,i25}: b melhor (ΔB +4.7 s [+2.0; +7.3])
+    {i1,i2,i14,i17,i18,i19,i21,i31} × {i1,i2,i14,i17,i18,i19,i21,i25}: não ordenável (ΔB +1.9 s [-2.5; +7.8])
+    {i1,i2,i14,i17,i18,i19,i21,i31} × {i1,i2,i7,i14,i17,i18,i19,i21,i25}: não ordenável (ΔB +2.4 s [-2.1; +8.3])
+    {i1,i2,i14,i17,i18,i19,i21,i25} × {i1,i2,i7,i14,i17,i18,i19,i21,i25}: equivalentes (ΔB +0.5 s [-2.2; +3.1])
+
+  resolução de incerteza contra {i2,i14,i17,i21} (orçamento: 3 de 3 validações usadas):
+    {i1,i2,i14,i17,i18,i19,i21,i31   607.0 MB (+358.7)  ΔB +2.3 s [-3.6; +6.7]  sessões 2, P(vencer) 19%  → SEM_ORCAMENTO
+       ainda competitiva e sem decisão, mas o orçamento de resolução acabou (3 de 3 validações)
+    {i1,i2,i7,i14,i17,i18,i19,i21,   614.9 MB (+366.5)  ΔB +4.7 s [+2.0; +7.3]  sessões 3, P(vencer) 46%  → SEM_ORCAMENTO
+       inconclusiva com 3 e 3 sessões: limite de 3 por configuração
+    {i1,i2,i14,i17,i18,i19,i21,i25   609.6 MB (+361.2)  ΔB +4.2 s [+1.5; +7.0]  sessões 3, P(vencer) 36%  → SEM_ORCAMENTO
+       inconclusiva com 3 e 3 sessões: limite de 3 por configuração
+    {i2,i9,i14,i17,i21,i25}          292.8 MB (+44.5)  ΔB -0.1 s [-3.4; +2.9]  sessões 2, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i2,i14,i17,i18,i19,i21,i23   607.5 MB (+359.1)  ΔB -1.3 s [-5.9; +2.7]  sessões 2, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i3,i4,i14,i17,i21}           331.4 MB (+83.0)  ΔB -2.4 s [-6.8; +1.0]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i2,i6,i7,i14,i17,i18,i19,i   795.1 MB (+546.8)  ΔB -1.8 s [-6.9; +2.0]  sessões 2, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i14,i31}                          1.3 MB (-247.1)  ΔB -8,719.0 s [−∞; -8,716.2]  sessões 1, P(vencer) 0%  → DESCARTADA
+       perda relevante mesmo no melhor caso do intervalo
+    {i10}                             40.6 MB (-207.7)  ΔB -4,445.8 s [−∞; -4,428.0]  sessões 1, P(vencer) 0%  → DESCARTADA
+       perda relevante mesmo no melhor caso do intervalo
+    {i2,i14,i17,i21,i25}             252.1 MB (+3.8)  ΔB -3.8 s [-8.7; -0.1]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i5,i6}                       294.2 MB (+45.9)  ΔB -21.1 s [-27.1; -16.2]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i3,i5,i14,i17,i21}           331.4 MB (+83.0)  ΔB -4.9 s [-9.3; -1.3]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i2,i3,i4}                    358.1 MB (+109.7)  ΔB -6.3 s [-11.6; -1.8]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i4,i8,i14,i17,i21}           377.4 MB (+129.0)  ΔB -24.6 s [-30.2; -20.0]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i2,i5,i8,i14,i17,i21}           377.4 MB (+129.0)  ΔB -24.6 s [-30.1; -19.9]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    {i1,i2,i3,i6,i7,i14,i16,i17,i1   982.5 MB (+734.1)  ΔB -4.5 s [-9.7; -0.4]  sessões 1, P(vencer) 0%  → DESCARTADA
+       UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem
+    (+ 31 índice(s) sozinho(s) da matriz, descartados; no JSON)
+
+  multiplicidade: 49 configurações medidas (17 conjuntos validados, 32 índices só na matriz); 4 comparações na caminhada + 47 na resolução de incerteza
+    29 sessões independentes (28 validações de seleção; por conjunto: mín 1, mediana 1, máx 3); origem das validações: {'legado': 7, 'resolucao': 3, 'adaptar': 8, 'medida': 6, 'fronteira': 4}
+    239 testes por query no relatório: ~23.9 marcas +/− esperadas por acaso se nada tivesse mudado
+    Bonferroni (51 comparações, 99.80%): ∅ → {i1,i14,i31} li +8,686.7 → +8,681.7 s, margem 88.6 s: sobrevive
+    Bonferroni (51 comparações, 99.80%): {i1,i14,i31} → {i2,i14,i17,i21} li +19.8 → +15.3 s, margem 5.5 s: sobrevive
+    unidade: a sessão de medida: numa validação, a linha de base e a configuração medidas na mesma sessão; na matriz, a linha de base da matriz e cada índice sozinho. As repetições de um bloco não são independentes (só dão a variância dentro da sessão), e as queries de uma sessão compartilham o deslocamento γ dela. Duas configurações nunca estão na mesma sessão: a diferença entre elas passa pela linha de base de cada sessão, com o pareamento β
+    cada decisão é um teste unilateral de nível 5% (intervalo bilateral de 90%), sem correção para o número de comparações; cada marca +/− por query é um teste bilateral de 10%
+    os intervalos são condicionais a cada comparação. O procedimento é sequencial (28 validações de seleção, cada uma pedida por uma análise intermediária sobre a evidência de então) e a recomendada é a que se saiu melhor entre as comparadas: o ganho dela estimado na seleção tende a ser otimista. Só a confirmação, em sessões que a seleção não leu, estima o ganho sem esse viés
+    confirmação: pendente: adaptar --sessao 1 --confirmar 16 --executar
+    AVISO: a maioria dos conjuntos tem menos de 3 sessões: a média de cada um é imprecisa (a variância entre sessões, não, porque é estimada em conjunto)
+
+  adaptação 16 gravada (1 medição(ões) nesta execução, 12.2 min)
+  para a confirmação independente: adaptar --sessao 1 --confirmar 16 --executar
+  JSON em figuras/tpch-pgtune/adaptativa/resolucao_execucao_3.json
+HighsMipSolverData::transformNewIntegerFeasibleSolution tmpSolver.run();
+HighsMipSolverData::transformNewIntegerFeasibleSolution tmpSolver.run();
+>>> 17:04 seleção fim (saida=0)
+>>> concluida=True adaptacao=16

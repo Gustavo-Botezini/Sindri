@@ -1,0 +1,4658 @@
+{
+ "sessao": 1,
+ "parametros": {
+  "confianca": 0.9,
+  "relevancia": 0.01,
+  "margem_ms": null,
+  "lambda_mb": 0.0,
+  "custo_entrada_ms": null,
+  "paciencia": 2,
+  "min_sessoes": 2,
+  "max_validacoes": 3,
+  "economia_minima": 0.1,
+  "max_medicoes": 6,
+  "exploracao": 2,
+  "resolucao": 3,
+  "vizinhos": 4,
+  "amostras": 4000,
+  "semente": 42,
+  "peso": "execucoes",
+  "modelo": "conservador"
+ },
+ "recomendada": "{i2,i14,i17,i21}",
+ "recomendada_otimizacao": 12,
+ "caminho": [
+  {
+   "de": "∅",
+   "para": "{i1,i14,i31}",
+   "delta_ms": 8692565.919347066,
+   "li_ms": 8686670.774338013,
+   "ls_ms": null,
+   "aberto_abaixo": false,
+   "aberto_acima": true,
+   "delta_mb": 44.3,
+   "eficiencia_ms_por_mb": 196407.49120501758
+  },
+  {
+   "de": "{i1,i14,i31}",
+   "para": "{i2,i14,i17,i21}",
+   "delta_ms": 24430.3015999398,
+   "li_ms": 19766.881945478464,
+   "ls_ms": 30482.81139179458,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "delta_mb": 204.1,
+   "eficiencia_ms_por_mb": 119.70137057082738
+  }
+ ],
+ "caminho_chaves": [
+  [],
+  [
+   1,
+   14,
+   31
+  ],
+  [
+   2,
+   14,
+   17,
+   21
+  ]
+ ],
+ "margem_final_ms": 4788.882553675128,
+ "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+ "motivo": "paciência esgotada: ganho adicional não provado",
+ "concluida": true,
+ "proxima": null,
+ "passos": [
+  {
+   "tipo": "comparacao",
+   "movimento": "medida",
+   "de": "∅",
+   "para": "{i1,i14,i31}",
+   "teste": "superioridade",
+   "decisao": "aceita",
+   "delta_ms": 8692565.919347066,
+   "li_ms": 8686670.774338013,
+   "ls_ms": null,
+   "aberto_abaixo": false,
+   "aberto_acima": true,
+   "margem_ms": 88561.91500237815,
+   "custo_ms": 0.0,
+   "delta_mb": 44.2578125,
+   "previsto_ms": 7194351.6,
+   "texto": "já medida (otimizar ≤ 50 MB)",
+   "detalhe": {
+    "fonte_margem": "1% de C(A) = 8,856.2 s",
+    "notas": [],
+    "insuficiencias": [],
+    "sessoes": [
+     0,
+     2
+    ],
+    "prob_positivo": 1.0
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "medida",
+   "de": "{i1,i14,i31}",
+   "para": "{i2,i14,i17,i21}",
+   "teste": "superioridade",
+   "decisao": "aceita",
+   "delta_ms": 24430.3015999398,
+   "li_ms": 19766.881945478464,
+   "ls_ms": 30482.81139179458,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5540.556567440468,
+   "custo_ms": 0.0,
+   "delta_mb": 204.09375,
+   "previsto_ms": 15277.200000000186,
+   "texto": "já medida (adaptar (fronteira))",
+   "detalhe": {
+    "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+    "notas": [],
+    "insuficiencias": [],
+    "sessoes": [
+     2,
+     3
+    ],
+    "prob_positivo": 1.0
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "medida",
+   "de": "{i2,i14,i17,i21}",
+   "para": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "teste": "superioridade",
+   "decisao": "nao_ordenavel",
+   "delta_ms": 4203.346849775446,
+   "li_ms": 1485.7673943139075,
+   "ls_ms": 6964.6296024959565,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "custo_ms": 0.0,
+   "delta_mb": 361.25,
+   "previsto_ms": 5072.399999999441,
+   "texto": "já medida (adaptar (fronteira))",
+   "detalhe": {
+    "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+    "notas": [],
+    "insuficiencias": [],
+    "sessoes": [
+     3,
+     3
+    ],
+    "prob_positivo": 0.99425
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "medida",
+   "de": "{i2,i14,i17,i21}",
+   "para": "{i1,i2,i14,i17,i18,i19,i21,i23}",
+   "teste": "superioridade",
+   "decisao": "rejeitada",
+   "delta_ms": -1278.8907622292406,
+   "li_ms": -5866.845508035993,
+   "ls_ms": 2671.0394386773487,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "custo_ms": 0.0,
+   "delta_mb": 359.1328125,
+   "previsto_ms": 5018.399999999441,
+   "texto": "já medida (adaptar (fronteira))",
+   "detalhe": {
+    "fonte_margem": "flutuação entre sessões de C(A) (> 1% de C(A))",
+    "notas": [],
+    "insuficiencias": [],
+    "sessoes": [
+     3,
+     2
+    ],
+    "prob_positivo": 0.29
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "resolucao",
+   "de": "{i2,i14,i17,i21}",
+   "para": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+   "teste": "superioridade",
+   "decisao": "nao_ordenavel",
+   "delta_ms": 2326.2077554814045,
+   "li_ms": -3648.692865149535,
+   "ls_ms": 6663.29133745848,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "custo_ms": 0.0,
+   "delta_mb": 358.65625,
+   "previsto_ms": null,
+   "texto": "resolução de incerteza: ainda competitiva e sem decisão, mas o orçamento de resolução acabou (3 de 3 validações)",
+   "detalhe": {
+    "sessoes": [
+     3,
+     2
+    ],
+    "prob_vencer": 0.18575,
+    "acao": "sem_orcamento"
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "resolucao",
+   "de": "{i2,i14,i17,i21}",
+   "para": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+   "teste": "superioridade",
+   "decisao": "nao_ordenavel",
+   "delta_ms": 4689.94884733832,
+   "li_ms": 2011.7813144834909,
+   "ls_ms": 7324.464508453744,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "custo_ms": 0.0,
+   "delta_mb": 366.5,
+   "previsto_ms": null,
+   "texto": "resolução de incerteza: inconclusiva com 3 e 3 sessões: limite de 3 por configuração",
+   "detalhe": {
+    "sessoes": [
+     3,
+     3
+    ],
+    "prob_vencer": 0.45975,
+    "acao": "sem_orcamento"
+   }
+  },
+  {
+   "tipo": "comparacao",
+   "movimento": "resolucao",
+   "de": "{i2,i14,i17,i21}",
+   "para": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "teste": "superioridade",
+   "decisao": "nao_ordenavel",
+   "delta_ms": 4203.346849775446,
+   "li_ms": 1485.7673943139075,
+   "ls_ms": 6964.6296024959565,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "custo_ms": 0.0,
+   "delta_mb": 361.25,
+   "previsto_ms": null,
+   "texto": "resolução de incerteza: inconclusiva com 3 e 3 sessões: limite de 3 por configuração",
+   "detalhe": {
+    "sessoes": [
+     3,
+     3
+    ],
+    "prob_vencer": 0.35525,
+    "acao": "sem_orcamento"
+   }
+  },
+  {
+   "tipo": "parada",
+   "movimento": null,
+   "de": null,
+   "para": null,
+   "teste": null,
+   "decisao": null,
+   "delta_ms": null,
+   "margem_ms": null,
+   "custo_ms": null,
+   "delta_mb": null,
+   "previsto_ms": null,
+   "texto": "2 crescimentos seguidos sem ganho provado: rejeitados (nem o limite superior do intervalo passou da margem) ou não ordenáveis (sessões esgotadas sem decidir)",
+   "detalhe": {}
+  }
+ ],
+ "configuracoes": [
+  {
+   "chave": [],
+   "rotulo": "∅",
+   "otimizacoes": [],
+   "origem": "linha de base (só os índices existentes)",
+   "mb": 0,
+   "indices": [],
+   "sessoes": 0,
+   "validacoes": [],
+   "limitacoes": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "referência (linha de base)"
+  },
+  {
+   "chave": [
+    14,
+    31
+   ],
+   "rotulo": "{i14,i31}",
+   "otimizacoes": [
+    13
+   ],
+   "origem": "adaptar (remocao)",
+   "mb": 1.3,
+   "indices": [
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_comment_trgm ON supplier USING gin (s_comment gin_trgm_ops)",
+     "curto": "supplier USING gin (s_comment gin_trgm_ops)",
+     "mb": 1.2
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v13.1"
+   ],
+   "limitacoes": [
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": -1978.0590790393603,
+   "beneficio_li_ms": -4614.16727853823,
+   "beneficio_ls_ms": -68.45065895764769,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": false,
+   "carga_ms": 8858169.559316855,
+   "carga_e_piso": true,
+   "melhoram": [],
+   "pioram": [
+    {
+     "query": "q21",
+     "ganho_pct": -26.56573116996049,
+     "ganho_ponderado_ms": -1446.3981168796909,
+     "li_ms": -2220.564679232001,
+     "ls_ms": -721.4025325811374,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q07",
+    "q11",
+    "q16"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "∅",
+   "situacao": "dominada por ∅",
+   "contra_recomendada": {
+    "delta_ms": -8718974.280026047,
+    "li_ms": null,
+    "ls_ms": -8716161.884481767,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    14,
+    31
+   ],
+   "rotulo": "{i1,i14,i31}",
+   "otimizacoes": [
+    4,
+    8
+   ],
+   "origem": "otimizar ≤ 50 MB",
+   "mb": 44.3,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_comment_trgm ON supplier USING gin (s_comment gin_trgm_ops)",
+     "curto": "supplier USING gin (s_comment gin_trgm_ops)",
+     "mb": 1.2
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v4.1",
+    "v8.1"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em q07, q08, q16, q19 (plano instável?): o intervalo usa a variância delas",
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8692565.919347066,
+   "beneficio_li_ms": 8686670.774338013,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 163625.5808907507,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 35.47881093055466,
+     "ganho_ponderado_ms": 1290.5928455074454,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.64269281432225,
+     "ganho_ponderado_ms": 4339790.523541784,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 88.46444146184344,
+     "ganho_ponderado_ms": 4277.379683469715,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.95292615483751,
+     "ganho_ponderado_ms": 4353302.279127954,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q09",
+     "ganho_pct": -57.38361155550024,
+     "ganho_ponderado_ms": -5974.415746615178,
+     "li_ms": -9731.630337457715,
+     "ls_ms": -2719.188614309367,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q07",
+    "q11",
+    "q16",
+    "q21"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "q07",
+    "q08",
+    "q16",
+    "q19"
+   ],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "alternativa compacta, com perda relevante; avaliar regressões",
+   "contra_recomendada": {
+    "delta_ms": -24430.3015999398,
+    "li_ms": -30482.811391794585,
+    "ls_ms": -19766.881945478468,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    2,
+    14,
+    17,
+    21
+   ],
+   "rotulo": "{i2,i14,i17,i21}",
+   "otimizacoes": [
+    12
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 248.4,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    }
+   ],
+   "sessoes": 3,
+   "validacoes": [
+    "v12.1",
+    "v12.2",
+    "v12.5"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em q10 (plano instável?): o intervalo usa a variância delas",
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8716996.220947009,
+   "beneficio_li_ms": 8714815.286068581,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 139195.27929081093,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q04",
+     "ganho_pct": 7.72448240213498,
+     "ganho_ponderado_ms": 137.3040127006093,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 43.001870069215414,
+     "ganho_ponderado_ms": 1564.2549566669636,
+     "piso": false
+    },
+    {
+     "query": "q09",
+     "ganho_pct": 21.709309172033233,
+     "ganho_ponderado_ms": 2260.2348484129325,
+     "piso": false
+    },
+    {
+     "query": "q11",
+     "ganho_pct": 13.537801282850731,
+     "ganho_ponderado_ms": 206.80358463274348,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.98040290422412,
+     "ganho_ponderado_ms": 4354498.988422311,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 90.78808859656729,
+     "ganho_ponderado_ms": 4389.731277866063,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.9866529911167,
+     "ganho_ponderado_ms": 4354771.201738728,
+     "piso": true
+    }
+   ],
+   "pioram": [],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q07",
+    "q10",
+    "q21",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "q10"
+   ],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "recomendada"
+  },
+  {
+   "chave": [
+    2,
+    14,
+    17,
+    21,
+    25
+   ],
+   "rotulo": "{i2,i14,i17,i21,i25}",
+   "otimizacoes": [
+    11
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 252.1,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v11.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8713175.791722205,
+   "beneficio_li_ms": 8708575.779337462,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 143015.70851561317,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 47.08823252147429,
+     "ganho_ponderado_ms": 1712.9022761996957,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.9815128176967,
+     "ganho_ponderado_ms": 4354547.329066608,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 92.21667347769987,
+     "ganho_ponderado_ms": 4458.80535831797,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98871540256702,
+     "ganho_ponderado_ms": 4354861.027027618,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q07",
+     "ganho_pct": -22.88618376119677,
+     "ganho_ponderado_ms": -904.3701014323524,
+     "li_ms": -1768.4409996545994,
+     "ls_ms": -168.69837629143683,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q10",
+     "ganho_pct": -14.494579073880667,
+     "ganho_ponderado_ms": -555.2473447858351,
+     "li_ms": -1174.600169783339,
+     "ls_ms": -42.74310336980313,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -16.630570891596697,
+     "ganho_ponderado_ms": -905.4682615865468,
+     "li_ms": -1635.147202457312,
+     "ls_ms": -210.10979144537572,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q22",
+     "ganho_pct": -30.80082064827559,
+     "ganho_ponderado_ms": -559.0456033331178,
+     "li_ms": -997.5787153688121,
+     "ls_ms": -163.1967382155438,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q09",
+    "q11",
+    "q16"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -3820.4292248022775,
+    "li_ms": -8728.114131500377,
+    "ls_ms": -60.24808113562268,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    2,
+    9,
+    14,
+    17,
+    21,
+    25
+   ],
+   "rotulo": "{i2,i9,i14,i17,i21,i25}",
+   "otimizacoes": [
+    5
+   ],
+   "origem": "otimizar ≤ 294 MB",
+   "mb": 292.8,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 9,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate ON lineitem (l_shipdate)",
+     "curto": "lineitem (l_shipdate)",
+     "mb": 40.7
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v5.1",
+    "v5.4"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em q05 (plano instável?): o intervalo usa a variância delas",
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8716907.578437442,
+   "beneficio_li_ms": 8714063.488389682,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 139283.9218003742,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 43.131939574297654,
+     "ganho_ponderado_ms": 1568.9864222452888,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 43.58289115455582,
+     "ganho_ponderado_ms": 1545.482321473044,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.98016505815896,
+     "ganho_ponderado_ms": 4354488.629387739,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 90.65993105399177,
+     "ganho_ponderado_ms": 4383.534681133663,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98691634266906,
+     "ganho_ponderado_ms": 4354782.671627177,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q06",
+     "ganho_pct": -29.172659742536364,
+     "ganho_ponderado_ms": -977.6950404878228,
+     "li_ms": -1414.9560160581889,
+     "ls_ms": -577.6761601755322,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -15.292966278140595,
+     "ganho_ponderado_ms": -832.641024810915,
+     "li_ms": -1395.268771029997,
+     "ls_ms": -311.69696701349363,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q10",
+    "q11",
+    "q16",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "q05"
+   ],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -88.64250956327089,
+    "li_ms": -3374.1152070410753,
+    "ls_ms": 2928.9316329462868,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "equivalentes"
+   }
+  },
+  {
+   "chave": [
+    1,
+    5,
+    6
+   ],
+   "rotulo": "{i1,i5,i6}",
+   "otimizacoes": [
+    3
+   ],
+   "origem": "clusters (rodada 2)",
+   "mb": 294.2,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 5,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cov ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "mb": 71.0
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v3.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8695933.464992234,
+   "beneficio_li_ms": 8690239.912838025,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 160258.03524558252,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 40.6741864012668,
+     "ganho_ponderado_ms": 1479.5821108283826,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.69126503510594,
+     "ganho_ponderado_ms": 4341906.014979348,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 90.50736838457415,
+     "ganho_ponderado_ms": 4376.158062326837,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98317630872918,
+     "ganho_ponderado_ms": 4354619.779965064,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -20.1413798523611,
+     "ganho_ponderado_ms": -745.933080761112,
+     "li_ms": -1517.844971845506,
+     "ls_ms": -95.31584407520324,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -23.886076728285662,
+     "ganho_ponderado_ms": -943.8818572367807,
+     "li_ms": -1831.978962666165,
+     "ls_ms": -213.0628501717554,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q22",
+     "ganho_pct": -53.98079205252041,
+     "ganho_ponderado_ms": -979.7701433351377,
+     "li_ms": -1503.8997323155427,
+     "ls_ms": -529.4543458613881,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q04",
+    "q09",
+    "q10"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -21062.75595477161,
+    "li_ms": -27070.808519484006,
+    "ls_ms": -16239.782718482445,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    2,
+    3,
+    4,
+    14,
+    17,
+    21
+   ],
+   "rotulo": "{i2,i3,i4,i14,i17,i21}",
+   "otimizacoes": [
+    16
+   ],
+   "origem": "adaptar (combinacao)",
+   "mb": 331.4,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "curto": "orders (o_custkey)",
+     "mb": 12.0
+    },
+    {
+     "id": 4,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "mb": 71.0
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v16.1"
+   ],
+   "limitacoes": [
+    "índice(s) i17 sem uso nas validações: candidatos a remoção (10.4 MB)",
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8714603.473837167,
+   "beneficio_li_ms": 8710424.02052602,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 141588.02640064855,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 49.3667736516207,
+     "ganho_ponderado_ms": 1795.7874914488032,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.9764852270351,
+     "ganho_ponderado_ms": 4354328.359770485,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.37590949446522,
+     "ganho_ponderado_ms": 4418.153241817216,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98843333927489,
+     "ganho_ponderado_ms": 4354848.742176941,
+     "piso": true
+    },
+    {
+     "query": "q22",
+     "ganho_pct": 60.72499109922917,
+     "ganho_ponderado_ms": 1102.1797007985692,
+     "piso": false
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -42.571518708425984,
+     "ganho_ponderado_ms": -1576.6300191758176,
+     "li_ms": -2518.7091164031194,
+     "ls_ms": -796.1749104142464,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -27.463165366233476,
+     "ganho_ponderado_ms": -1085.2340393257098,
+     "li_ms": -1963.4926488074866,
+     "ls_ms": -308.6637077785199,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -29.233728311600892,
+     "ganho_ponderado_ms": -1591.6599211500234,
+     "li_ms": -2392.850340055506,
+     "ls_ms": -824.433196223508,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q09",
+    "q10",
+    "q11"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [
+    17
+   ],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -2392.747109837659,
+    "li_ms": -6844.981990276277,
+    "ls_ms": 1025.4246239726233,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    2,
+    3,
+    5,
+    14,
+    17,
+    21
+   ],
+   "rotulo": "{i2,i3,i5,i14,i17,i21}",
+   "otimizacoes": [
+    17
+   ],
+   "origem": "adaptar (combinacao)",
+   "mb": 331.4,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "curto": "orders (o_custkey)",
+     "mb": 12.0
+    },
+    {
+     "id": 5,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cov ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "mb": 71.0
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v17.1"
+   ],
+   "limitacoes": [
+    "índice(s) i17 sem uso nas validações: candidatos a remoção (10.4 MB)",
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8712110.929507894,
+   "beneficio_li_ms": 8708008.314974187,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 144080.5707299198,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 44.817553085390266,
+     "ganho_ponderado_ms": 1630.3030413948134,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97900167507336,
+     "ganho_ponderado_ms": 4354437.959953308,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.00862657522659,
+     "ganho_ponderado_ms": 4400.394598108214,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98760630612949,
+     "ganho_ponderado_ms": 4354812.721968075,
+     "piso": true
+    },
+    {
+     "query": "q22",
+     "ganho_pct": 54.83443876870636,
+     "ganho_ponderado_ms": 995.2641280225305,
+     "piso": false
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -82.85591340327518,
+     "ganho_ponderado_ms": -3068.5567323201935,
+     "li_ms": -4256.20228557384,
+     "ls_ms": -2067.9479728075667,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -43.287310710740066,
+     "ganho_ponderado_ms": -1710.5407343875413,
+     "li_ms": -2706.5413636430035,
+     "ls_ms": -849.1370755296948,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -21.152650028393957,
+     "ganho_ponderado_ms": -1151.677436331208,
+     "li_ms": -1884.303492278398,
+     "ls_ms": -466.75472763438927,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q09",
+    "q10",
+    "q11"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [
+    17
+   ],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -4885.291439108922,
+    "li_ms": -9284.387513590937,
+    "ls_ms": -1335.8386150766719,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "rotulo": "{i1,i2,i3,i4}",
+   "otimizacoes": [
+    2
+   ],
+   "origem": "clusters (rodada 1)",
+   "mb": 358.1,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "curto": "orders (o_custkey)",
+     "mb": 12.0
+    },
+    {
+     "id": 4,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "mb": 71.0
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v2.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8710735.115336226,
+   "beneficio_li_ms": 8705635.5253972,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 145456.38490159178,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 47.651505218159514,
+     "ganho_ponderado_ms": 1733.3921317879954,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97751749765408,
+     "ganho_ponderado_ms": 4354373.318794809,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 90.83734435245466,
+     "ganho_ponderado_ms": 4392.11286267059,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98625081635228,
+     "ganho_ponderado_ms": 4354753.685610027,
+     "piso": true
+    },
+    {
+     "query": "q22",
+     "ganho_pct": 54.38316642331822,
+     "ganho_ponderado_ms": 987.0733780592113,
+     "piso": false
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -28.712414927594747,
+     "ganho_ponderado_ms": -1063.360121303774,
+     "li_ms": -1904.9390421996761,
+     "ls_ms": -345.9781208938223,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q09",
+     "ganho_pct": -36.32099666606263,
+     "ganho_ponderado_ms": -3781.5105834634905,
+     "li_ms": -8420.54318456629,
+     "ls_ms": -108.65458694632107,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q04",
+    "q07",
+    "q10"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -6261.105610780838,
+    "li_ms": -11609.228988095429,
+    "ls_ms": -1803.865971805343,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    2,
+    4,
+    8,
+    14,
+    17,
+    21
+   ],
+   "rotulo": "{i2,i4,i8,i14,i17,i21}",
+   "otimizacoes": [
+    18
+   ],
+   "origem": "adaptar (combinacao)",
+   "mb": 377.4,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 4,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cover ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_orderpriority, o_shippriority)",
+     "mb": 71.0
+    },
+    {
+     "id": 8,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_suppkey_l_partkey ON lineitem (l_suppkey, l_partkey)",
+     "curto": "lineitem (l_suppkey, l_partkey)",
+     "mb": 58.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v18.1"
+   ],
+   "limitacoes": [
+    "índice(s) i17 sem uso nas validações: candidatos a remoção (10.4 MB)",
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8692423.925878204,
+   "beneficio_li_ms": 8687096.674970493,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 163767.57435961298,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 39.81069027641926,
+     "ganho_ponderado_ms": 1448.1711956476856,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.98099014614424,
+     "ganho_ponderado_ms": 4354524.564878024,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.721507976414,
+     "ganho_ponderado_ms": 4434.863412603331,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.96021591044786,
+     "ganho_ponderado_ms": 4353619.773681976,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -32.57680910094916,
+     "ganho_ponderado_ms": -1206.4773988753816,
+     "li_ms": -2055.560417377987,
+     "ls_ms": -483.08608289534857,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -370.60086771527034,
+     "ganho_ponderado_ms": -14644.658446500674,
+     "li_ms": -17858.83499868018,
+     "ls_ms": -11868.982653340441,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -118.12096611356252,
+     "ganho_ponderado_ms": -6431.215533184992,
+     "li_ms": -7783.040422929538,
+     "ls_ms": -5191.80730238147,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q22",
+     "ganho_pct": -25.952418010701763,
+     "ganho_ponderado_ms": -471.0454098098297,
+     "li_ms": -911.7997133408568,
+     "ls_ms": -95.24906094230552,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q09",
+    "q10",
+    "q11"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [
+    17
+   ],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -24572.295068802076,
+    "li_ms": -30220.29855288371,
+    "ls_ms": -19951.55083250868,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    2,
+    5,
+    8,
+    14,
+    17,
+    21
+   ],
+   "rotulo": "{i2,i5,i8,i14,i17,i21}",
+   "otimizacoes": [
+    19
+   ],
+   "origem": "adaptar (combinacao)",
+   "mb": 377.4,
+   "indices": [
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 5,
+     "ddl": "CREATE INDEX brokk_exp_orders_orderdate_cov ON orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "curto": "orders (o_orderdate) INCLUDE (o_orderkey, o_custkey, o_shippriority, o_orderpriority)",
+     "mb": 71.0
+    },
+    {
+     "id": 8,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_suppkey_l_partkey ON lineitem (l_suppkey, l_partkey)",
+     "curto": "lineitem (l_suppkey, l_partkey)",
+     "mb": 58.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v19.1"
+   ],
+   "limitacoes": [
+    "índice(s) i17 sem uso nas validações: candidatos a remoção (10.4 MB)",
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8692435.557907617,
+   "beneficio_li_ms": 8687018.427889489,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 163755.94233019958,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q08",
+     "ganho_pct": 45.88895415623622,
+     "ganho_ponderado_ms": 1669.2767984186703,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97911524151004,
+     "ganho_ponderado_ms": 4354442.90617196,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.18038657159661,
+     "ganho_ponderado_ms": 4408.699434568668,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.96551967989666,
+     "ganho_ponderado_ms": 4353850.771537842,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q03",
+     "ganho_pct": -39.6795086602114,
+     "ganho_ponderado_ms": -1469.5248466072205,
+     "li_ms": -2363.2928526522423,
+     "ls_ms": -678.1910369206225,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -374.89041863285667,
+     "ganho_ponderado_ms": -14814.164277569556,
+     "li_ms": -18129.437837310074,
+     "ls_ms": -11941.28244063909,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -132.83834806575052,
+     "ganho_ponderado_ms": -7232.518286903836,
+     "li_ms": -8685.335442824824,
+     "ls_ms": -5924.186862740252,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q22",
+     "ganho_pct": -31.3579216445064,
+     "ganho_ponderado_ms": -569.1571801028352,
+     "li_ms": -1038.4753585259625,
+     "ls_ms": -172.52403312952785,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q09",
+    "q10",
+    "q11"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [
+    17
+   ],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -24560.663039388688,
+    "li_ms": -30084.752073564156,
+    "ls_ms": -19940.057003274167,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    14,
+    17,
+    18,
+    19,
+    21,
+    31
+   ],
+   "rotulo": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+   "otimizacoes": [
+    23
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 607.0,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_comment_trgm ON supplier USING gin (s_comment gin_trgm_ops)",
+     "curto": "supplier USING gin (s_comment gin_trgm_ops)",
+     "mb": 1.2
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v23.1",
+    "v23.2"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em q09 (plano instável?): o intervalo usa a variância delas",
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8719322.428702487,
+   "beneficio_li_ms": 8713494.190918349,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 136869.0715353295,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 36.34033881606803,
+     "ganho_ponderado_ms": 1217.913256579455,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 46.527926500096335,
+     "ganho_ponderado_ms": 1692.5203376984152,
+     "piso": false
+    },
+    {
+     "query": "q12",
+     "ganho_pct": 24.172361514546832,
+     "ganho_ponderado_ms": 1051.248942976303,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 50.79624625227136,
+     "ganho_ponderado_ms": 1801.2733552182087,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97644730129954,
+     "ganho_ponderado_ms": 4354326.7079710085,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.120305899342,
+     "ganho_ponderado_ms": 4405.794449892062,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98853663963617,
+     "ganho_ponderado_ms": 4354853.24127182,
+     "piso": true
+    }
+   ],
+   "pioram": [],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q10",
+    "q11",
+    "q16",
+    "q21",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "q09"
+   ],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "não ordenável contra a recomendada (evidência insuficiente)",
+   "contra_recomendada": {
+    "delta_ms": 2326.2077554814045,
+    "li_ms": -3648.692865149535,
+    "ls_ms": 6663.29133745848,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    14,
+    17,
+    18,
+    19,
+    21,
+    23
+   ],
+   "rotulo": "{i1,i2,i14,i17,i18,i19,i21,i23}",
+   "otimizacoes": [
+    21
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 607.5,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 23,
+     "ddl": "CREATE INDEX brokk_exp_part_p_type_p_size ON part (p_type, p_size)",
+     "curto": "part (p_type, p_size)",
+     "mb": 1.7
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v21.1",
+    "v21.2"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8715717.330184776,
+   "beneficio_li_ms": 8711412.357342402,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 140474.17005304017,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 37.166772837514536,
+     "ganho_ponderado_ms": 1245.6104378166024,
+     "piso": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": 12.09645385947891,
+     "ganho_ponderado_ms": 478.0032930792413,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 45.1821685933936,
+     "ganho_ponderado_ms": 1643.5664556313063,
+     "piso": false
+    },
+    {
+     "query": "q12",
+     "ganho_pct": 24.627834650461345,
+     "ganho_ponderado_ms": 1071.0573366409467,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 47.279998248535634,
+     "ganho_ponderado_ms": 1676.5845384892527,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97879391161706,
+     "ganho_ponderado_ms": 4354428.911122397,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.80019577907686,
+     "ganho_ponderado_ms": 4438.668078103788,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.9882893103671,
+     "ganho_ponderado_ms": 4354842.4692102885,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q09",
+     "ganho_pct": -51.557036197474794,
+     "ganho_ponderado_ms": -5367.789871662026,
+     "li_ms": -9148.146226428928,
+     "ls_ms": -2387.2409624851807,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q10",
+    "q11",
+    "q16",
+    "q21",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -1278.8907622292406,
+    "li_ms": -5866.845508035993,
+    "ls_ms": 2671.0394386773487,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    14,
+    17,
+    18,
+    19,
+    21,
+    25
+   ],
+   "rotulo": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "otimizacoes": [
+    20
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 609.6,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 3,
+   "validacoes": [
+    "v20.1",
+    "v20.2",
+    "v20.3"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8721199.56779678,
+   "beneficio_li_ms": 8718995.342448017,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 134991.93244103546,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 31.810467947368963,
+     "ganho_ponderado_ms": 1066.098772694062,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 46.33024476781123,
+     "ganho_ponderado_ms": 1685.3293799779312,
+     "piso": false
+    },
+    {
+     "query": "q12",
+     "ganho_pct": 23.189487152337044,
+     "ganho_ponderado_ms": 1008.5040240022199,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 49.9300554275513,
+     "ganho_ponderado_ms": 1770.5575726906177,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97954405033207,
+     "ganho_ponderado_ms": 4354461.582307757,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.56044154766717,
+     "ganho_ponderado_ms": 4427.0756251191615,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.9871088522918,
+     "ganho_ponderado_ms": 4354791.056099864,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q21",
+     "ganho_pct": -8.223575550714957,
+     "ganho_ponderado_ms": -447.7408927491481,
+     "li_ms": -858.6088663238351,
+     "ls_ms": -74.31169320920715,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q10",
+    "q11",
+    "q16",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "mais espaço, ganho sobre a recomendada abaixo da margem; avaliar custo; avaliar regressões",
+   "contra_recomendada": {
+    "delta_ms": 4203.346849775446,
+    "li_ms": 1485.7673943139075,
+    "ls_ms": 6964.6296024959565,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "b melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    7,
+    14,
+    17,
+    18,
+    19,
+    21,
+    25
+   ],
+   "rotulo": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+   "otimizacoes": [
+    22
+   ],
+   "origem": "adaptar (fronteira)",
+   "mb": 614.9,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)",
+     "curto": "partsupp (ps_suppkey)",
+     "mb": 5.2
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 3,
+   "validacoes": [
+    "v22.1",
+    "v22.2",
+    "v22.3"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8721686.169794343,
+   "beneficio_li_ms": 8719465.270505505,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 134505.33044347257,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 37.03849607307172,
+     "ganho_ponderado_ms": 1241.311359243979,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 45.77534769814069,
+     "ganho_ponderado_ms": 1665.144199885182,
+     "piso": false
+    },
+    {
+     "query": "q09",
+     "ganho_pct": 17.82030485160461,
+     "ganho_ponderado_ms": 1855.3365155822903,
+     "piso": false
+    },
+    {
+     "query": "q11",
+     "ganho_pct": 28.787958309545328,
+     "ganho_ponderado_ms": 439.7651323345689,
+     "piso": false
+    },
+    {
+     "query": "q12",
+     "ganho_pct": 23.261827085980883,
+     "ganho_ponderado_ms": 1011.6500665902515,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 50.61868947990093,
+     "ganho_ponderado_ms": 1794.9770576232836,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.98149353678988,
+     "ganho_ponderado_ms": 4354546.489315149,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 91.67091867250727,
+     "ganho_ponderado_ms": 4432.417348883765,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.98626739468529,
+     "ganho_ponderado_ms": 4354754.407654869,
+     "piso": true
+    }
+   ],
+   "pioram": [],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q10",
+    "q16",
+    "q21",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": true,
+   "dominada_por": null,
+   "situacao": "mais espaço, ganho sobre a recomendada abaixo da margem; avaliar custo",
+   "contra_recomendada": {
+    "delta_ms": 4689.94884733832,
+    "li_ms": 2011.7813144834909,
+    "ls_ms": 7324.464508453744,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "b melhor"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    6,
+    7,
+    14,
+    17,
+    18,
+    19,
+    21,
+    25
+   ],
+   "rotulo": "{i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}",
+   "otimizacoes": [
+    1
+   ],
+   "origem": "otimizar (conservador, sem orçamento)",
+   "mb": 795.1,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)",
+     "curto": "partsupp (ps_suppkey)",
+     "mb": 5.2
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 21,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "curto": "customer (c_acctbal, c_phone)",
+     "mb": 5.8
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    }
+   ],
+   "sessoes": 2,
+   "validacoes": [
+    "v1.1",
+    "v1.2"
+   ],
+   "limitacoes": [
+    "as sessões discordam mais do que o ruído da query explica em q04, q07 (plano instável?): o intervalo usa a variância delas",
+    "benefício é piso: a linha de base estourou o timeout em alguma query"
+   ],
+   "beneficio_ms": 8715205.034823785,
+   "beneficio_li_ms": 8710282.16587604,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 140986.46541403123,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 27.05221604779972,
+     "ganho_ponderado_ms": 906.6303071973284,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 45.79310978781459,
+     "ganho_ponderado_ms": 1665.790321478695,
+     "piso": false
+    },
+    {
+     "query": "q11",
+     "ganho_pct": 22.531202042355915,
+     "ganho_ponderado_ms": 344.1868624816016,
+     "piso": false
+    },
+    {
+     "query": "q12",
+     "ganho_pct": 24.239515414459213,
+     "ganho_ponderado_ms": 1054.1694464718814,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 45.16455996876024,
+     "ganho_ponderado_ms": 1601.5694952704307,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97579315614448,
+     "ganho_ponderado_ms": 4354298.217643572,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 87.52085767184386,
+     "ganho_ponderado_ms": 4231.756085261203,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.97966337163524,
+     "ganho_ponderado_ms": 4354466.779171132,
+     "piso": true
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q10",
+     "ganho_pct": -21.512064902999096,
+     "ganho_ponderado_ms": -824.0678709859815,
+     "li_ms": -1440.5029951444624,
+     "ls_ms": -300.3392954820417,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q16",
+     "ganho_pct": -27.055949493778275,
+     "ganho_ponderado_ms": -915.5657297156006,
+     "li_ms": -1636.10374130806,
+     "ls_ms": -329.4928537192631,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q21",
+     "ganho_pct": -15.637188980390246,
+     "ganho_ponderado_ms": -851.3825781728688,
+     "li_ms": -1371.1256565473782,
+     "ls_ms": -362.646775742089,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q05",
+    "q02",
+    "q04",
+    "q07",
+    "q09",
+    "q22"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [
+    "q04",
+    "q07"
+   ],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -1791.1861232203473,
+    "li_ms": -6859.815685354765,
+    "ls_ms": 2033.7476271187743,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "não ordenável"
+   }
+  },
+  {
+   "chave": [
+    1,
+    2,
+    3,
+    6,
+    7,
+    14,
+    16,
+    17,
+    18,
+    19,
+    25,
+    26
+   ],
+   "rotulo": "{i1,i2,i3,i6,i7,i14,i16,i17,i18,i19,i25,i26}",
+   "otimizacoes": [
+    7
+   ],
+   "origem": "otimizar (otimista, sem orçamento)",
+   "mb": 982.5,
+   "indices": [
+    {
+     "id": 1,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "curto": "lineitem (l_partkey)",
+     "mb": 43.0
+    },
+    {
+     "id": 2,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1
+    },
+    {
+     "id": 3,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_custkey ON orders (o_custkey)",
+     "curto": "orders (o_custkey)",
+     "mb": 12.0
+    },
+    {
+     "id": 6,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey_l_suppkey_l_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "curto": "lineitem (l_partkey, l_suppkey, l_shipdate)",
+     "mb": 180.3
+    },
+    {
+     "id": 7,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey ON partsupp (ps_suppkey)",
+     "curto": "partsupp (ps_suppkey)",
+     "mb": 5.2
+    },
+    {
+     "id": 14,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "curto": "supplier (s_nationkey)",
+     "mb": 0.1
+    },
+    {
+     "id": 16,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_partkey_l_suppkey ON lineitem (l_shipdate, l_partkey, l_suppkey)",
+     "curto": "lineitem (l_shipdate, l_partkey, l_suppkey)",
+     "mb": 180.1
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "curto": "orders (o_orderdate)",
+     "mb": 10.4
+    },
+    {
+     "id": 18,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipmode_l_commitdate_l_receiptdate ON lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "curto": "lineitem (l_shipmode, l_commitdate, l_receiptdate)",
+     "mb": 133.7
+    },
+    {
+     "id": 19,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "curto": "lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_part_p_size_p_brand_p_container ON part (p_size, p_brand, p_container)",
+     "curto": "part (p_size, p_brand, p_container)",
+     "mb": 3.8
+    },
+    {
+     "id": 26,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_mktsegment ON customer (c_mktsegment)",
+     "curto": "customer (c_mktsegment)",
+     "mb": 1.0
+    }
+   ],
+   "sessoes": 1,
+   "validacoes": [
+    "v7.1"
+   ],
+   "limitacoes": [
+    "benefício é piso: a linha de base estourou o timeout em alguma query",
+    "uma sessão só de medida"
+   ],
+   "beneficio_ms": 8712495.044311436,
+   "beneficio_li_ms": 8707542.327768253,
+   "beneficio_ls_ms": null,
+   "beneficio_aberto_abaixo": false,
+   "beneficio_aberto_acima": true,
+   "carga_ms": 143696.45592637974,
+   "carga_e_piso": false,
+   "melhoram": [
+    {
+     "query": "q06",
+     "ganho_pct": 34.718302639802026,
+     "ganho_ponderado_ms": 1163.5521959486077,
+     "piso": false
+    },
+    {
+     "query": "q08",
+     "ganho_pct": 37.71380344483893,
+     "ganho_ponderado_ms": 1371.8939171342242,
+     "piso": false
+    },
+    {
+     "query": "q11",
+     "ganho_pct": 27.416272496266938,
+     "ganho_ponderado_ms": 418.8112464524357,
+     "piso": false
+    },
+    {
+     "query": "q12",
+     "ganho_pct": 14.762642603258401,
+     "ganho_ponderado_ms": 642.0230155366876,
+     "piso": false
+    },
+    {
+     "query": "q14",
+     "ganho_pct": 37.80128271887244,
+     "ganho_ponderado_ms": 1340.4621084876087,
+     "piso": false
+    },
+    {
+     "query": "q17",
+     "ganho_pct": 99.97939488929161,
+     "ganho_ponderado_ms": 4354455.085818636,
+     "piso": true
+    },
+    {
+     "query": "q19",
+     "ganho_pct": 87.53843198544872,
+     "ganho_ponderado_ms": 4232.605827945633,
+     "piso": false
+    },
+    {
+     "query": "q20",
+     "ganho_pct": 99.97738677531181,
+     "ganho_ponderado_ms": 4354367.625375993,
+     "piso": true
+    },
+    {
+     "query": "q22",
+     "ganho_pct": 43.4769486929482,
+     "ganho_ponderado_ms": 789.1217344721301,
+     "piso": false
+    }
+   ],
+   "pioram": [
+    {
+     "query": "q05",
+     "ganho_pct": -79.82558531337885,
+     "ganho_ponderado_ms": -1992.8953958647544,
+     "li_ms": -2558.4407850789175,
+     "ls_ms": -1484.5005356004517,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q03",
+     "ganho_pct": -91.13229703813926,
+     "ganho_ponderado_ms": -3375.0713995162096,
+     "li_ms": -4594.130681088272,
+     "ls_ms": -2327.6695200936906,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    },
+    {
+     "query": "q07",
+     "ganho_pct": -27.314240162198555,
+     "ganho_ponderado_ms": -1079.349113149977,
+     "li_ms": -2000.2471404930718,
+     "ls_ms": -319.0556990597825,
+     "aberto_abaixo": false,
+     "aberto_acima": false
+    }
+   ],
+   "indefinidas": [
+    "q02",
+    "q04",
+    "q09",
+    "q10",
+    "q16",
+    "q21"
+   ],
+   "plano_instavel": [],
+   "sessoes_discordam": [],
+   "sem_uso": [],
+   "fronteira_pareto": false,
+   "dominada_por": "{i2,i14,i17,i21}",
+   "situacao": "dominada por {i2,i14,i17,i21}",
+   "contra_recomendada": {
+    "delta_ms": -4501.176635568874,
+    "li_ms": -9709.151731918038,
+    "ls_ms": -412.2213434283266,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "ordem": "a melhor"
+   }
+  }
+ ],
+ "ordem_na_fronteira": [
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i2,i14,i17,i21}",
+   "delta_ms": 24430.3015999398,
+   "li_ms": 19766.881945478464,
+   "ls_ms": 30482.81139179458,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5540.556567440468,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+   "delta_ms": 26756.509355421207,
+   "li_ms": 19950.578081055042,
+   "ls_ms": 33641.32745540905,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5540.556567440468,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 28633.648449715252,
+   "li_ms": 23982.80786260184,
+   "ls_ms": 34707.85666714724,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5540.556567440468,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i1,i14,i31}",
+   "b": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 29120.250447278122,
+   "li_ms": 24362.932483168443,
+   "ls_ms": 35115.589363142724,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 5540.556567440468,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i2,i14,i17,i21}",
+   "b": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+   "delta_ms": 2326.2077554814045,
+   "li_ms": -3648.692865149535,
+   "ls_ms": 6663.29133745848,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "afirmacao": "não ordenável"
+  },
+  {
+   "a": "{i2,i14,i17,i21}",
+   "b": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 4203.346849775446,
+   "li_ms": 1485.7673943139075,
+   "ls_ms": 6964.6296024959565,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i2,i14,i17,i21}",
+   "b": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 4689.94884733832,
+   "li_ms": 2011.7813144834909,
+   "ls_ms": 7324.464508453744,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4788.882553675128,
+   "afirmacao": "b melhor"
+  },
+  {
+   "a": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+   "b": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 1877.1390942940425,
+   "li_ms": -2510.4552156324276,
+   "ls_ms": 7786.407465214922,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4890.7297406597345,
+   "afirmacao": "não ordenável"
+  },
+  {
+   "a": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+   "b": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 2363.741091856916,
+   "li_ms": -2117.7345679891214,
+   "ls_ms": 8294.980638864781,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4890.7297406597345,
+   "afirmacao": "não ordenável"
+  },
+  {
+   "a": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+   "b": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+   "delta_ms": 486.6019975628735,
+   "li_ms": -2216.641005213652,
+   "ls_ms": 3100.024370847288,
+   "aberto_abaixo": false,
+   "aberto_acima": false,
+   "margem_ms": 4775.5019675095555,
+   "afirmacao": "equivalentes"
+  }
+ ],
+ "nao_ordenaveis": [
+  [
+   "{i2,i14,i17,i21}",
+   "{i1,i2,i14,i17,i18,i19,i21,i25}"
+  ],
+  [
+   "{i2,i14,i17,i21}",
+   "{i1,i2,i14,i17,i18,i19,i21,i31}"
+  ],
+  [
+   "{i2,i14,i17,i21}",
+   "{i1,i2,i7,i14,i17,i18,i19,i21,i25}"
+  ]
+ ],
+ "resolucao": {
+  "orcamento": {
+   "usadas": 3,
+   "limite": 3
+  },
+  "referencia": "{i2,i14,i17,i21}",
+  "alternativas": [
+   {
+    "rotulo": "{i1,i2,i14,i17,i18,i19,i21,i31}",
+    "chave": [
+     1,
+     2,
+     14,
+     17,
+     18,
+     19,
+     21,
+     31
+    ],
+    "origem": "adaptar (fronteira)",
+    "mb": 607.0,
+    "delta_mb": 358.7,
+    "teste": "superioridade",
+    "decisao": "inconclusiva",
+    "delta_ms": 2326.2077554814045,
+    "li_ms": -3648.692865149535,
+    "ls_ms": 6663.29133745848,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.18575,
+    "sessoes": [
+     3,
+     2
+    ],
+    "acao": "sem_orcamento",
+    "motivo": "ainda competitiva e sem decisão, mas o orçamento de resolução acabou (3 de 3 validações)",
+    "alvo": "{i1,i2,i14,i17,i18,i19,i21,i31}"
+   },
+   {
+    "rotulo": "{i1,i2,i7,i14,i17,i18,i19,i21,i25}",
+    "chave": [
+     1,
+     2,
+     7,
+     14,
+     17,
+     18,
+     19,
+     21,
+     25
+    ],
+    "origem": "adaptar (fronteira)",
+    "mb": 614.9,
+    "delta_mb": 366.5,
+    "teste": "superioridade",
+    "decisao": "inconclusiva",
+    "delta_ms": 4689.94884733832,
+    "li_ms": 2011.7813144834909,
+    "ls_ms": 7324.464508453744,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.45975,
+    "sessoes": [
+     3,
+     3
+    ],
+    "acao": "sem_orcamento",
+    "motivo": "inconclusiva com 3 e 3 sessões: limite de 3 por configuração",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1,i2,i14,i17,i18,i19,i21,i25}",
+    "chave": [
+     1,
+     2,
+     14,
+     17,
+     18,
+     19,
+     21,
+     25
+    ],
+    "origem": "adaptar (fronteira)",
+    "mb": 609.6,
+    "delta_mb": 361.2,
+    "teste": "superioridade",
+    "decisao": "inconclusiva",
+    "delta_ms": 4203.346849775446,
+    "li_ms": 1485.7673943139075,
+    "ls_ms": 6964.6296024959565,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.35525,
+    "sessoes": [
+     3,
+     3
+    ],
+    "acao": "sem_orcamento",
+    "motivo": "inconclusiva com 3 e 3 sessões: limite de 3 por configuração",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2}",
+    "chave": [
+     2
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 232.1,
+    "delta_mb": -16.3,
+    "teste": "nao_inferioridade",
+    "decisao": "aceita",
+    "delta_ms": 1088.2831661342705,
+    "li_ms": -2507.2196206828057,
+    "ls_ms": 4174.851510739196,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.9915,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "economiza 16.3 MB, menos que 10% de 248.4 MB: provar a não inferioridade não paga a validação",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i6}",
+    "chave": [
+     6
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 180.3,
+    "delta_mb": -68.1,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -9420.293283309706,
+    "li_ms": -13886.98467369146,
+    "ls_ms": -5449.644765431737,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0265,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2,i9,i14,i17,i21,i25}",
+    "chave": [
+     2,
+     9,
+     14,
+     17,
+     21,
+     25
+    ],
+    "origem": "otimizar ≤ 294 MB",
+    "mb": 292.8,
+    "delta_mb": 44.5,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -88.64250956327089,
+    "li_ms": -3374.1152070410753,
+    "ls_ms": 2928.9316329462868,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.005,
+    "sessoes": [
+     3,
+     2
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1,i2,i14,i17,i18,i19,i21,i23}",
+    "chave": [
+     1,
+     2,
+     14,
+     17,
+     18,
+     19,
+     21,
+     23
+    ],
+    "origem": "adaptar (fronteira)",
+    "mb": 607.5,
+    "delta_mb": 359.1,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -1278.8907622292406,
+    "li_ms": -5866.845508035993,
+    "ls_ms": 2671.0394386773487,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0045,
+    "sessoes": [
+     3,
+     2
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1}",
+    "chave": [
+     1
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 43.0,
+    "delta_mb": -205.4,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -12676.499850283188,
+    "li_ms": -17749.084479404693,
+    "ls_ms": -8337.373388053962,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.00125,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2,i3,i4,i14,i17,i21}",
+    "chave": [
+     2,
+     3,
+     4,
+     14,
+     17,
+     21
+    ],
+    "origem": "adaptar (combinacao)",
+    "mb": 331.4,
+    "delta_mb": 83.0,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -2392.747109837659,
+    "li_ms": -6844.981990276277,
+    "ls_ms": 1025.4246239726233,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0005,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1,i2,i6,i7,i14,i17,i18,i19,i21,i25}",
+    "chave": [
+     1,
+     2,
+     6,
+     7,
+     14,
+     17,
+     18,
+     19,
+     21,
+     25
+    ],
+    "origem": "otimizar (conservador, sem orçamento)",
+    "mb": 795.1,
+    "delta_mb": 546.8,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -1791.1861232203473,
+    "li_ms": -6859.815685354765,
+    "ls_ms": 2033.7476271187743,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.00075,
+    "sessoes": [
+     3,
+     2
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i32}",
+    "chave": [
+     32
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 0.0,
+    "delta_mb": -248.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716996.220947009,
+    "li_ms": null,
+    "ls_ms": -8714815.286068581,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i14}",
+    "chave": [
+     14
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 0.1,
+    "delta_mb": -248.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8714079.825464886,
+    "li_ms": null,
+    "ls_ms": -8711344.249585884,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i30}",
+    "chave": [
+     30
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 0.9,
+    "delta_mb": -247.5,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716996.220947009,
+    "li_ms": null,
+    "ls_ms": -8714815.286068581,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i15}",
+    "chave": [
+     15
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 1.0,
+    "delta_mb": -247.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8714850.135144081,
+    "li_ms": null,
+    "ls_ms": -8712424.921999048,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i26}",
+    "chave": [
+     26
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 1.0,
+    "delta_mb": -247.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716253.934003286,
+    "li_ms": null,
+    "ls_ms": -8714018.82938106,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i31}",
+    "chave": [
+     31
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 1.2,
+    "delta_mb": -247.2,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716768.39753019,
+    "li_ms": null,
+    "ls_ms": -8714440.540064255,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i14,i31}",
+    "chave": [
+     14,
+     31
+    ],
+    "origem": "adaptar (remocao)",
+    "mb": 1.3,
+    "delta_mb": -247.1,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8718974.280026047,
+    "li_ms": null,
+    "ls_ms": -8716161.884481767,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i24}",
+    "chave": [
+     24
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 1.4,
+    "delta_mb": -246.9,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -7959730.499222687,
+    "li_ms": null,
+    "ls_ms": -7957468.167964873,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i27}",
+    "chave": [
+     27
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 1.5,
+    "delta_mb": -246.9,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715749.842253122,
+    "li_ms": null,
+    "ls_ms": -8713511.80462608,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i23}",
+    "chave": [
+     23
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 1.7,
+    "delta_mb": -246.7,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715025.462273534,
+    "li_ms": null,
+    "ls_ms": -8712400.266269183,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i25}",
+    "chave": [
+     25
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 3.8,
+    "delta_mb": -244.6,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -7958636.17724157,
+    "li_ms": null,
+    "ls_ms": -7956065.986033312,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i7}",
+    "chave": [
+     7
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 5.2,
+    "delta_mb": -243.1,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715955.6965466,
+    "li_ms": null,
+    "ls_ms": -8713584.805569444,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i22}",
+    "chave": [
+     22
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 5.7,
+    "delta_mb": -242.7,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715553.837461343,
+    "li_ms": null,
+    "ls_ms": -8713043.780084558,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i21}",
+    "chave": [
+     21
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 5.8,
+    "delta_mb": -242.5,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716767.919580983,
+    "li_ms": null,
+    "ls_ms": -8714581.389952738,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i29}",
+    "chave": [
+     29
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 8.0,
+    "delta_mb": -240.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -7957928.263420576,
+    "li_ms": null,
+    "ls_ms": -7955346.972050028,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i17}",
+    "chave": [
+     17
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 10.4,
+    "delta_mb": -238.0,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715556.3839471,
+    "li_ms": null,
+    "ls_ms": -8713182.533838006,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i11}",
+    "chave": [
+     11
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 10.6,
+    "delta_mb": -237.7,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716996.220947009,
+    "li_ms": null,
+    "ls_ms": -8714815.286068581,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i3}",
+    "chave": [
+     3
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 12.0,
+    "delta_mb": -236.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8719898.962272847,
+    "li_ms": null,
+    "ls_ms": -8716668.239874719,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i28}",
+    "chave": [
+     28
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 12.7,
+    "delta_mb": -235.7,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715025.055266349,
+    "li_ms": null,
+    "ls_ms": -8711881.186064675,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i10}",
+    "chave": [
+     10
+    ],
+    "origem": "adaptar (fronteira), matriz (índice sozinho)",
+    "mb": 40.6,
+    "delta_mb": -207.7,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -4445828.471330926,
+    "li_ms": null,
+    "ls_ms": -4427985.545816102,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i9}",
+    "chave": [
+     9
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 40.7,
+    "delta_mb": -207.6,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -7960345.12585621,
+    "li_ms": null,
+    "ls_ms": -7958023.210282203,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i12}",
+    "chave": [
+     12
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 49.4,
+    "delta_mb": -199.0,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716987.138110444,
+    "li_ms": null,
+    "ls_ms": -8714717.360963298,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i8}",
+    "chave": [
+     8
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 58.1,
+    "delta_mb": -190.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -1422501.083654824,
+    "li_ms": -1704901.7803199557,
+    "ls_ms": -1184152.205593041,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i4}",
+    "chave": [
+     4
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 71.0,
+    "delta_mb": -177.4,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715623.91087637,
+    "li_ms": null,
+    "ls_ms": -8711035.135105029,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i5}",
+    "chave": [
+     5
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 71.0,
+    "delta_mb": -177.4,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716345.49732481,
+    "li_ms": null,
+    "ls_ms": -8711477.438892476,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i13}",
+    "chave": [
+     13
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 105.2,
+    "delta_mb": -143.2,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8716996.220947009,
+    "li_ms": null,
+    "ls_ms": -8714815.286068581,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i18}",
+    "chave": [
+     18
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 133.7,
+    "delta_mb": -114.6,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8715841.501177985,
+    "li_ms": null,
+    "ls_ms": -8713376.873070467,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i16}",
+    "chave": [
+     16
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 180.1,
+    "delta_mb": -68.3,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -419337.9194089342,
+    "li_ms": -504243.48135857016,
+    "ls_ms": -352322.8035265146,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i19}",
+    "chave": [
+     19
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 180.7,
+    "delta_mb": -67.6,
+    "teste": "nao_inferioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -7958509.216418579,
+    "li_ms": null,
+    "ls_ms": -7956278.9952243995,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": -0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "perda relevante mesmo no melhor caso do intervalo",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2,i14,i17,i21,i25}",
+    "chave": [
+     2,
+     14,
+     17,
+     21,
+     25
+    ],
+    "origem": "adaptar (fronteira)",
+    "mb": 252.1,
+    "delta_mb": 3.8,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -3820.4292248022775,
+    "li_ms": -8728.114131500377,
+    "ls_ms": -60.24808113562268,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1,i5,i6}",
+    "chave": [
+     1,
+     5,
+     6
+    ],
+    "origem": "clusters (rodada 2)",
+    "mb": 294.2,
+    "delta_mb": 45.9,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -21062.75595477161,
+    "li_ms": -27070.808519484006,
+    "ls_ms": -16239.782718482445,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2,i3,i5,i14,i17,i21}",
+    "chave": [
+     2,
+     3,
+     5,
+     14,
+     17,
+     21
+    ],
+    "origem": "adaptar (combinacao)",
+    "mb": 331.4,
+    "delta_mb": 83.0,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -4885.291439108922,
+    "li_ms": -9284.387513590937,
+    "ls_ms": -1335.8386150766719,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1,i2,i3,i4}",
+    "chave": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "origem": "clusters (rodada 1)",
+    "mb": 358.1,
+    "delta_mb": 109.7,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -6261.105610780838,
+    "li_ms": -11609.228988095429,
+    "ls_ms": -1803.865971805343,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2,i4,i8,i14,i17,i21}",
+    "chave": [
+     2,
+     4,
+     8,
+     14,
+     17,
+     21
+    ],
+    "origem": "adaptar (combinacao)",
+    "mb": 377.4,
+    "delta_mb": 129.0,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -24572.295068802076,
+    "li_ms": -30220.29855288371,
+    "ls_ms": -19951.55083250868,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i2,i5,i8,i14,i17,i21}",
+    "chave": [
+     2,
+     5,
+     8,
+     14,
+     17,
+     21
+    ],
+    "origem": "adaptar (combinacao)",
+    "mb": 377.4,
+    "delta_mb": 129.0,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -24560.663039388688,
+    "li_ms": -30084.752073564156,
+    "ls_ms": -19940.057003274167,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i20}",
+    "chave": [
+     20
+    ],
+    "origem": "matriz (índice sozinho)",
+    "mb": 389.0,
+    "delta_mb": 140.6,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -8714999.815426018,
+    "li_ms": null,
+    "ls_ms": -8712719.744777216,
+    "aberto_abaixo": true,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   },
+   {
+    "rotulo": "{i1,i2,i3,i6,i7,i14,i16,i17,i18,i19,i25,i26}",
+    "chave": [
+     1,
+     2,
+     3,
+     6,
+     7,
+     14,
+     16,
+     17,
+     18,
+     19,
+     25,
+     26
+    ],
+    "origem": "otimizar (otimista, sem orçamento)",
+    "mb": 982.5,
+    "delta_mb": 734.1,
+    "teste": "superioridade",
+    "decisao": "rejeitada",
+    "delta_ms": -4501.176635568874,
+    "li_ms": -9709.151731918038,
+    "ls_ms": -412.2213434283266,
+    "aberto_abaixo": false,
+    "aberto_acima": false,
+    "margem_ms": 4788.882553675128,
+    "custo_ms": 0.0,
+    "prob_vencer": 0.0,
+    "sessoes": [
+     3,
+     1
+    ],
+    "acao": "descartada",
+    "motivo": "UCB(ΔB) − custo < δ: nem o melhor caso do intervalo paga a margem",
+    "alvo": null
+   }
+  ]
+ },
+ "multiplicidade": {
+  "configuracoes_medidas": 49,
+  "conjuntos_validados": 17,
+  "indices_sozinhos_so_na_matriz": 32,
+  "configuracoes_comparadas_na_caminhada": 4,
+  "comparacoes": {
+   "caminhada": 4,
+   "resolucao": 47,
+   "resolucao_feita": true,
+   "familia_bonferroni": 51
+  },
+  "testes_por_query": 239,
+  "marcas_por_acaso_esperadas": 23.9,
+  "sessoes_independentes": 29,
+  "validacoes_de_selecao": 28,
+  "validacoes_por_origem": {
+   "legado": 7,
+   "resolucao": 3,
+   "adaptar": 8,
+   "medida": 6,
+   "fronteira": 4
+  },
+  "sessoes_por_conjunto": {
+   "min": 1,
+   "mediana": 1,
+   "max": 3
+  },
+  "unidade": "a sessão de medida: numa validação, a linha de base e a configuração medidas na mesma sessão; na matriz, a linha de base da matriz e cada índice sozinho. As repetições de um bloco não são independentes (só dão a variância dentro da sessão), e as queries de uma sessão compartilham o deslocamento γ dela. Duas configurações nunca estão na mesma sessão: a diferença entre elas passa pela linha de base de cada sessão, com o pareamento β",
+  "nivel": "cada decisão é um teste unilateral de nível 5% (intervalo bilateral de 90%), sem correção para o número de comparações; cada marca +/− por query é um teste bilateral de 10%",
+  "efeito_da_selecao": "os intervalos são condicionais a cada comparação. O procedimento é sequencial (28 validações de seleção, cada uma pedida por uma análise intermediária sobre a evidência de então) e a recomendada é a que se saiu melhor entre as comparadas: o ganho dela estimado na seleção tende a ser otimista. Só a confirmação, em sessões que a seleção não leu, estima o ganho sem esse viés",
+  "bonferroni": {
+   "confianca": 0.9980392156862745,
+   "amostras": 51000,
+   "amostras_na_cauda": 49.99999999999982,
+   "caminho": [
+    {
+     "de": "∅",
+     "para": "{i1,i14,i31}",
+     "teste": "superioridade",
+     "decisao": "aceita",
+     "li_ms": 8686670.774338013,
+     "li_bonferroni_ms": 8681719.393986674,
+     "margem_ms": 88561.91500237815,
+     "decisao_bonferroni": "aceita",
+     "sobrevive": true
+    },
+    {
+     "de": "{i1,i14,i31}",
+     "para": "{i2,i14,i17,i21}",
+     "teste": "superioridade",
+     "decisao": "aceita",
+     "li_ms": 19766.881945478464,
+     "li_bonferroni_ms": 15296.613656698068,
+     "margem_ms": 5540.556567440468,
+     "decisao_bonferroni": "aceita",
+     "sobrevive": true
+    }
+   ]
+  },
+  "confirmacao": "pendente: adaptar --sessao 1 --confirmar 16 --executar",
+  "avisos": [
+   "a maioria dos conjuntos tem menos de 3 sessões: a média de cada um é imprecisa (a variância entre sessões, não, porque é estimada em conjunto)"
+  ]
+ },
+ "evidencia": {
+  "sessoes": [
+   "m1",
+   "v1.1",
+   "v1.2",
+   "v11.1",
+   "v12.1",
+   "v12.2",
+   "v12.5",
+   "v13.1",
+   "v16.1",
+   "v17.1",
+   "v18.1",
+   "v19.1",
+   "v2.1",
+   "v20.1",
+   "v20.2",
+   "v20.3",
+   "v21.1",
+   "v21.2",
+   "v22.1",
+   "v22.2",
+   "v22.3",
+   "v23.1",
+   "v23.2",
+   "v3.1",
+   "v4.1",
+   "v5.1",
+   "v5.4",
+   "v7.1",
+   "v8.1"
+  ],
+  "validacoes": {
+   "selecao": 21,
+   "legado": 7,
+   "confirmacao": 10
+  },
+  "excluidas_por_ambiente": {},
+  "sem_ambiente_registrado": [
+   "m1",
+   "v1.1",
+   "v2.1",
+   "v3.1",
+   "v4.1",
+   "v5.1",
+   "v7.1",
+   "v8.1"
+  ],
+  "ambiente_referencia": "67c9b7ec26546e7a"
+ },
+ "ruido": {
+  "suficiente": true,
+  "d0": 5.338413510591297,
+  "s0": 0.08724807833762488,
+  "beta": 0.7216417970714957,
+  "beta_ep": 0.10297392184065,
+  "beta_pontos": 295,
+  "sigma_gama": 0.07506714739388592,
+  "deslocamento_por_sessao": {
+   "m1": 0.00026122271614248405,
+   "v1.1": -0.17201852616042856,
+   "v1.2": 0.009479021701705115,
+   "v11.1": 0.0,
+   "v12.1": 0.03361327367847089,
+   "v12.2": -0.0022868990072302253,
+   "v12.5": -0.028140626344486108,
+   "v13.1": 0.009578934303296371,
+   "v16.1": 0.0504555987049482,
+   "v17.1": 0.022276309009645168,
+   "v18.1": 0.030123794693680317,
+   "v19.1": 0.005307049874951453,
+   "v2.1": -0.17032214094414666,
+   "v20.1": -0.04445762047986701,
+   "v20.2": -0.043395428477208675,
+   "v20.3": -0.008888634487529856,
+   "v21.1": 0.1513134676411223,
+   "v21.2": -0.008907443231890078,
+   "v22.1": 0.033523897150884,
+   "v22.2": 0.005671091805422357,
+   "v22.3": 0.023238228488333235,
+   "v23.1": 0.0036904206018206764,
+   "v23.2": 0.013153946944494344,
+   "v3.1": -0.14994080986073222,
+   "v4.1": -0.142529253875761,
+   "v5.1": -0.1220628756935831,
+   "v5.4": -0.02177871544335197,
+   "v7.1": -0.19047170554486392,
+   "v8.1": -0.11833879824215732
+  },
+  "mediana_sigma_alfa_sobre_sigma_eps": 1.9304233744077672,
+  "por_query": [
+   {
+    "query": "q05",
+    "blocos": 59,
+    "gl_entre": 36.526315789473685,
+    "sigma_entre_bruto": 0.06495374872480972,
+    "sigma_eps": 0.03413174404626898,
+    "sigma_alfa": 0.06560660591542844,
+    "tau_moderado": 0.06820323172195704,
+    "limiar_matriz_pct": 14.670726314817362
+   },
+   {
+    "query": "q01",
+    "blocos": 29,
+    "gl_entre": 26.526315789473685,
+    "sigma_entre_bruto": 0.10849408692074833,
+    "sigma_eps": 0.1024214027606522,
+    "sigma_alfa": 0.08913783033543243,
+    "tau_moderado": 0.10523420626581076,
+    "limiar_matriz_pct": 21.713350881364857
+   },
+   {
+    "query": "q02",
+    "blocos": 61,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.2733784413239075,
+    "sigma_eps": 0.03817447277187147,
+    "sigma_alfa": 0.2567907829365976,
+    "tau_moderado": 0.25763567892367684,
+    "limiar_matriz_pct": 45.08070801756659
+   },
+   {
+    "query": "q03",
+    "blocos": 40,
+    "gl_entre": 26.526315789473685,
+    "sigma_entre_bruto": 0.09486203643604159,
+    "sigma_eps": 0.031001595442657476,
+    "sigma_alfa": 0.09208615334731578,
+    "tau_moderado": 0.09362962881050226,
+    "limiar_matriz_pct": 19.57127817326205
+   },
+   {
+    "query": "q04",
+    "blocos": 57,
+    "gl_entre": 36.526315789473685,
+    "sigma_entre_bruto": 0.06603040779488963,
+    "sigma_eps": 0.03955083598298751,
+    "sigma_alfa": 0.06563672776140068,
+    "tau_moderado": 0.06909937155439994,
+    "limiar_matriz_pct": 14.848416526060193
+   },
+   {
+    "query": "q06",
+    "blocos": 47,
+    "gl_entre": 34.526315789473685,
+    "sigma_entre_bruto": 0.07709819069131653,
+    "sigma_eps": 0.052760195213873096,
+    "sigma_alfa": 0.07305676568447793,
+    "tau_moderado": 0.07853350307435834,
+    "limiar_matriz_pct": 16.696749595803183
+   },
+   {
+    "query": "q07",
+    "blocos": 64,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.09777850256185523,
+    "sigma_eps": 0.032318297934537644,
+    "sigma_alfa": 0.09490239760320508,
+    "tau_moderado": 0.09652967915923612,
+    "limiar_matriz_pct": 20.11202614953016
+   },
+   {
+    "query": "q08",
+    "blocos": 67,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.07859639773086763,
+    "sigma_eps": 0.035535963459885085,
+    "sigma_alfa": 0.07732695347773956,
+    "tau_moderado": 0.07972508535982821,
+    "limiar_matriz_pct": 16.92733217063047
+   },
+   {
+    "query": "q09",
+    "blocos": 63,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.1838140439489765,
+    "sigma_eps": 0.030598144799442582,
+    "sigma_alfa": 0.17392084828599053,
+    "tau_moderado": 0.1747217701855003,
+    "limiar_matriz_pct": 33.39784773954161
+   },
+   {
+    "query": "q10",
+    "blocos": 57,
+    "gl_entre": 36.526315789473685,
+    "sigma_entre_bruto": 0.07360757919638329,
+    "sigma_eps": 0.034880361553016985,
+    "sigma_alfa": 0.07304109718001688,
+    "tau_moderado": 0.0754842012910172,
+    "limiar_matriz_pct": 16.103761751655366
+   },
+   {
+    "query": "q11",
+    "blocos": 57,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.1040690040463537,
+    "sigma_eps": 0.03662779234270613,
+    "sigma_alfa": 0.10014708117137515,
+    "tau_moderado": 0.10212525949619564,
+    "limiar_matriz_pct": 21.14513340072588
+   },
+   {
+    "query": "q12",
+    "blocos": 44,
+    "gl_entre": 33.526315789473685,
+    "sigma_entre_bruto": 0.09083125906717739,
+    "sigma_eps": 0.0512570098483085,
+    "sigma_alfa": 0.08590159308295141,
+    "tau_moderado": 0.09034749730852157,
+    "limiar_matriz_pct": 18.95487008061184
+   },
+   {
+    "query": "q13",
+    "blocos": 29,
+    "gl_entre": 26.526315789473685,
+    "sigma_entre_bruto": 0.10773961893062343,
+    "sigma_eps": 0.05470148380488789,
+    "sigma_alfa": 0.10022968209364566,
+    "tau_moderado": 0.10458694196768495,
+    "limiar_matriz_pct": 21.59538983925886
+   },
+   {
+    "query": "q14",
+    "blocos": 47,
+    "gl_entre": 34.526315789473685,
+    "sigma_entre_bruto": 0.07165969537855861,
+    "sigma_eps": 0.037657377843714424,
+    "sigma_alfa": 0.07102033917650752,
+    "tau_moderado": 0.07393801709458969,
+    "limiar_matriz_pct": 15.801469358202812
+   },
+   {
+    "query": "q16",
+    "blocos": 51,
+    "gl_entre": 35.526315789473685,
+    "sigma_entre_bruto": 0.0984818194123382,
+    "sigma_eps": 0.04218868899679746,
+    "sigma_alfa": 0.09431464935128221,
+    "tau_moderado": 0.0970881245387259,
+    "limiar_matriz_pct": 20.21573654981165
+   },
+   {
+    "query": "q17",
+    "blocos": 32,
+    "gl_entre": 11.0,
+    "sigma_entre_bruto": 0.07957857480497232,
+    "sigma_eps": 0.07443860759783656,
+    "sigma_alfa": 0.0714014786155283,
+    "tau_moderado": 0.08216328926466016,
+    "limiar_matriz_pct": 17.397160744206452
+   },
+   {
+    "query": "q18",
+    "blocos": 29,
+    "gl_entre": 26.526315789473685,
+    "sigma_entre_bruto": 0.06350343344390241,
+    "sigma_eps": 0.037436587811111914,
+    "sigma_alfa": 0.06491827736795149,
+    "tau_moderado": 0.06806158642594856,
+    "limiar_matriz_pct": 14.642606399395586
+   },
+   {
+    "query": "q19",
+    "blocos": 64,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.10345752973987261,
+    "sigma_eps": 0.05063332588363196,
+    "sigma_alfa": 0.09774375580976895,
+    "tau_moderado": 0.10157989649952197,
+    "limiar_matriz_pct": 21.04503389626762
+   },
+   {
+    "query": "q20",
+    "blocos": 33,
+    "gl_entre": 11.0,
+    "sigma_entre_bruto": 0.1343893959185058,
+    "sigma_eps": 0.1004219036978293,
+    "sigma_alfa": 0.10788381744767325,
+    "tau_moderado": 0.12102329408825682,
+    "limiar_matriz_pct": 24.536514108734863
+   },
+   {
+    "query": "q21",
+    "blocos": 58,
+    "gl_entre": 37.526315789473685,
+    "sigma_entre_bruto": 0.0610523625953702,
+    "sigma_eps": 0.030008249837660806,
+    "sigma_alfa": 0.06279044086067759,
+    "tau_moderado": 0.06489385267205232,
+    "limiar_matriz_pct": 14.011310239048424
+   },
+   {
+    "query": "q22",
+    "blocos": 58,
+    "gl_entre": 36.526315789473685,
+    "sigma_entre_bruto": 0.10568614243730648,
+    "sigma_eps": 0.03036055730093781,
+    "sigma_alfa": 0.10218135155791712,
+    "tau_moderado": 0.10351784653899233,
+    "limiar_matriz_pct": 21.400162577535397
+   }
+  ],
+  "avisos": []
+ },
+ "adaptacao": 16,
+ "medicoes_nesta_execucao": 1
+}

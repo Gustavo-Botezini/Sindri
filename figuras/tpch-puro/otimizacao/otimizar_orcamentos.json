@@ -1,0 +1,852 @@
+{
+ "sessao": 2,
+ "rotulos": {
+  "4": "q14",
+  "32": "q01",
+  "33": "q02",
+  "34": "q03",
+  "35": "q04",
+  "36": "q05",
+  "37": "q06",
+  "38": "q07",
+  "39": "q08",
+  "40": "q09",
+  "41": "q10",
+  "42": "q11",
+  "43": "q12",
+  "44": "q13",
+  "45": "q16",
+  "47": "q17",
+  "48": "q18",
+  "49": "q19",
+  "50": "q20",
+  "51": "q21",
+  "52": "q22"
+ },
+ "otimizacoes": [
+  {
+   "otimizacao": 3,
+   "sessao": 2,
+   "status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "parametros": {
+    "modelo": "conservador",
+    "peso": "execucoes",
+    "limiar": 10.0,
+    "orcamento_mb": 50.0,
+    "lambda_mb": 0.0,
+    "custo_escrita": 0.0,
+    "rodada": null
+   },
+   "indices": [
+    {
+     "id": 10,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "mb": 43.0,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 12,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "mb": 0.1,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_part_p_type_p_size ON part (p_type, p_size)",
+     "mb": 1.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    }
+   ],
+   "armazenamento_mb": 44.7,
+   "beneficio_previsto_ms": 3587408.4,
+   "custo": 0.0,
+   "objetivo": 3587408.4,
+   "por_query": {
+    "38": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "34": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "51": {
+     "peso": 6.0,
+     "delta_ms": 126.70000000000005,
+     "atende": 12,
+     "pioram": [],
+     "piso": false
+    },
+    "49": {
+     "peso": 6.0,
+     "delta_ms": 516.1999999999999,
+     "atende": 10,
+     "pioram": [],
+     "piso": false
+    },
+    "44": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "35": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "48": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "40": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "39": {
+     "peso": 6.0,
+     "delta_ms": 190.60000000000002,
+     "atende": 10,
+     "pioram": [],
+     "piso": false
+    },
+    "33": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "36": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "43": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "47": {
+     "peso": 6.0,
+     "delta_ms": 298853.9,
+     "atende": 10,
+     "pioram": [],
+     "piso": true
+    },
+    "45": {
+     "peso": 6.0,
+     "delta_ms": 163.70000000000005,
+     "atende": 31,
+     "pioram": [],
+     "piso": false
+    },
+    "32": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "50": {
+     "peso": 6.0,
+     "delta_ms": 297989.6,
+     "atende": 10,
+     "pioram": [],
+     "piso": true
+    },
+    "42": {
+     "peso": 6.0,
+     "delta_ms": 60.70000000000002,
+     "atende": 12,
+     "pioram": [],
+     "piso": false
+    },
+    "52": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "41": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "4": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "37": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    }
+   }
+  },
+  {
+   "otimizacao": 4,
+   "sessao": 2,
+   "status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "parametros": {
+    "modelo": "conservador",
+    "peso": "execucoes",
+    "limiar": 10.0,
+    "orcamento_mb": 100.0,
+    "lambda_mb": 0.0,
+    "custo_escrita": 0.0,
+    "rodada": null
+   },
+   "indices": [
+    {
+     "id": 10,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_partkey ON lineitem (l_partkey)",
+     "mb": 43.0,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 12,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "mb": 0.1,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey_ps_partkey ON partsupp (ps_suppkey, ps_partkey)",
+     "mb": 17.2,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "mb": 10.4,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 29,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "mb": 5.8,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_part_p_type_p_size ON part (p_type, p_size)",
+     "mb": 1.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    }
+   ],
+   "armazenamento_mb": 78.1,
+   "beneficio_previsto_ms": 3588814.2,
+   "custo": 0.0,
+   "objetivo": 3588814.2,
+   "por_query": {
+    "38": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "34": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "51": {
+     "peso": 6.0,
+     "delta_ms": 126.70000000000005,
+     "atende": 12,
+     "pioram": [],
+     "piso": false
+    },
+    "49": {
+     "peso": 6.0,
+     "delta_ms": 516.1999999999999,
+     "atende": 10,
+     "pioram": [],
+     "piso": false
+    },
+    "44": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "35": {
+     "peso": 6.0,
+     "delta_ms": 113.10000000000002,
+     "atende": 25,
+     "pioram": [],
+     "piso": false
+    },
+    "48": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "40": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "39": {
+     "peso": 6.0,
+     "delta_ms": 190.60000000000002,
+     "atende": 10,
+     "pioram": [],
+     "piso": false
+    },
+    "33": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "36": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "43": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "47": {
+     "peso": 6.0,
+     "delta_ms": 298853.9,
+     "atende": 10,
+     "pioram": [],
+     "piso": true
+    },
+    "45": {
+     "peso": 6.0,
+     "delta_ms": 163.70000000000005,
+     "atende": 31,
+     "pioram": [],
+     "piso": false
+    },
+    "32": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "50": {
+     "peso": 6.0,
+     "delta_ms": 297989.6,
+     "atende": 10,
+     "pioram": [],
+     "piso": true
+    },
+    "42": {
+     "peso": 6.0,
+     "delta_ms": 141.4,
+     "atende": 17,
+     "pioram": [],
+     "piso": false
+    },
+    "52": {
+     "peso": 6.0,
+     "delta_ms": 40.5,
+     "atende": 29,
+     "pioram": [],
+     "piso": false
+    },
+    "41": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "4": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "37": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    }
+   }
+  },
+  {
+   "otimizacao": 5,
+   "sessao": 2,
+   "status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "parametros": {
+    "modelo": "conservador",
+    "peso": "execucoes",
+    "limiar": 10.0,
+    "orcamento_mb": 250.0,
+    "lambda_mb": 0.0,
+    "custo_escrita": 0.0,
+    "rodada": null
+   },
+   "indices": [
+    {
+     "id": 9,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1,
+     "origem": "rodada",
+     "escritas": 0.0
+    },
+    {
+     "id": 12,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "mb": 0.1,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "mb": 10.4,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_part_p_type_p_size ON part (p_type, p_size)",
+     "mb": 1.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    }
+   ],
+   "armazenamento_mb": 244.2,
+   "beneficio_previsto_ms": 3606249.0,
+   "custo": 0.0,
+   "objetivo": 3606249.0,
+   "por_query": {
+    "38": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "34": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "51": {
+     "peso": 6.0,
+     "delta_ms": 126.70000000000005,
+     "atende": 12,
+     "pioram": [],
+     "piso": false
+    },
+    "49": {
+     "peso": 6.0,
+     "delta_ms": 511.79999999999995,
+     "atende": 9,
+     "pioram": [],
+     "piso": false
+    },
+    "44": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "35": {
+     "peso": 6.0,
+     "delta_ms": 113.10000000000002,
+     "atende": 25,
+     "pioram": [],
+     "piso": false
+    },
+    "48": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "40": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "39": {
+     "peso": 6.0,
+     "delta_ms": 193.3,
+     "atende": 9,
+     "pioram": [],
+     "piso": false
+    },
+    "33": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "36": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "43": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "47": {
+     "peso": 6.0,
+     "delta_ms": 299922.2,
+     "atende": 9,
+     "pioram": [],
+     "piso": true
+    },
+    "45": {
+     "peso": 6.0,
+     "delta_ms": 163.70000000000005,
+     "atende": 31,
+     "pioram": [],
+     "piso": false
+    },
+    "32": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "50": {
+     "peso": 6.0,
+     "delta_ms": 299950.0,
+     "atende": 9,
+     "pioram": [],
+     "piso": true
+    },
+    "42": {
+     "peso": 6.0,
+     "delta_ms": 60.70000000000002,
+     "atende": 12,
+     "pioram": [],
+     "piso": false
+    },
+    "52": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "41": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "4": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "37": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    }
+   }
+  },
+  {
+   "otimizacao": 6,
+   "sessao": 2,
+   "status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "parametros": {
+    "modelo": "conservador",
+    "peso": "execucoes",
+    "limiar": 10.0,
+    "orcamento_mb": 526.3,
+    "lambda_mb": 0.0,
+    "custo_escrita": 0.0,
+    "rodada": null
+   },
+   "indices": [
+    {
+     "id": 9,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_partkey_suppkey_shipdate ON lineitem (l_partkey, l_suppkey, l_shipdate) INCLUDE (l_quantity)",
+     "mb": 232.1,
+     "origem": "rodada",
+     "escritas": 0.0
+    },
+    {
+     "id": 12,
+     "ddl": "CREATE INDEX brokk_exp_supplier_s_nationkey ON supplier (s_nationkey)",
+     "mb": 0.1,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 17,
+     "ddl": "CREATE INDEX brokk_exp_partsupp_ps_suppkey_ps_partkey ON partsupp (ps_suppkey, ps_partkey)",
+     "mb": 17.2,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 20,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_receiptdate_l_commitdate ON lineitem (l_receiptdate, l_commitdate)",
+     "mb": 49.4,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 23,
+     "ddl": "CREATE INDEX brokk_exp_lineitem_l_shipdate_l_discount_l_quantity ON lineitem (l_shipdate, l_discount, l_quantity)",
+     "mb": 180.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 25,
+     "ddl": "CREATE INDEX brokk_exp_orders_o_orderdate ON orders (o_orderdate)",
+     "mb": 10.4,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 29,
+     "ddl": "CREATE INDEX brokk_exp_customer_c_acctbal_c_phone ON customer (c_acctbal, c_phone)",
+     "mb": 5.8,
+     "origem": "heuristica",
+     "escritas": 0.0
+    },
+    {
+     "id": 31,
+     "ddl": "CREATE INDEX brokk_exp_part_p_type_p_size ON part (p_type, p_size)",
+     "mb": 1.7,
+     "origem": "heuristica",
+     "escritas": 0.0
+    }
+   ],
+   "armazenamento_mb": 497.3,
+   "beneficio_previsto_ms": 3609736.2,
+   "custo": 0.0,
+   "objetivo": 3609736.2,
+   "por_query": {
+    "38": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "34": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "51": {
+     "peso": 6.0,
+     "delta_ms": 126.70000000000005,
+     "atende": 12,
+     "pioram": [],
+     "piso": false
+    },
+    "49": {
+     "peso": 6.0,
+     "delta_ms": 511.79999999999995,
+     "atende": 9,
+     "pioram": [],
+     "piso": false
+    },
+    "44": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "35": {
+     "peso": 6.0,
+     "delta_ms": 113.10000000000002,
+     "atende": 25,
+     "pioram": [],
+     "piso": false
+    },
+    "48": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "40": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "39": {
+     "peso": 6.0,
+     "delta_ms": 193.3,
+     "atende": 9,
+     "pioram": [],
+     "piso": false
+    },
+    "33": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "36": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "43": {
+     "peso": 6.0,
+     "delta_ms": 209.30000000000007,
+     "atende": 20,
+     "pioram": [],
+     "piso": false
+    },
+    "47": {
+     "peso": 6.0,
+     "delta_ms": 299922.2,
+     "atende": 9,
+     "pioram": [],
+     "piso": true
+    },
+    "45": {
+     "peso": 6.0,
+     "delta_ms": 163.70000000000005,
+     "atende": 31,
+     "pioram": [],
+     "piso": false
+    },
+    "32": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "50": {
+     "peso": 6.0,
+     "delta_ms": 299950.0,
+     "atende": 9,
+     "pioram": [],
+     "piso": true
+    },
+    "42": {
+     "peso": 6.0,
+     "delta_ms": 141.4,
+     "atende": 17,
+     "pioram": [],
+     "piso": false
+    },
+    "52": {
+     "peso": 6.0,
+     "delta_ms": 40.5,
+     "atende": 29,
+     "pioram": [],
+     "piso": false
+    },
+    "41": {
+     "peso": 6.0,
+     "delta_ms": 0.0,
+     "atende": null,
+     "pioram": [],
+     "piso": false
+    },
+    "4": {
+     "peso": 6.0,
+     "delta_ms": 148.4,
+     "atende": 23,
+     "pioram": [],
+     "piso": false
+    },
+    "37": {
+     "peso": 6.0,
+     "delta_ms": 102.30000000000001,
+     "atende": 23,
+     "pioram": [],
+     "piso": false
+    }
+   }
+  }
+ ],
+ "rodadas": []
+}
