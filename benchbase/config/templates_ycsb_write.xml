@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  INSERT, UPDATE e DELETE sobre a usertable do YCSB, para o benchmark
+  "templated" (ycsb_write.xml). As transações do próprio YCSB já escrevem, mas
+  sempre uma linha pela PK e com o mesmo formato; aqui entram as formas que
+  elas não cobrem: INSERT ... SELECT em lote, upsert, UPDATE e DELETE por
+  faixa, UPDATE ... FROM com autojunção, DELETE com filtro em campo e
+  RETURNING.
+
+  Mesma regra do templates_tpch_write.xml: INSERT, DELETE e os UPDATEs em lote
+  agem só na cauda sintética, chaves de 5000000 a 5099999. O InsertRecord do
+  YCSB cresce a partir de 1000000 e não chega perto dela, e o filtro redundante
+  "AND ycsb_key >= 5000000" está no SQL para que nenhum ajuste de faixa alcance
+  a base. A faixa é estreita (100 mil chaves) de propósito: os INSERTs a enchem
+  e UPDATE e DELETE passam a acertar linhas, em vez de virarem no-op.
+
+  Os campos sintéticos são md5 repetido até 100 caracteres, então só contêm
+  0-9 e a-f. Isso aparece nas consultas por prefixo (Y12, Y17, Y18), mas a
+  cauda nunca passa de 10% da tabela. É o preço de não depender de função
+  criada no banco para gerar texto aleatório.
+
+  Só W05 e W06 tocam a base original, e só em field10. Os UpdateRecord do
+  YCSB já reescrevem todos os campos da base, então isso não muda nada que a
+  carga original preserve.
+-->
+<templates>
+
+   <!-- W01. INSERT de uma linha. ON CONFLICT DO NOTHING absorve a colisão de
+        chave entre terminais, que senão viraria erro contado pelo BenchBase. -->
+   <template name="W01InsereLinha">
+      <query><![CDATA[
+        INSERT INTO usertable (ycsb_key, field1, field2, field3, field4, field5,
+                               field6, field7, field8, field9, field10)
+        SELECT p.k,
+               left(repeat(md5(p.s || '1'), 4), 100), left(repeat(md5(p.s || '2'), 4), 100),
+               left(repeat(md5(p.s || '3'), 4), 100), left(repeat(md5(p.s || '4'), 4), 100),
+               left(repeat(md5(p.s || '5'), 4), 100), left(repeat(md5(p.s || '6'), 4), 100),
+               left(repeat(md5(p.s || '7'), 4), 100), left(repeat(md5(p.s || '8'), 4), 100),
+               left(repeat(md5(p.s || '9'), 4), 100), left(repeat(md5(p.s || '0'), 4), 100)
+        FROM (SELECT ?::int AS k, ?::text AS s) p
+        WHERE p.k >= 5000000
+        ON CONFLICT (ycsb_key) DO NOTHING
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099999"/>
+         <value dist="uniform" min="1" max="999999999"/>
+      </values>
+   </template>
+
+   <!-- W02. INSERT ... SELECT de 50 linhas consecutivas: ModifyTable sobre
+        Function Scan, e a forma de carga em lote que o YCSB não tem. -->
+   <template name="W02InsereLote">
+      <query><![CDATA[
+        INSERT INTO usertable (ycsb_key, field1, field2, field3, field4, field5,
+                               field6, field7, field8, field9, field10)
+        SELECT g.id,
+               left(repeat(md5(g.id || '1'), 4), 100), left(repeat(md5(g.id || '2'), 4), 100),
+               left(repeat(md5(g.id || '3'), 4), 100), left(repeat(md5(g.id || '4'), 4), 100),
+               left(repeat(md5(g.id || '5'), 4), 100), left(repeat(md5(g.id || '6'), 4), 100),
+               left(repeat(md5(g.id || '7'), 4), 100), left(repeat(md5(g.id || '8'), 4), 100),
+               left(repeat(md5(g.id || '9'), 4), 100), left(repeat(md5(g.id || '0'), 4), 100)
+        FROM (SELECT ?::int AS k) p,
+             generate_series(p.k, p.k + 49) AS g(id)
+        WHERE g.id >= 5000000
+        ON CONFLICT (ycsb_key) DO NOTHING
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099950"/>
+      </values>
+   </template>
+
+   <!-- W03. Upsert: insere ou, se a chave já existe, troca field3 e field4.
+        O plano mostra o "Conflict Resolution: UPDATE" no ModifyTable. -->
+   <template name="W03Upsert">
+      <query><![CDATA[
+        INSERT INTO usertable (ycsb_key, field1, field2, field3, field4, field5,
+                               field6, field7, field8, field9, field10)
+        SELECT p.k,
+               left(repeat(md5(p.s || '1'), 4), 100), left(repeat(md5(p.s || '2'), 4), 100),
+               left(repeat(md5(p.s || '3'), 4), 100), left(repeat(md5(p.s || '4'), 4), 100),
+               left(repeat(md5(p.s || '5'), 4), 100), left(repeat(md5(p.s || '6'), 4), 100),
+               left(repeat(md5(p.s || '7'), 4), 100), left(repeat(md5(p.s || '8'), 4), 100),
+               left(repeat(md5(p.s || '9'), 4), 100), left(repeat(md5(p.s || '0'), 4), 100)
+        FROM (SELECT ?::int AS k, ?::text AS s) p
+        WHERE p.k >= 5000000
+        ON CONFLICT (ycsb_key) DO UPDATE
+           SET field3 = EXCLUDED.field3, field4 = EXCLUDED.field4
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099999"/>
+         <value dist="uniform" min="1" max="999999999"/>
+      </values>
+   </template>
+
+   <!-- W04. UPDATE de um campo pela PK, na cauda. -->
+   <template name="W04AtualizaLinha">
+      <query><![CDATA[
+        UPDATE usertable
+           SET field1 = left(repeat(md5(?::text), 4), 100)
+         WHERE ycsb_key = ? AND ycsb_key >= 5000000
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="1" max="999999999"/>
+         <value dist="uniform" min="5000000" max="5099999"/>
+      </values>
+   </template>
+
+   <!-- W05. UPDATE de field10 na base original, chave zipfian (as mesmas
+        chaves quentes do YCSB). Disputa linha com UpdateRecord e
+        ReadModifyWriteRecord quando as duas cargas rodam juntas. -->
+   <template name="W05AtualizaBase">
+      <query><![CDATA[
+        UPDATE usertable
+           SET field10 = left(md5(?::text) || field10, 100)
+         WHERE ycsb_key = ?
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="1" max="999999999"/>
+         <value dist="zipfian" min="0" max="999999"/>
+      </values>
+   </template>
+
+   <!-- W06. UPDATE na base filtrando por campo: faixa de 2000 chaves pela PK
+        mais o primeiro caractere de field10. Em média ~20 linhas por execução. -->
+   <template name="W06AtualizaBaseFiltro">
+      <query><![CDATA[
+        UPDATE usertable u
+           SET field10 = left(md5(p.s) || u.field10, 100)
+          FROM (SELECT ?::int AS k, ?::text AS s, ?::int AS c) p
+         WHERE u.ycsb_key BETWEEN p.k AND p.k + 2000
+           AND left(u.field10, 1) = chr(p.c)
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="997000"/>
+         <value dist="uniform" min="1" max="999999999"/>
+         <value dist="uniform" min="33" max="126"/>
+      </values>
+   </template>
+
+   <!-- W07. UPDATE ... FROM com autojunção: copia field2 da chave seguinte em
+        um bloco de 100 chaves da cauda. -->
+   <template name="W07AtualizaDeVizinha">
+      <query><![CDATA[
+        UPDATE usertable u
+           SET field2 = v.field2
+          FROM (SELECT ?::int AS k) p, usertable v
+         WHERE u.ycsb_key BETWEEN p.k AND p.k + 99
+           AND v.ycsb_key = u.ycsb_key + 1
+           AND u.ycsb_key >= 5000000
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099900"/>
+      </values>
+   </template>
+
+   <!-- W08. DELETE pela PK, na cauda. -->
+   <template name="W08RemoveLinha">
+      <query><![CDATA[
+        DELETE FROM usertable
+         WHERE ycsb_key = ? AND ycsb_key >= 5000000
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099999"/>
+      </values>
+   </template>
+
+   <!-- W09. DELETE de faixa de 20 chaves com RETURNING. -->
+   <template name="W09RemoveFaixa">
+      <query><![CDATA[
+        DELETE FROM usertable u
+         USING (SELECT ?::int AS k) p
+         WHERE u.ycsb_key BETWEEN p.k AND p.k + 19
+           AND u.ycsb_key >= 5000000
+        RETURNING u.ycsb_key
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099980"/>
+      </values>
+   </template>
+
+   <!-- W10. DELETE com filtro em campo: só as linhas de um bloco de 1000 chaves
+        da cauda cujo field1 começa com um dígito hexa sorteado. -->
+   <template name="W10RemoveFiltroCampo">
+      <query><![CDATA[
+        DELETE FROM usertable u
+         USING (SELECT ?::int AS k, ?::int AS c) p
+         WHERE u.ycsb_key BETWEEN p.k AND p.k + 999
+           AND u.ycsb_key >= 5000000
+           AND left(u.field1, 1) = chr(p.c)
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="5000000" max="5099000"/>
+         <value dist="uniform" min="48" max="57"/>
+      </values>
+   </template>
+
+</templates>

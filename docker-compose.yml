@@ -139,6 +139,55 @@ services:
       - "-c"
       - "log_truncate_on_rotation=off"
 
+      # --- ajuste de recursos: PGTune ---
+      # Saída do PGTune (https://pgtune.leopard.in.ua, lógica de
+      # src/features/configuration/configurationSelectors.js) com o que este
+      # container enxerga: PG 18, Linux, "Mixed type of application", 7785 MB
+      # de RAM e 12 CPUs (sem limite de cgroup: é a VM da WSL inteira), 100
+      # conexões, NVMe (o disco físico do host) e banco menor que a RAM
+      # (tpch + ycsb ~2,7 GB). max_connections já era 100 e fica de fora.
+      #
+      # O PGTune supõe máquina dedicada. Aqui a mesma VM roda o banco de
+      # monitoramento e os JVMs do BenchBase; se faltar memória sob carga,
+      # shared_buffers e work_mem são os primeiros a baixar.
+      - "-c"
+      - "shared_buffers=1946MB"
+      - "-c"
+      - "effective_cache_size=5838MB"
+      - "-c"
+      - "maintenance_work_mem=486MB"
+      - "-c"
+      - "wal_buffers=16MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "effective_io_concurrency=1000"
+      - "-c"
+      - "maintenance_io_concurrency=1000"
+      - "-c"
+      - "work_mem=11MB"
+      - "-c"
+      - "jit=off"
+      - "-c"
+      - "wal_compression=lz4"
+      - "-c"
+      - "min_wal_size=1GB"
+      - "-c"
+      - "max_wal_size=4GB"
+      - "-c"
+      - "max_worker_processes=12"
+      - "-c"
+      - "max_parallel_workers_per_gather=4"
+      - "-c"
+      - "max_parallel_workers=12"
+      - "-c"
+      - "max_parallel_maintenance_workers=4"
+      # io_method = io_uring, que o PGTune também propõe, fica de fora: o
+      # seccomp padrão do Docker bloqueia io_uring e o servidor não sobe
+      # ("could not setup io_uring queue: Operation not permitted", testado num
+      # container descartável). Fica o padrão worker, e io_workers = CPUs/4 = 3
+      # já é o padrão do PG 18, que é o que o PGTune propõe sem io_uring.
+
   # Banco de destino do BrokkPG: recebe os eventos do jsonlog que o ingestor lê
   # de ./logs. É uma instância separada, não um schema dentro do sindri_postgres,
   # por dois motivos:

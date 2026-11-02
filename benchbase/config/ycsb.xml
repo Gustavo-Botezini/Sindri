@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+  YCSB (Yahoo! Cloud Serving Benchmark) do BenchBase, no banco "ycsb" do
+  mesmo Postgres observado. Carga OLTP de chave-valor sobre uma tabela só,
+  usertable(ycsb_key int PK, field1..field10 text): o oposto do TPC-H, com
+  milhares de transações curtas por segundo em vez de poucas queries longas.
+
+  Ao contrário do TPC-H, aqui create e load são seguros: o DDL do YCSB só
+  derruba usertable, e ela vive num banco próprio. Carregue com ycsb-load.sh
+  (que desliga o log durante o load) e rode a carga com
+  create=false load=false execute=true.
+-->
+<parameters>
+
+    <type>POSTGRES</type>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://postgres:5432/ycsb?sslmode=disable&amp;ApplicationName=benchbase-ycsb&amp;reWriteBatchedInserts=true</url>
+    <username>sindri</username>
+    <password>sindri_dev_pwd</password>
+    <reconnectOnConnectionFailure>true</reconnectOnConnectionFailure>
+    <!-- O exemplo do BenchBase usa SERIALIZABLE; READ COMMITTED é o padrão do
+         Postgres e o mesmo das configs do TPC-H, e evita que o log se encha de
+         abortos por falha de serialização entre ReadModifyWrite concorrentes. -->
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
+    <batchsize>128</batchsize>
+
+    <!-- usertable recebe scalefactor * 1000 linhas: 1000 = 1M linhas, ~1,2 GB
+         com o fieldSize padrão de 100 bytes por coluna. -->
+    <scalefactor>1000</scalefactor>
+
+    <!-- Distribuição zipfian das chaves; 0.99 é o padrão do YCSB original. -->
+    <!-- <skewFactor>0.99</skewFactor> -->
+
+    <!-- rate limitado pelo mesmo motivo do tpch_write.xml: com auto_explain em
+         log_min_duration=0, cada transação vira um plano no log. Sem limite o
+         YCSB passa de 10 mil req/s e enche logs/ em minutos. -->
+    <terminals>4</terminals>
+    <works>
+        <work>
+            <time>120</time>
+            <rate>200</rate>
+            <weights>50,5,15,10,10,10</weights>
+        </work>
+    </works>
+
+    <!-- A ordem tem que casar com a dos pesos acima. Os pesos são os do exemplo
+         do BenchBase; os workloads clássicos do YCSB, na mesma ordem:
+           A (update heavy)  50,0,0,50,0,0
+           B (read mostly)   95,0,0,5,0,0
+           C (read only)     100,0,0,0,0,0
+           E (short ranges)  0,5,95,0,0,0
+           F (read-mod-write) 50,0,0,0,0,50 -->
+    <transactiontypes>
+        <transactiontype>
+            <name>ReadRecord</name>
+        </transactiontype>
+        <transactiontype>
+            <name>InsertRecord</name>
+        </transactiontype>
+        <transactiontype>
+            <name>ScanRecord</name>
+        </transactiontype>
+        <transactiontype>
+            <name>UpdateRecord</name>
+        </transactiontype>
+        <transactiontype>
+            <name>DeleteRecord</name>
+        </transactiontype>
+        <transactiontype>
+            <name>ReadModifyWriteRecord</name>
+        </transactiontype>
+    </transactiontypes>
+</parameters>

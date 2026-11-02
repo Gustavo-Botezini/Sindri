@@ -1,0 +1,350 @@
+{
+  "esquema": "public",
+  "estatisticas": {
+    "registros": 1491715,
+    "registros_de_outro_banco": 67,
+    "statements": 1277203,
+    "ddl_comandos": 1,
+    "planos": 214343,
+    "arquivos": 30,
+    "pendentes_descartados": 15
+  },
+  "ctes": [
+    "p",
+    "sel"
+  ],
+  "rotinas": [],
+  "tabelas": [
+    {
+      "nome": "usertable",
+      "especie": "tabela ou view materializada",
+      "origens": [
+        "plano",
+        "sql"
+      ],
+      "linhas_estimadas": 1053846,
+      "linhas_planner": 1028287,
+      "linhas_lidas": 1053846,
+      "operacoes": {
+        "delete": 46750,
+        "insert": 63595,
+        "update": 75945
+      },
+      "nos_de_plano": {
+        "Index Only Scan": 2253,
+        "Index Scan": 161234,
+        "ModifyTable": 186221,
+        "Seq Scan": 1988,
+        "Bitmap Heap Scan": 567,
+        "Bitmap Index Scan": 567
+      },
+      "chave_primaria": {
+        "colunas": [
+          "ycsb_key"
+        ],
+        "fonte": "índice usertable_pkey"
+      },
+      "colunas": [
+        {
+          "nome": "ycsb_key",
+          "tipo": "integer",
+          "confianca": 0.85,
+          "fonte": "array",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "integer",
+          "confianca_carga": 0.85,
+          "not_null": true,
+          "usos": 314946,
+          "exemplos": [
+            "17",
+            "2",
+            "75",
+            "421967",
+            "167160",
+            "8318"
+          ],
+          "tamanho_min": 1,
+          "tamanho_max": 7,
+          "votos": [
+            {
+              "tipo": "integer",
+              "fonte": "numero",
+              "ocorrencias": 183031
+            },
+            {
+              "tipo": "integer",
+              "fonte": "parametro",
+              "ocorrencias": 96517
+            },
+            {
+              "tipo": "integer",
+              "fonte": "array",
+              "ocorrencias": 52
+            }
+          ]
+        },
+        {
+          "nome": "field1",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 10589,
+          "exemplos": [
+            "AdN^hPr7t##F!G;^!/^GHkvgEYpsSaDa]s1O'Ox=;fe#x|@GW]d($L,>HZbpV\"X@?:>m &7/L\"i]FMW{'Rz/:>U}xi#^R3{-(:bh"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field2",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 819,
+          "exemplos": [
+            "WmD,*&>m &<,AtSX@GWs)L6Hf:p5t#<AAt>m+2W^m{w!6rgybpqMA?^9j|bho;xY8S>fx~?'HwWSHKSw}Aw@AW#5bK-`;\\&NpD$2"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field3",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 529,
+          "exemplos": [
+            "V\"c!Sz]\"tzGj+A XKsxa;n3mc%#Gt]XAewA/Kot].a&bay!Et]pp&xD\\!(Ws~J8i2xruSD4|={|3#KxakkcV~:>bt1W]UZyT_m^d"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field4",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 513,
+          "exemplos": [
+            "c~h>&MryWHb[62;IKY^G!a#KIZHw pM0,|F}adSR]!j([ye*t#}Q\\MU?psSa3@v-6.a*xw<|E$%3+SxiOHlI'`!Et]:POnah>EW]"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field5",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 321,
+          "exemplos": [
+            "2Wl_iC!(WsKvX54/>btzUjn_)XilSZ<%>$$;#R ho3mm7_2e$2#z8-Jh'.W{xaGAvXBES<.,f(PypD$2[a4 }y>q$*1*``?wK]bK"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field6",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 304,
+          "exemplos": [
+            "YJ441CHOWHX9##!2HOWHx~`{0u_$tztG?2<3cjWVOdyOv3>EWs~-8'2xruSaw`FBtY@CS<&Q/$$}*Rx~vf^pOT~Ct1H1FHo_j>$l"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field7",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 309,
+          "exemplos": [
+            "UZ^OxHilSZ>q[mv_p5t#1d)ccz#Gt]xL'H&:pD$2zVU)r#*1W]k\\);YJSwte KwjSyr7teDY<-k&+Ot{oK}?}9h<$*`nM34%Hw ."
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field8",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 21,
+          "exemplos": [
+            "2Hzzyt*]$*bpVwJie.x' -N=]x),Swq5@<:.ehSab[ rp*j/t]9\"gavxBES<mzvgphadSR97qqqc2e$2LZ9~4pHw .G(PEnTt=xi"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field9",
+          "tipo": "text",
+          "confianca": 0.9,
+          "fonte": "cast",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "text",
+          "confianca_carga": 0.9,
+          "not_null": false,
+          "usos": 364,
+          "exemplos": [
+            " })w\"iruSac'la,S2Zx' CX#\":Bu$lm)keotUc^O5|>-8h),Sw--%7_z~Ct1:2OBL})0W{W+''dxp#bp3NkUjd+^$t7we_~nJMSD"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "text",
+              "fonte": "cast",
+              "ocorrencias": 343
+            },
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        },
+        {
+          "nome": "field10",
+          "tipo": "character varying",
+          "confianca": 0.7,
+          "fonte": "parametro",
+          "tipo_ddl": null,
+          "default": null,
+          "tipo_inferido_pela_carga": "character varying",
+          "confianca_carga": 0.7,
+          "not_null": false,
+          "usos": 9633,
+          "exemplos": [
+            "ANN?>zHlt9/qL^g_a&ts\"y7liHFMW{Salf'XgjSa8N0j!d@dtz 6.jRd(6^d:zC$#3)Qxi><GvAh25SaD_>hGw);bSc?>spm(/W]"
+          ],
+          "tamanho_min": 100,
+          "tamanho_max": 100,
+          "votos": [
+            {
+              "tipo": "character varying",
+              "fonte": "parametro",
+              "ocorrencias": 2
+            }
+          ]
+        }
+      ],
+      "indices": [
+        {
+          "nome": "usertable_pkey",
+          "colunas": [
+            "ycsb_key"
+          ],
+          "unico": true,
+          "primaria": true,
+          "usos": 164054,
+          "fontes": [
+            "plano"
+          ]
+        }
+      ],
+      "chaves_estrangeiras": []
+    }
+  ]
+}

@@ -236,3 +236,11 @@ forte e mostra até onde a carga sozinha chega.
 - Corpo de função não é analisado: os statements internos chegam sozinhos no log.
 - Tudo é minúsculo. Identificador com maiúscula entre aspas é desaspado e
   rebaixado.
+- `text` e `varchar` só se distinguem por cast do planner. Parâmetro vinculado
+  de string vota `character varying`, que é como o JDBC o manda. No YCSB, 9 dos
+  10 campos `text` saem `character varying`; só `field9`, que aparece num
+  `LIKE` com cast `::text`, sai certo.
+- Coluna sem qualificação em Function Scan, CTE Scan, Subquery Scan e afins
+  (`NOS_SEM_RELACAO`) não é atribuída à relação única do plano: é saída da
+  função ou subconsulta. Antes disso, o `g(id)` de um
+  `generate_series(...) AS g(id)` virava coluna `id` da tabela.

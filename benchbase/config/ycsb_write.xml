@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+  INSERT, UPDATE e DELETE sobre a usertable do YCSB, pelo benchmark
+  "templated". Os comandos estão em templates_ycsb_write.xml; leia os
+  comentários de lá antes de mexer nas faixas, são elas que limitam INSERT e
+  DELETE à cauda sintética (chaves 5000000..5099999).
+
+  Rode depois de ycsb-load.sh, sempre com create=false e load=false. Para
+  carga mista, rode junto com ycsb.xml ou ycsb_mixed.xml em outro terminal.
+  ycsb-load.sh recria a tabela e apaga a cauda junto.
+-->
+<parameters>
+
+    <type>POSTGRES</type>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://postgres:5432/ycsb?sslmode=disable&amp;ApplicationName=benchbase-ycsb-write</url>
+    <username>sindri</username>
+    <password>sindri_dev_pwd</password>
+    <reconnectOnConnectionFailure>true</reconnectOnConnectionFailure>
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
+    <batchsize>128</batchsize>
+    <scalefactor>1</scalefactor>
+
+    <query_templates_file>sindri-config/templates_ycsb_write.xml</query_templates_file>
+
+    <!-- rate limitado pelo mesmo motivo do ycsb.xml: cada comando vira um
+         plano no log. -->
+    <terminals>4</terminals>
+    <works>
+        <work>
+            <time>120</time>
+            <rate>100</rate>
+            <weights>15,8,12,12,15,5,8,12,8,5</weights>
+        </work>
+    </works>
+
+    <!-- A ordem tem que casar com a dos pesos acima. -->
+    <transactiontypes>
+        <transactiontype><name>W01InsereLinha</name></transactiontype>
+        <transactiontype><name>W02InsereLote</name></transactiontype>
+        <transactiontype><name>W03Upsert</name></transactiontype>
+        <transactiontype><name>W04AtualizaLinha</name></transactiontype>
+        <transactiontype><name>W05AtualizaBase</name></transactiontype>
+        <transactiontype><name>W06AtualizaBaseFiltro</name></transactiontype>
+        <transactiontype><name>W07AtualizaDeVizinha</name></transactiontype>
+        <transactiontype><name>W08RemoveLinha</name></transactiontype>
+        <transactiontype><name>W09RemoveFaixa</name></transactiontype>
+        <transactiontype><name>W10RemoveFiltroCampo</name></transactiontype>
+    </transactiontypes>
+</parameters>

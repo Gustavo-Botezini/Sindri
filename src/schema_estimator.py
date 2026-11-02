@@ -149,6 +149,13 @@ CAMPOS_EXPRESSAO = (
     "Join Filter", "TID Cond", "Sort Key", "Group Key", "Hash Key",
     "Presorted Key", "Cache Key", "Order By", "Conflict Filter",
 )
+# Nós que varrem algo que não é tabela. Coluna sem qualificação neles é saída
+# da função, CTE ou subconsulta: `(id >= 5000000)` num Function Scan sobre
+# `generate_series(...) AS g(id)` não é coluna da relação única do plano.
+NOS_SEM_RELACAO = {
+    "Function Scan", "Table Function Scan", "Values Scan", "CTE Scan",
+    "Subquery Scan", "WorkTable Scan", "Named Tuplestore Scan",
+}
 # Destes a gente também tira relacionamento (junção entre duas tabelas).
 CAMPOS_DE_JUNCAO = {"Hash Cond", "Merge Cond", "Join Filter", "Index Cond",
                     "Recheck Cond", "Filter"}
@@ -212,8 +219,11 @@ RE_ATRIBUICAO = re.compile(
     rf'([a-z_][a-z0-9_$]*)\s*=\s*(?:(\$\d+)|({_LIT})|([-+]?\d+(?:\.\d+)?))\s*(?:,|$)',
     re.I,
 )
+# O `(?!SET\b)` descarta o `ON CONFLICT ... DO UPDATE SET`, que senão vira
+# escrita numa tabela chamada "set" (uma tabela com esse nome sem aspas se
+# perde, e é o preço).
 RE_ALVO_ESCRITA = re.compile(
-    r'\b(?P<op>INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+(?:ONLY\s+)?'
+    r'\b(?P<op>INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+(?!SET\b)(?:ONLY\s+)?'
     r'(?:"?[^".\s(]+"?\.)?"?(?P<tabela>[a-z_][a-z0-9_$]*)"?',
     re.I,
 )
@@ -888,6 +898,9 @@ class Estimador:
             relacao = None  # relação de sistema: ignora as expressões dela
 
         nome_relacao = tabela.nome if tabela else None
+        unica = self._relacao_unica
+        if tipo_no in NOS_SEM_RELACAO:
+            self._relacao_unica = None
         for campo in CAMPOS_EXPRESSAO:
             valor = no.get(campo)
             if not valor:
@@ -895,6 +908,7 @@ class Estimador:
             for expressao in (valor if isinstance(valor, list) else [valor]):
                 if isinstance(expressao, str):
                     self._consumir_expressao(expressao, nome_relacao, parametros, campo)
+        self._relacao_unica = unica
 
         indice = no.get("Index Name")
         if indice and nome_relacao:

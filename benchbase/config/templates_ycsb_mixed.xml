@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  22 consultas mistas sobre a usertable do YCSB, para o benchmark "templated"
+  (ycsb_mixed.xml). As 6 transações do YCSB são todas acesso por chave; estas
+  ampliam o corpus para o que o recomendador precisa: Y01-Y11 têm cara de OLTP
+  (resposta curta, poucas linhas), Y12-Y22 de OLAP (agregação, janela, junção,
+  conjunto sobre faixas grandes ou a tabela inteira).
+
+  A tabela só tem a PK em ycsb_key. Os field1..field10 são 100 caracteres ASCII
+  aleatórios (de '!' a '~', uniformes), então filtro e agrupamento sobre
+  prefixo de campo é o que sobra para dar trabalho ao planner: Y06, Y08, Y17 e
+  Y19 são seq scan hoje e têm índice candidato óbvio (expressão em left(),
+  trigram), de propósito.
+
+  Duas convenções que o gerador do templated impõe:
+
+  - Prefixo de texto sai de chr(?) com inteiro de 33 a 126. O gerador sorteia
+    número e data; string aleatória com distribuição controlada não.
+  - Faixa de chaves usa um parâmetro só, "(SELECT ?::int AS k) p", com o fim
+    calculado como p.k + N. Cada ? é sorteado de forma independente, então
+    dois parâmetros para início e fim dariam intervalo invertido em metade das
+    execuções.
+
+  As chaves da base vão de 0 a 999999; os k ficam abaixo de 1000000 - N para
+  a faixa cair inteira dentro dela. Os mesmos SQL, com valores fixos, estão em
+  queries/ycsb/y01.sql..y22.sql.
+-->
+<templates>
+
+   <!-- ================================================================ OLTP -->
+
+   <!-- Y01. Ponto pela PK, projetando 3 de 10 campos. Zipfian, como as chaves
+        quentes do YCSB original. -->
+   <template name="Y01PontoProjecao">
+      <query><![CDATA[
+        SELECT field1, field2, field3
+        FROM usertable
+        WHERE ycsb_key = ?
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="zipfian" min="0" max="999999"/>
+      </values>
+   </template>
+
+   <!-- Y02. Lista de chaves em IN: vira ScalarArrayOp no Index Scan. -->
+   <template name="Y02ListaChaves">
+      <query><![CDATA[
+        SELECT ycsb_key, field1
+        FROM usertable
+        WHERE ycsb_key IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ]]></query>
+      <types>
+         <type>INTEGER</type><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type>
+         <type>INTEGER</type><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type>
+      </types>
+      <values>
+         <value dist="uniform" min="0" max="999999"/><value dist="uniform" min="0" max="999999"/>
+         <value dist="uniform" min="0" max="999999"/><value dist="uniform" min="0" max="999999"/>
+         <value dist="uniform" min="0" max="999999"/><value dist="uniform" min="0" max="999999"/>
+         <value dist="uniform" min="0" max="999999"/><value dist="uniform" min="0" max="999999"/>
+         <value dist="uniform" min="0" max="999999"/><value dist="uniform" min="0" max="999999"/>
+      </values>
+   </template>
+
+   <!-- Y03. Paginação por keyset, ascendente: Limit sobre Index Scan. -->
+   <template name="Y03PaginaAscendente">
+      <query><![CDATA[
+        SELECT ycsb_key, field1
+        FROM usertable
+        WHERE ycsb_key > ?
+        ORDER BY ycsb_key
+        LIMIT 20
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="999000"/>
+      </values>
+   </template>
+
+   <!-- Y04. A mesma paginação de trás para frente: Index Scan Backward. -->
+   <template name="Y04PaginaDescendente">
+      <query><![CDATA[
+        SELECT ycsb_key, field2
+        FROM usertable
+        WHERE ycsb_key < ?
+        ORDER BY ycsb_key DESC
+        LIMIT 50
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="1000" max="999999"/>
+      </values>
+   </template>
+
+   <!-- Y05. Existência, sem trazer a linha: Index Only Scan dentro de InitPlan. -->
+   <template name="Y05ExisteChave">
+      <query><![CDATA[
+        SELECT EXISTS (SELECT 1 FROM usertable WHERE ycsb_key = ?)
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="1100000"/>
+      </values>
+   </template>
+
+   <!-- Y06. Busca por atributo secundário: prefixo de 3 caracteres de field2.
+        Parece OLTP (LIMIT 10, quase sempre 0 ou 1 linha), mas sem índice é
+        seq scan na tabela inteira. É o caso mais claro de índice faltando:
+        um índice de expressão em left(field2, 3) resolve. Peso baixo no
+        ycsb_mixed.xml por isso. -->
+   <template name="Y06BuscaPrefixoCampo">
+      <query><![CDATA[
+        SELECT ycsb_key, field2
+        FROM usertable
+        WHERE left(field2, 3) = chr(?) || chr(?) || chr(?)
+        LIMIT 10
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="33" max="126"/>
+         <value dist="uniform" min="33" max="126"/>
+         <value dist="uniform" min="33" max="126"/>
+      </values>
+   </template>
+
+   <!-- Y07. Contagem numa janela de 1000 chaves: Aggregate sobre Index Scan. -->
+   <template name="Y07ContagemJanela">
+      <query><![CDATA[
+        SELECT count(*), min(length(u.field1))
+        FROM usertable u, (SELECT ?::int AS k) p
+        WHERE u.ycsb_key BETWEEN p.k AND p.k + 1000
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="998000"/>
+      </values>
+   </template>
+
+   <!-- Y08. Filtro composto: faixa de 50 mil chaves pela PK mais primeiro
+        caractere de field3. Candidato a índice composto ou de expressão. -->
+   <template name="Y08FiltroCompostoJanela">
+      <query><![CDATA[
+        SELECT u.ycsb_key, u.field3
+        FROM usertable u, (SELECT ?::int AS k) p
+        WHERE u.ycsb_key BETWEEN p.k AND p.k + 50000
+          AND left(u.field3, 1) = chr(?)
+        ORDER BY u.ycsb_key
+        LIMIT 100
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="949000"/>
+         <value dist="uniform" min="33" max="126"/>
+      </values>
+   </template>
+
+   <!-- Y09. Vizinhos de uma chave (anterior e próxima existentes): dois
+        InitPlan com min/max, que o planner resolve com Index Only Scan e
+        Limit. As lacunas deixadas pelos DELETEs fazem a resposta variar. -->
+   <template name="Y09Vizinhos">
+      <query><![CDATA[
+        SELECT (SELECT max(ycsb_key) FROM usertable WHERE ycsb_key < p.k) AS anterior,
+               (SELECT min(ycsb_key) FROM usertable WHERE ycsb_key > p.k) AS proxima
+        FROM (SELECT ?::int AS k) p
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="1" max="999998"/>
+      </values>
+   </template>
+
+   <!-- Y10. Leitura em lote por array: Nested Loop entre Function Scan
+        (unnest) e Index Scan. Mesmo resultado do Y02, plano diferente. -->
+   <template name="Y10LeituraLoteUnnest">
+      <query><![CDATA[
+        SELECT u.ycsb_key, u.field1, u.field5
+        FROM unnest(ARRAY[?, ?, ?, ?, ?, ?, ?, ?]::int[]) AS c(id)
+        JOIN usertable u ON u.ycsb_key = c.id
+      ]]></query>
+      <types>
+         <type>INTEGER</type><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type>
+         <type>INTEGER</type><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type>
+      </types>
+      <values>
+         <value dist="scrambled" min="0" max="999999"/><value dist="scrambled" min="0" max="999999"/>
+         <value dist="scrambled" min="0" max="999999"/><value dist="scrambled" min="0" max="999999"/>
+         <value dist="scrambled" min="0" max="999999"/><value dist="scrambled" min="0" max="999999"/>
+         <value dist="scrambled" min="0" max="999999"/><value dist="scrambled" min="0" max="999999"/>
+      </values>
+   </template>
+
+   <!-- Y11. Top-N por texto numa janela de 20 mil chaves: Sort com
+        "top-N heapsort" sobre Index Scan. -->
+   <template name="Y11TopNTextoJanela">
+      <query><![CDATA[
+        SELECT u.ycsb_key, u.field4
+        FROM usertable u, (SELECT ?::int AS k) p
+        WHERE u.ycsb_key BETWEEN p.k AND p.k + 20000
+        ORDER BY u.field4
+        LIMIT 10
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="979000"/>
+      </values>
+   </template>
+
+   <!-- ================================================================ OLAP -->
+
+   <!-- Y12. Distribuição do primeiro caractere de field1 na tabela quase
+        inteira: Seq Scan paralelo, Sort e agregação ordenada sobre Gather
+        Merge (o planner preferiu isso a HashAggregate). -->
+   <template name="Y12DistribuicaoPrefixo">
+      <query><![CDATA[
+        SELECT left(field1, 1) AS prefixo, count(*) AS linhas,
+               avg(ascii(substr(field1, 2, 1))) AS media_segundo
+        FROM usertable
+        WHERE ycsb_key >= ?
+        GROUP BY 1
+        ORDER BY 2 DESC
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="100000"/>
+      </values>
+   </template>
+
+   <!-- Y13. Histograma por faixa de 10 mil chaves, com agregado filtrado. -->
+   <template name="Y13HistogramaFaixas">
+      <query><![CDATA[
+        SELECT ycsb_key / 10000 AS faixa, count(*) AS linhas,
+               count(*) FILTER (WHERE field5 < field6) AS f5_menor_f6
+        FROM usertable
+        WHERE ycsb_key < ?
+        GROUP BY 1
+        ORDER BY 1
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="300000" max="1000000"/>
+      </values>
+   </template>
+
+   <!-- Y14. WindowAgg: as 3 primeiras linhas por field5 dentro de cada bloco
+        de 1000 chaves, numa faixa de 100 mil. -->
+   <template name="Y14RankPorFaixa">
+      <query><![CDATA[
+        SELECT faixa, ycsb_key, field5
+        FROM (
+          SELECT u.ycsb_key, u.ycsb_key / 1000 AS faixa, u.field5,
+                 row_number() OVER (PARTITION BY u.ycsb_key / 1000 ORDER BY u.field5) AS pos
+          FROM usertable u, (SELECT ?::int AS k) p
+          WHERE u.ycsb_key BETWEEN p.k AND p.k + 100000
+        ) t
+        WHERE pos <= 3
+        ORDER BY faixa, pos
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="899000"/>
+      </values>
+   </template>
+
+   <!-- Y15. Autojunção entre chaves consecutivas com o mesmo primeiro
+        caractere em field1. Mesmo com os dois lados limitados à faixa, 200
+        mil chaves bastam para o planner largar a PK: sai Hash Join entre dois
+        Seq Scan paralelos. -->
+   <template name="Y15AutoJuncaoConsecutivas">
+      <query><![CDATA[
+        SELECT count(*) AS pares
+        FROM (SELECT ?::int AS k) p
+        JOIN usertable a ON a.ycsb_key BETWEEN p.k AND p.k + 200000
+        JOIN usertable b ON b.ycsb_key = a.ycsb_key + 1
+                        AND b.ycsb_key BETWEEN p.k AND p.k + 200001
+        WHERE left(a.field1, 1) = left(b.field1, 1)
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="799000"/>
+      </values>
+   </template>
+
+   <!-- Y16. COUNT(DISTINCT) sobre prefixo de 2 caracteres: os workers só
+        varrem e ordenam; o DISTINCT fica num Aggregate único acima do Gather
+        Merge. -->
+   <template name="Y16DistintosPrefixo">
+      <query><![CDATA[
+        SELECT count(DISTINCT left(field6, 2)) AS prefixos
+        FROM usertable
+        WHERE ycsb_key >= ?
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="500000"/>
+      </values>
+   </template>
+
+   <!-- Y17. CTE materializada (CTE Scan) com filtro por prefixo de field7,
+        reagrupada por prefixo de field8. -->
+   <template name="Y17CteMaterializada">
+      <query><![CDATA[
+        WITH sel AS MATERIALIZED (
+            SELECT ycsb_key, field8
+            FROM usertable
+            WHERE left(field7, 1) = chr(?)
+        )
+        SELECT left(field8, 1) AS prefixo, count(*) AS linhas
+        FROM sel
+        GROUP BY 1
+        ORDER BY 2 DESC
+        LIMIT 10
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="33" max="126"/>
+      </values>
+   </template>
+
+   <!-- Y18. ROLLUP em dois níveis (MixedAggregate ou GroupAggregate com
+        Sort, conforme a estimativa). -->
+   <template name="Y18RollupPrefixos">
+      <query><![CDATA[
+        SELECT left(field1, 1) AS p1, left(field2, 1) AS p2, count(*) AS linhas
+        FROM usertable
+        WHERE ycsb_key < ?
+        GROUP BY ROLLUP (left(field1, 1), left(field2, 1))
+        ORDER BY 1, 2
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="100000" max="300000"/>
+      </values>
+   </template>
+
+   <!-- Y19. Busca de substring no meio do texto: LIKE '%abc%' em field9.
+        B-tree não ajuda; candidato a GIN com pg_trgm. -->
+   <template name="Y19BuscaSubstring">
+      <query><![CDATA[
+        SELECT count(*) AS ocorrencias
+        FROM usertable
+        WHERE field9 LIKE '%' || chr(?) || chr(?) || chr(?) || '%'
+      ]]></query>
+      <types><type>INTEGER</type><type>INTEGER</type><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="48" max="57"/>
+         <value dist="uniform" min="65" max="90"/>
+         <value dist="uniform" min="97" max="122"/>
+      </values>
+   </template>
+
+   <!-- Y20. Mediana por grupo (percentile_disc WITHIN GROUP): agregado
+        ordenado, que exige Sort por grupo em vez de HashAggregate. -->
+   <template name="Y20MedianaPorPrefixo">
+      <query><![CDATA[
+        SELECT left(u.field10, 1) AS prefixo,
+               percentile_disc(0.5) WITHIN GROUP (ORDER BY ascii(substr(u.field10, 2, 1))) AS mediana,
+               count(*) AS linhas
+        FROM usertable u, (SELECT ?::int AS k) p
+        WHERE u.ycsb_key BETWEEN p.k AND p.k + 200000
+        GROUP BY 1
+        ORDER BY 1
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="799000"/>
+      </values>
+   </template>
+
+   <!-- Y21. Lacunas: chaves de uma faixa que não existem mais (apagadas pelo
+        DeleteRecord do YCSB). Sai Merge Anti Join entre generate_series
+        ordenado e Index Only Scan na PK. -->
+   <template name="Y21LacunasAntiJoin">
+      <query><![CDATA[
+        SELECT count(*) AS lacunas
+        FROM (SELECT ?::int AS k) p,
+             generate_series(p.k, p.k + 100000) AS g(id)
+        WHERE NOT EXISTS (SELECT 1 FROM usertable u WHERE u.ycsb_key = g.id)
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="899000"/>
+      </values>
+   </template>
+
+   <!-- Y22. INTERSECT entre os prefixos de field1 e field2 na mesma faixa:
+        SetOp, e a CTE referenciada duas vezes vira CTE Scan. -->
+   <template name="Y22IntersecaoPrefixos">
+      <query><![CDATA[
+        WITH p AS (SELECT ?::int AS k)
+        SELECT count(*) AS comuns
+        FROM (
+          SELECT left(u.field1, 2) FROM usertable u, p
+          WHERE u.ycsb_key BETWEEN p.k AND p.k + 50000
+          INTERSECT
+          SELECT left(u.field2, 2) FROM usertable u, p
+          WHERE u.ycsb_key BETWEEN p.k AND p.k + 50000
+        ) x
+      ]]></query>
+      <types><type>INTEGER</type></types>
+      <values>
+         <value dist="uniform" min="0" max="949000"/>
+      </values>
+   </template>
+
+</templates>

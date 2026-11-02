@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!--
+  22 consultas mistas, OLTP e OLAP, sobre a usertable do YCSB, pelo benchmark
+  "templated". As consultas estão em templates_ycsb_mixed.xml (e, com valores
+  fixos, em queries/ycsb/). Só leitura.
+
+  Rode depois de ycsb-load.sh, sempre com create=false e load=false: o
+  templated não tem fase de create nem de load.
+
+  Pesos: as OLTP (Y01-Y11) somam 67%, as OLAP (Y12-Y22) 33%. Mesmo assim o
+  tempo vai quase todo nas OLAP, que levam de 0,2 a 1,6 s contra milissegundos
+  das OLTP; a Y06, seq scan sem índice, fica com peso 2 pelo mesmo motivo.
+  Medido com 4 terminais sem limite de rate: de 4 a 7 req/s, o que deixa o
+  log em uma fração do volume do ycsb.xml.
+-->
+<parameters>
+
+    <type>POSTGRES</type>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://postgres:5432/ycsb?sslmode=disable&amp;ApplicationName=benchbase-ycsb-mixed</url>
+    <username>sindri</username>
+    <password>sindri_dev_pwd</password>
+    <reconnectOnConnectionFailure>true</reconnectOnConnectionFailure>
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
+    <batchsize>128</batchsize>
+    <scalefactor>1</scalefactor>
+
+    <query_templates_file>sindri-config/templates_ycsb_mixed.xml</query_templates_file>
+
+    <terminals>4</terminals>
+    <works>
+        <work>
+            <time>180</time>
+            <rate>unlimited</rate>
+            <!--      Y01..Y11 (OLTP)           Y12..Y22 (OLAP)     -->
+            <weights>11,6,6,6,8,2,6,5,6,6,5,3,3,3,3,3,3,3,3,3,3,3</weights>
+        </work>
+    </works>
+
+    <!-- A ordem tem que casar com a dos pesos acima, e os nomes com os do
+         arquivo de templates. -->
+    <transactiontypes>
+        <transactiontype><name>Y01PontoProjecao</name></transactiontype>
+        <transactiontype><name>Y02ListaChaves</name></transactiontype>
+        <transactiontype><name>Y03PaginaAscendente</name></transactiontype>
+        <transactiontype><name>Y04PaginaDescendente</name></transactiontype>
+        <transactiontype><name>Y05ExisteChave</name></transactiontype>
+        <transactiontype><name>Y06BuscaPrefixoCampo</name></transactiontype>
+        <transactiontype><name>Y07ContagemJanela</name></transactiontype>
+        <transactiontype><name>Y08FiltroCompostoJanela</name></transactiontype>
+        <transactiontype><name>Y09Vizinhos</name></transactiontype>
+        <transactiontype><name>Y10LeituraLoteUnnest</name></transactiontype>
+        <transactiontype><name>Y11TopNTextoJanela</name></transactiontype>
+        <transactiontype><name>Y12DistribuicaoPrefixo</name></transactiontype>
+        <transactiontype><name>Y13HistogramaFaixas</name></transactiontype>
+        <transactiontype><name>Y14RankPorFaixa</name></transactiontype>
+        <transactiontype><name>Y15AutoJuncaoConsecutivas</name></transactiontype>
+        <transactiontype><name>Y16DistintosPrefixo</name></transactiontype>
+        <transactiontype><name>Y17CteMaterializada</name></transactiontype>
+        <transactiontype><name>Y18RollupPrefixos</name></transactiontype>
+        <transactiontype><name>Y19BuscaSubstring</name></transactiontype>
+        <transactiontype><name>Y20MedianaPorPrefixo</name></transactiontype>
+        <transactiontype><name>Y21LacunasAntiJoin</name></transactiontype>
+        <transactiontype><name>Y22IntersecaoPrefixos</name></transactiontype>
+    </transactiontypes>
+</parameters>
